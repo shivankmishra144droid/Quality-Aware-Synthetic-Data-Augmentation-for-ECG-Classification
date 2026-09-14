@@ -1,0 +1,68 @@
+{
+  "generator": "SSSD-ECG-adapted",
+  "source": "https://github.com/AI4HealthUOL/SSSD-ECG",
+  "seed": 42,
+  "train_only": true,
+  "wavenet_used": {
+    "in_channels": 8,
+    "out_channels": 8,
+    "num_res_layers": 8,
+    "res_channels": 64,
+    "skip_channels": 64,
+    "diffusion_step_embed_dim_in": 128,
+    "diffusion_step_embed_dim_mid": 512,
+    "diffusion_step_embed_dim_out": 512,
+    "s4_lmax": 1000,
+    "s4_d_state": 64,
+    "s4_dropout": 0.0,
+    "s4_bidirectional": 1,
+    "s4_layernorm": 1,
+    "label_embed_dim": 128,
+    "label_embed_classes": 4
+  },
+  "train_cfg": {
+    "n_iters": 4000,
+    "batch_size": 1,
+    "learning_rate": 0.0002,
+    "log_every": 50,
+    "ckpt_every": 1000,
+    "use_amp": false
+  },
+  "n_params": 1528072,
+  "week4_train_sec": 405.1832604408264,
+  "week4_peak_gb": 0.9829549789428711,
+  "gen_sec": 950.9172074794769,
+  "gen_peak_gb": 0.1462693214416504,
+  "counts": {
+    "SR": 32,
+    "AFIB": 32,
+    "STACH": 32,
+    "SBRAD": 32
+  },
+  "lead_order": [
+    "I",
+    "II",
+    "III",
+    "aVR",
+    "aVL",
+    "aVF",
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6"
+  ],
+  "independent_leads": [
+    "I",
+    "II",
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6"
+  ],
+  "reconstruction": "III=II-I; aVR=-(I+II)/2; aVL=I-II/2; aVF=II-I/2",
+  "note": "Width 8x64 (not published 36x256) due to 4 GB VRAM. AMP off."
+}

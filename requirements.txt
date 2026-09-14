@@ -1,0 +1,9 @@
+pandas
+numpy
+matplotlib
+scikit-learn
+wfdb
+jupyter
+torch
+einops
+opt_einsum

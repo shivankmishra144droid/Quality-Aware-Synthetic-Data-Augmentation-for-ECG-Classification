@@ -1,0 +1,29 @@
+{
+  "change": "16x128 from scratch, 4000 iters (v1 budget; v2 16000 was degrading)",
+  "wavenet": {
+    "in_channels": 8,
+    "out_channels": 8,
+    "num_res_layers": 16,
+    "res_channels": 128,
+    "skip_channels": 128,
+    "diffusion_step_embed_dim_in": 128,
+    "diffusion_step_embed_dim_mid": 512,
+    "diffusion_step_embed_dim_out": 512,
+    "s4_lmax": 1000,
+    "s4_d_state": 64,
+    "s4_dropout": 0.0,
+    "s4_bidirectional": 1,
+    "s4_layernorm": 1,
+    "label_embed_dim": 128,
+    "label_embed_classes": 4
+  },
+  "train_cfg": {
+    "n_iters": 4000,
+    "batch_size": 1,
+    "learning_rate": 0.0002,
+    "log_every": 50,
+    "ckpt_every": 500,
+    "use_amp": false
+  },
+  "checkpoint": "generator_comparison\\sssd_v3\\checkpoints\\v3_16x128_last.pt"
+}

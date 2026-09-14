@@ -1,0 +1,5 @@
+Generator,Valid samples,Params,Training time (s),GPU memory train (GB),GPU memory gen (GB),Mean pairwise corr,HR MAE vs train (bpm),Notes
+SSSD-ECG-adapted,128/128,1528072,405.2,0.983,0.146,0.142,29.22,"8x64 S4, T=200, 4000 train iters, 4-class one-hot, 8→12 reconstruction"
+TransDiffECG,N/A,N/A,N/A,N/A,N/A,N/A,N/A,Not runnable: no public implementation
+SE-Diff,N/A,N/A,N/A,N/A,N/A,N/A,N/A,Not runnable: unpublished prerequisites / leakage / 4 GB
+FlowECG,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"Not runnable: no public official implementation"

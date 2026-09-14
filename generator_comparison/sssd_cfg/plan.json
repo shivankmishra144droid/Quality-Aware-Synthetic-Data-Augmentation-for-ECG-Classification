@@ -1,0 +1,10 @@
+{
+  "architecture": "WAVENET_4GB 8x64 (same as v1)",
+  "why_not_v3_16x128": "CFG is a single-factor test; must not combine with the capacity change. CFG sampling also doubles NFE vs v3's 3.66 GB peak.",
+  "why_not_v2_16000": "v2 loss was already degrading; v1/v3 4000-iter budget had better loss-vs-noise.",
+  "iters": 4000,
+  "label_dropout_p": 0.1,
+  "null_cond": "zero one-hot -> zero embedding via label @ embedding.weight",
+  "fresh_run": true,
+  "not_finetuned_from_prior_ckpt": true
+}

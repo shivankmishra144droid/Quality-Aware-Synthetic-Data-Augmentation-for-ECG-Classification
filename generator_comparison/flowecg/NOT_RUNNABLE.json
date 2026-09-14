@@ -1,0 +1,26 @@
+{
+  "generator": "FlowECG",
+  "runnable": false,
+  "seed": 42,
+  "paper": {
+    "title": "FlowECG: Using Flow Matching to Create a More Efficient ECG Signal Generator",
+    "arxiv": "https://arxiv.org/abs/2509.10491",
+    "doi": "10.1007/978-3-032-18415-3_32",
+    "authors": [
+      "Vitalii Bondar",
+      "Serhii Semenov",
+      "Vira Babenko",
+      "Dmytro Holovniak"
+    ]
+  },
+  "license": null,
+  "official_repo": null,
+  "github_search_repositories_FlowECG": {
+    "total_count": 0,
+    "url": "https://api.github.com/search/repositories?q=FlowECG"
+  },
+  "not_substituted": "PKUDigitalHealth/PPGFlowECG is a different paper (PPG-guided latent rectified flow). TransDiff/SSSD forks were not used.",
+  "pretrained_weights": "None published. Paper trains on PTB-XL; any unofficial weights would risk val/test leakage.",
+  "published_architecture": "Same SSSD backbone as the paper: 36 residual layers, 256 channels, bidirectional S4, 71-label conditioning. Our 4 GB probe of that backbone peaked ~8.2 GB.",
+  "reason": "No public official implementation. GitHub repository search for FlowECG returned 0 repos. arXiv:2509.10491 and Hugging Face Papers list no code. Do not reimplement flow matching by editing the SSSD sampler. PPGFlowECG is a different method and was not substituted. Published 36x256 SSSD-sized backbone would also not fit 4 GB VRAM (~8.2 GB in the SSSD probe)."
+}

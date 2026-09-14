@@ -1,0 +1,20 @@
+{
+  "class_to_index": {
+    "SR": 0,
+    "AFIB": 1,
+    "STACH": 2,
+    "SBRAD": 3
+  },
+  "index_to_class": {
+    "0": "SR",
+    "1": "AFIB",
+    "2": "STACH",
+    "3": "SBRAD"
+  },
+  "class_order": [
+    "SR",
+    "AFIB",
+    "STACH",
+    "SBRAD"
+  ]
+}

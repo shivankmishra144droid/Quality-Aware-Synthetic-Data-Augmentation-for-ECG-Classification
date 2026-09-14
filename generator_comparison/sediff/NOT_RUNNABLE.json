@@ -1,0 +1,8 @@
+{
+  "generator": "SE-Diff",
+  "runnable": false,
+  "seed": 44,
+  "official_repo": "https://github.com/ignite-abd/SE-Diff",
+  "commit": "dd0a476d490a1ae3dbfd346e9ce57820014ff907",
+  "reason": "Public code requires unpublished prerequisites (latents, VAE/mini-decoder weights, simulator prior) plus OpenAI text embeddings. Fair from-scratch 4-class training on X_train is not supported without fabricating missing stages or using pretrained weights that may leak val/test patients. Published batch_size=4096 is also incompatible with 4 GB VRAM."
+}

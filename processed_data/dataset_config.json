@@ -1,0 +1,77 @@
+{
+  "project": "Quality-Aware Synthetic Data Augmentation for Robust Imbalanced ECG Classification",
+  "created_by_notebook": "02_PTBXL_Exploration.ipynb",
+  "source_dataset": "PTB-XL v1.0.1 (local archive)",
+  "random_seed": 42,
+  "sampling_rate_hz": 100,
+  "signal_length_samples": 1000,
+  "signal_duration_s": 10.0,
+  "n_leads": 12,
+  "lead_order": [
+    "I",
+    "II",
+    "III",
+    "aVR",
+    "aVL",
+    "aVF",
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6"
+  ],
+  "model_input_shape": [
+    "N",
+    1000,
+    12
+  ],
+  "model_input_axis_semantics": "(samples, timesteps, features=leads)",
+  "target_classes": [
+    "SR",
+    "AFIB",
+    "STACH",
+    "SBRAD"
+  ],
+  "label_mapping": {
+    "SR": 0,
+    "AFIB": 1,
+    "STACH": 2,
+    "SBRAD": 3
+  },
+  "label_rule": "exactly one target rhythm SCP code present; zero or multiple -> excluded",
+  "split_ratios": {
+    "train": 0.7,
+    "val": 0.15,
+    "test": 0.15
+  },
+  "split_level": "patient",
+  "split_stratified_on": "patient primary rhythm",
+  "normalization": "per_lead_standardization_train_statistics_only",
+  "normalization_fitted_on": "train split only",
+  "qc_excludes_on": [
+    "missing_file/load_error",
+    "nan",
+    "inf",
+    "shape != (12,1000)",
+    "all_leads_flat"
+  ],
+  "qc_flags_only": [
+    "high_amplitude > 50.0 mV",
+    "partial flat leads"
+  ],
+  "counts": {
+    "total_recordings_in_ptbxl": 21837,
+    "labelled_4class": 19759,
+    "excluded_no_target_rhythm": 2078,
+    "excluded_conflicting_targets": 0,
+    "excluded_by_qc": 0,
+    "final_total": 19759,
+    "train_recordings": 13811,
+    "val_recordings": 2960,
+    "test_recordings": 2988,
+    "train_patients": 12124,
+    "val_patients": 2598,
+    "test_patients": 2598
+  }
+}

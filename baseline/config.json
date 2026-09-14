@@ -1,0 +1,55 @@
+{
+  "dataset": "PTB-XL",
+  "classes": [
+    "SR",
+    "AFIB",
+    "STACH",
+    "SBRAD"
+  ],
+  "input_shape": [
+    1000,
+    12
+  ],
+  "split": "patient-level 70/15/15",
+  "n_train": 13811,
+  "n_val": 2960,
+  "n_test": 2988,
+  "architecture": {
+    "conv1": "Conv1d(12->32, k=7) + BN + ReLU + MaxPool(4)",
+    "conv2": "Conv1d(32->64, k=5) + BN + ReLU + MaxPool(4)",
+    "lstm": "LSTM(64, hidden=64, layers=1, unidirectional)",
+    "head": "Dropout(0.3) + Linear(64->4)",
+    "n_params": 46756
+  },
+  "train": {
+    "seed": 42,
+    "optimizer": "Adam",
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "batch_size": 64,
+    "max_epochs": 25,
+    "dropout": 0.3,
+    "early_stopping_patience": 7,
+    "scheduler": "ReduceLROnPlateau",
+    "scheduler_factor": 0.5,
+    "scheduler_patience": 3,
+    "loss": "weighted_cross_entropy",
+    "selection_metric": "val_macro_f1",
+    "device": "cpu"
+  },
+  "class_weights": {
+    "SR": 0.2940763137722511,
+    "AFIB": 3.269649621212121,
+    "STACH": 6.078785211267606,
+    "SBRAD": 7.741591928251121
+  },
+  "best_epoch": 12,
+  "best_val_macro_f1": 0.7815919575882033,
+  "checkpoint": "baseline/cnn_lstm_baseline.pt",
+  "label_mapping": {
+    "SR": 0,
+    "AFIB": 1,
+    "STACH": 2,
+    "SBRAD": 3
+  }
+}

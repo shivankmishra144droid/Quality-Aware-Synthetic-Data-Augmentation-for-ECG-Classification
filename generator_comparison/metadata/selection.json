@@ -1,0 +1,114 @@
+{
+  "selected_generator": "SSSD-ECG-adapted",
+  "pilot_not_sota_claim": true,
+  "runnable": [
+    "SSSD-ECG-adapted"
+  ],
+  "not_runnable": [
+    "TransDiffECG",
+    "SE-Diff",
+    "FlowECG"
+  ],
+  "reasons": {
+    "validity": {
+      "n": 128,
+      "nan_inf": 0,
+      "flatline": 0,
+      "extreme_amp": 0,
+      "bad_shape": 0,
+      "fail": 0
+    },
+    "hr_mae_vs_real": 29.223969466032163,
+    "diversity_mean_corr": 0.1423187404870987,
+    "hr_by_class": {
+      "SR": {
+        "syn_median_hr": 130.5705090413554,
+        "real_median_hr": 84.46131333455276,
+        "abs_hr_diff": 46.10919570680264,
+        "syn_r_count": 21.8125,
+        "real_r_count": 14.953125,
+        "syn_detectable": 1.0
+      },
+      "AFIB": {
+        "syn_median_hr": 132.42545276208065,
+        "real_median_hr": 117.04312114989733,
+        "abs_hr_diff": 15.382331612183322,
+        "syn_r_count": 22.0,
+        "real_r_count": 19.50390625,
+        "syn_detectable": 1.0
+      },
+      "STACH": {
+        "syn_median_hr": 129.96393348440841,
+        "real_median_hr": 111.1111111111111,
+        "abs_hr_diff": 18.852822373297315,
+        "syn_r_count": 21.8125,
+        "real_r_count": 19.09765625,
+        "syn_detectable": 1.0
+      },
+      "SBRAD": {
+        "syn_median_hr": 132.8413653279268,
+        "real_median_hr": 96.28983715608143,
+        "abs_hr_diff": 36.551528171845376,
+        "syn_r_count": 22.09375,
+        "real_r_count": 16.01953125,
+        "syn_detectable": 1.0
+      }
+    },
+    "compute": {
+      "train_sec": 405.1832604408264,
+      "peak_gb": 0.9829549789428711,
+      "params": 1528072
+    },
+    "why_not_transdiff": "No public code. Paper exists; datasets are QTDB/LUDB, not PTB-XL. Substituting another generator is disallowed.",
+    "why_not_sediff": "Public code requires unpublished prerequisites (latents, VAE/mini-decoder weights, simulator prior) plus OpenAI text embeddings. Fair from-scratch 4-class training on X_train is not supported without fabricating missing stages or using pretrained weights that may leak val/test patients. Published batch_size=4096 is also incompatible with 4 GB VRAM.",
+    "why_sssd": "Only leakage-free runnable generator matching PTB-XL four-class 12-lead 100 Hz setup on 4 GB VRAM."
+  },
+  "ready_for_large_scale": true,
+  "do_not_mass_generate_in_this_notebook": true,
+  "large_scale_prep": {
+    "checkpoint": "C:\\Users\\Shivank\\Videos\\ECG - GenAi\\generator_comparison\\sssd\\checkpoint.pt",
+    "wavenet": {
+      "in_channels": 8,
+      "out_channels": 8,
+      "num_res_layers": 8,
+      "res_channels": 64,
+      "skip_channels": 64,
+      "diffusion_step_embed_dim_in": 128,
+      "diffusion_step_embed_dim_mid": 512,
+      "diffusion_step_embed_dim_out": 512,
+      "s4_lmax": 1000,
+      "s4_d_state": 64,
+      "s4_dropout": 0.0,
+      "s4_bidirectional": 1,
+      "s4_layernorm": 1,
+      "label_embed_dim": 128,
+      "label_embed_classes": 4
+    },
+    "diffusion": {
+      "T": 200,
+      "beta_0": 0.0001,
+      "beta_T": 0.02
+    },
+    "batch_size": 1,
+    "use_amp": false,
+    "recommended_next": "Increase sampling count for minority classes; keep train-only; then Week 5 quality assessment."
+  },
+  "flowecg": {
+    "runnable": false,
+    "reason": "No public official implementation. GitHub repository search for FlowECG returned 0 repos. arXiv:2509.10491 and Hugging Face Papers list no code. Do not reimplement flow matching by editing the SSSD sampler. PPGFlowECG is a different method and was not substituted. Published 36x256 SSSD-sized backbone would also not fit 4 GB VRAM (~8.2 GB in the SSSD probe).",
+    "metrics": null,
+    "paper": {
+      "title": "FlowECG: Using Flow Matching to Create a More Efficient ECG Signal Generator",
+      "arxiv": "https://arxiv.org/abs/2509.10491",
+      "doi": "10.1007/978-3-032-18415-3_32",
+      "authors": [
+        "Vitalii Bondar",
+        "Serhii Semenov",
+        "Vira Babenko",
+        "Dmytro Holovniak"
+      ]
+    },
+    "official_repo": null
+  },
+  "why_not_flowecg": "No public official implementation. GitHub repository search for FlowECG returned 0 repos. arXiv:2509.10491 and Hugging Face Papers list no code. Do not reimplement flow matching by editing the SSSD sampler. PPGFlowECG is a different method and was not substituted. Published 36x256 SSSD-sized backbone would also not fit 4 GB VRAM (~8.2 GB in the SSSD probe)."
+}

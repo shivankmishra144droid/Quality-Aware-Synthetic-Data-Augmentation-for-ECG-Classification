@@ -1,0 +1,11 @@
+{
+  "generator": "TransDiffECG",
+  "runnable": false,
+  "seed": 43,
+  "reason": "No public code. Paper exists; datasets are QTDB/LUDB, not PTB-XL. Substituting another generator is disallowed.",
+  "searched": [
+    "https://pubmed.ncbi.nlm.nih.gov/41161556/",
+    "GitHub query TransDiffECG (no ECG implementation)",
+    "https://github.com/TransDiff/TransDiff (images, unrelated)"
+  ]
+}

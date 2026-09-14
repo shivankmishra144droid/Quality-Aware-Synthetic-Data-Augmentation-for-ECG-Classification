@@ -1,0 +1,30 @@
+{
+  "change": "resume 4000 -> 16000 iters; architecture 8x64 unchanged; T=200 unchanged",
+  "resume_from": "synthetic_generation\\checkpoints\\full_last.pt",
+  "wavenet": {
+    "in_channels": 8,
+    "out_channels": 8,
+    "num_res_layers": 8,
+    "res_channels": 64,
+    "skip_channels": 64,
+    "diffusion_step_embed_dim_in": 128,
+    "diffusion_step_embed_dim_mid": 512,
+    "diffusion_step_embed_dim_out": 512,
+    "s4_lmax": 1000,
+    "s4_d_state": 64,
+    "s4_dropout": 0.0,
+    "s4_bidirectional": 1,
+    "s4_layernorm": 1,
+    "label_embed_dim": 128,
+    "label_embed_classes": 4
+  },
+  "train_cfg": {
+    "n_iters": 16000,
+    "batch_size": 1,
+    "learning_rate": 0.0002,
+    "log_every": 100,
+    "ckpt_every": 4000,
+    "use_amp": false
+  },
+  "checkpoint": "generator_comparison\\sssd_v2\\checkpoints\\v2_16000_last.pt"
+}

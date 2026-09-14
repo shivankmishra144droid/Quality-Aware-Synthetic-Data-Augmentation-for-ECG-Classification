@@ -1,0 +1,16 @@
+{
+  "ckpt_every_week4": 1000,
+  "loss_min_iter": 2600,
+  "loss_min": 0.04485546797513962,
+  "checkpoint_at_2600": false,
+  "nearest_existing": "synthetic_generation/checkpoints/full_2000.pt",
+  "nearest_iter": 2000,
+  "nearest_logged_loss": 0.05352030694484711,
+  "also_exists": [
+    "full_1000.pt",
+    "full_2000.pt",
+    "full_3000.pt",
+    "full_4000.pt"
+  ],
+  "note": "No ckpt at 2600. Evaluating iter 2000 (closest saved point before post-min drift)."
+}

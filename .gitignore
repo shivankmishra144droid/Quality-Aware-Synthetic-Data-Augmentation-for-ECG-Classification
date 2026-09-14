@@ -1,0 +1,36 @@
+# Raw PhysioNet PTB-XL (multi-GB). Download from PhysioNet; do not commit.
+archive/
+
+# Waveform arrays exceed GitHub's 100 MB file limit. Labels, metadata, and
+# train-only normalization stats are committed. Rebuild X_*.npy from notebook 02
+# after placing PTB-XL under archive/.
+processed_data/X_*.npy
+
+# Bulky generator checkpoints (20–91 MB each, many snapshots). Retrain with
+# synthetic_generation/ and the Week 4–5 notebooks. Frozen CNN-LSTM weights
+# and the selected Week-4 SSSD checkpoint are tracked via the exceptions below.
+*.pt
+!baseline/cnn_lstm_baseline.pt
+!generator_comparison/sssd/checkpoint.pt
+
+# Secrets
+.env
+.env.*
+*.pem
+credentials.json
+
+# Python / notebooks
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# Local research notes (not part of the code pipeline)
+OBSIDIAN/
+
+# OS / editor
+Thumbs.db
+.DS_Store
+.cursor/
