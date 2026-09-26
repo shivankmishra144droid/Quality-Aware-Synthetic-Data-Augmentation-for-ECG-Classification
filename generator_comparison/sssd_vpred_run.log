@@ -1,0 +1,173 @@
+=== attempt 1 ===
+CUDA extension for cauchy multiplication not found. Install by going to extensions/cauchy/ and running `python setup.py install`. This should speed up end-to-end training by 10-50%
+Falling back on slow Cauchy kernel. Install at least one of pykeops or the CUDA extension for efficiency.
+VPRED PLAN {
+  "train_cfg": {
+    "n_iters": 10000,
+    "batch_size": 8,
+    "grad_accum": 4,
+    "learning_rate": 0.0002,
+    "warmup_iters": 500,
+    "cosine_decay": true,
+    "log_every": 100,
+    "ckpt_every": 500,
+    "eval_every": 1000,
+    "use_amp": false,
+    "ema_decay": 0.999,
+    "diffusion_config": {
+      "T": 200,
+      "beta_0": 0.0005,
+      "beta_T": 0.1
+    },
+    "parameterization": "v",
+    "ema_warmup": true
+  },
+  "ecgs_seen": 320000,
+  "v1_ecgs_seen": 4000,
+  "carried_over": [
+    "noise schedule 5e-4->0.1 (sssd_sched)",
+    "EMA 0.999 (sssd_ema)",
+    "budget (sssd_budget)"
+  ],
+  "new": "v-prediction + EMA warmup"
+}
+resume from None
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+using wavenet {'num_res_layers': 8, 'res_channels': 64, 'in_channels': 8, 'label_embed_classes': 4}
+vpred_8x64 iter     1  loss 0.9041  peak 1.02 GB  device 1.95 GB
+vpred_8x64 iter   100  loss 1.7099  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter   200  loss 0.8974  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter   300  loss 0.6692  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter   400  loss 0.7817  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter   500  loss 0.7861  peak 1.03 GB  device 1.97 GB
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_500.pt
+vpred_8x64 iter   600  loss 0.6699  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter   700  loss 0.7931  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter   800  loss 0.6789  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter   900  loss 0.6353  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  1000  loss 0.6434  peak 1.03 GB  device 1.97 GB
+vpred_8x64 EVAL {"iter": 1000, "raw": {"std": 1.107, "periodicity": 0.168, "hr": {"SR": 74.6, "AFIB": 62.2, "STACH": 48.8, "SBRAD": 51.7}}, "ema": {"std": 1.164, "periodicity": 0.213, "hr": {"SR": 62.1, "AFIB": 57.7, "STACH": 62.1, "SBRAD": 53.0}}}
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_1000.pt
+vpred_8x64 iter  1100  loss 1.0449  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  1200  loss 0.7675  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  1300  loss 0.6170  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  1400  loss 0.7850  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  1500  loss 0.5942  peak 1.03 GB  device 1.97 GB
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_1500.pt
+vpred_8x64 iter  1600  loss 0.6898  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  1700  loss 0.5998  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  1800  loss 0.9780  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  1900  loss 0.7008  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  2000  loss 0.6911  peak 1.03 GB  device 1.97 GB
+vpred_8x64 EVAL {"iter": 2000, "raw": {"std": 1.068, "periodicity": 0.182, "hr": {"SR": 80.7, "AFIB": 88.7, "STACH": 80.1, "SBRAD": 63.0}}, "ema": {"std": 1.13, "periodicity": 0.234, "hr": {"SR": 66.7, "AFIB": 66.1, "STACH": 65.9, "SBRAD": 58.1}}}
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_2000.pt
+vpred_8x64 iter  2100  loss 0.6751  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  2200  loss 0.6191  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  2300  loss 0.6947  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  2400  loss 0.5863  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  2500  loss 0.6745  peak 1.03 GB  device 1.97 GB
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_2500.pt
+vpred_8x64 iter  2600  loss 0.8173  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  2700  loss 0.5627  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  2800  loss 0.5988  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  2900  loss 0.5680  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  3000  loss 0.7849  peak 1.03 GB  device 1.97 GB
+vpred_8x64 EVAL {"iter": 3000, "raw": {"std": 0.963, "periodicity": 0.223, "hr": {"SR": 61.6, "AFIB": 60.8, "STACH": 63.1, "SBRAD": 55.5}}, "ema": {"std": 0.94, "periodicity": 0.21, "hr": {"SR": 63.9, "AFIB": 66.1, "STACH": 66.5, "SBRAD": 45.6}}}
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_3000.pt
+vpred_8x64 iter  3100  loss 0.6207  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  3200  loss 0.5955  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  3300  loss 0.5057  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  3400  loss 0.6008  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  3500  loss 0.5566  peak 1.03 GB  device 1.97 GB
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_3500.pt
+vpred_8x64 iter  3600  loss 0.4225  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  3700  loss 0.5039  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  3800  loss 0.6542  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  3900  loss 0.4890  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  4000  loss 0.5253  peak 1.03 GB  device 1.97 GB
+vpred_8x64 EVAL {"iter": 4000, "raw": {"std": 0.916, "periodicity": 0.252, "hr": {"SR": 64.0, "AFIB": 59.0, "STACH": 57.4, "SBRAD": 35.5}}, "ema": {"std": 0.893, "periodicity": 0.247, "hr": {"SR": 70.7, "AFIB": 67.9, "STACH": 61.1, "SBRAD": 40.9}}}
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_4000.pt
+vpred_8x64 iter  4100  loss 0.4859  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  4200  loss 0.4124  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  4300  loss 0.4475  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  4400  loss 0.8110  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  4500  loss 0.5538  peak 1.03 GB  device 1.97 GB
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_4500.pt
+vpred_8x64 iter  4600  loss 0.5811  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  4700  loss 0.8805  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  4800  loss 0.8152  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  4900  loss 0.5720  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  5000  loss 0.4498  peak 1.03 GB  device 1.97 GB
+vpred_8x64 EVAL {"iter": 5000, "raw": {"std": 0.922, "periodicity": 0.251, "hr": {"SR": 56.2, "AFIB": 74.5, "STACH": 69.1, "SBRAD": 49.4}}, "ema": {"std": 0.822, "periodicity": 0.241, "hr": {"SR": 57.4, "AFIB": 60.5, "STACH": 55.7, "SBRAD": 44.4}}}
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_5000.pt
+vpred_8x64 iter  5100  loss 0.4768  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  5200  loss 0.3837  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  5300  loss 0.4014  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  5400  loss 0.5576  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  5500  loss 0.5656  peak 1.03 GB  device 1.97 GB
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_5500.pt
+vpred_8x64 iter  5600  loss 0.4091  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  5700  loss 0.4526  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  5800  loss 0.4489  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  5900  loss 0.5011  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  6000  loss 0.5324  peak 1.03 GB  device 1.97 GB
+vpred_8x64 EVAL {"iter": 6000, "raw": {"std": 0.776, "periodicity": 0.223, "hr": {"SR": 45.5, "AFIB": 58.9, "STACH": 39.7, "SBRAD": 40.4}}, "ema": {"std": 0.721, "periodicity": 0.25, "hr": {"SR": 45.3, "AFIB": 51.8, "STACH": 57.5, "SBRAD": 44.3}}}
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_6000.pt
+vpred_8x64 iter  6100  loss 0.5161  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  6200  loss 0.5485  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  6300  loss 0.3420  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  6400  loss 0.5920  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  6500  loss 0.4993  peak 1.03 GB  device 1.97 GB
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_6500.pt
+vpred_8x64 iter  6600  loss 0.4371  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  6700  loss 0.4101  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  6800  loss 0.6548  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  6900  loss 0.5449  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  7000  loss 0.3923  peak 1.03 GB  device 1.97 GB
+vpred_8x64 EVAL {"iter": 7000, "raw": {"std": 0.668, "periodicity": 0.211, "hr": {"SR": 46.9, "AFIB": 52.7, "STACH": 49.6, "SBRAD": 47.5}}, "ema": {"std": 0.722, "periodicity": 0.235, "hr": {"SR": 49.0, "AFIB": 50.4, "STACH": 52.6, "SBRAD": 44.3}}}
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_7000.pt
+vpred_8x64 iter  7100  loss 0.6207  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  7200  loss 0.4271  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  7300  loss 0.5970  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  7400  loss 0.2395  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  7500  loss 0.7140  peak 1.03 GB  device 1.97 GB
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_7500.pt
+vpred_8x64 iter  7600  loss 0.5326  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  7700  loss 0.5437  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  7800  loss 0.4494  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  7900  loss 0.5049  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  8000  loss 0.5219  peak 1.03 GB  device 1.97 GB
+vpred_8x64 EVAL {"iter": 8000, "raw": {"std": 0.831, "periodicity": 0.196, "hr": {"SR": 56.1, "AFIB": 49.5, "STACH": 57.0, "SBRAD": 45.3}}, "ema": {"std": 0.719, "periodicity": 0.201, "hr": {"SR": 49.0, "AFIB": 52.5, "STACH": 52.5, "SBRAD": 44.3}}}
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_8000.pt
+vpred_8x64 iter  8100  loss 0.6302  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  8200  loss 0.4174  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  8300  loss 0.8538  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  8400  loss 0.5780  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  8500  loss 0.7083  peak 1.03 GB  device 1.97 GB
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_8500.pt
+vpred_8x64 iter  8600  loss 0.5614  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  8700  loss 0.5645  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  8800  loss 0.6342  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  8900  loss 0.6507  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  9000  loss 0.6181  peak 1.03 GB  device 1.97 GB
+vpred_8x64 EVAL {"iter": 9000, "raw": {"std": 0.732, "periodicity": 0.201, "hr": {"SR": 41.2, "AFIB": 50.4, "STACH": 52.7, "SBRAD": 46.4}}, "ema": {"std": 0.727, "periodicity": 0.206, "hr": {"SR": 49.0, "AFIB": 49.3, "STACH": 51.4, "SBRAD": 46.4}}}
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_9000.pt
+vpred_8x64 iter  9100  loss 0.7533  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  9200  loss 0.4173  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  9300  loss 0.4111  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  9400  loss 0.6146  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  9500  loss 0.5956  peak 1.03 GB  device 1.97 GB
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_9500.pt
+vpred_8x64 iter  9600  loss 0.5707  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  9700  loss 0.4696  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  9800  loss 0.5565  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter  9900  loss 0.4831  peak 1.03 GB  device 1.97 GB
+vpred_8x64 iter 10000  loss 0.5128  peak 1.03 GB  device 1.97 GB
+vpred_8x64 EVAL {"iter": 10000, "raw": {"std": 0.728, "periodicity": 0.239, "hr": {"SR": 46.2, "AFIB": 52.5, "STACH": 50.8, "SBRAD": 44.3}}, "ema": {"std": 0.74, "periodicity": 0.226, "hr": {"SR": 49.0, "AFIB": 50.4, "STACH": 51.3, "SBRAD": 46.4}}}
+saved generator_comparison\sssd_vpred\checkpoints\vpred_8x64_10000.pt
+raw {"std": 0.7123633027076721, "periodicity": {"SR": 0.21, "AFIB": 0.24, "STACH": 0.2, "SBRAD": 0.2}, "hr": {"SR": 47.1, "AFIB": 57.3, "STACH": 53.8, "SBRAD": 35.3}}
+ema {"std": 0.7223806977272034, "periodicity": {"SR": 0.21, "AFIB": 0.24, "STACH": 0.2, "SBRAD": 0.23}, "hr": {"SR": 43.3, "AFIB": 57.5, "STACH": 56.8, "SBRAD": 41.2}}
+done

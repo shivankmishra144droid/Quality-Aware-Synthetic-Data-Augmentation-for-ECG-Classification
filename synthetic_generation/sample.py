@@ -13,10 +13,11 @@ from .utils import calc_diffusion_hyperparams, hyperparams_to_device, sampling_l
 @torch.no_grad()
 def generate_class_batch(
     net, class_id: int, n: int, device, batch_size: int = 1, seed: int | None = None,
-    guidance_w: float | None = None,
+    guidance_w: float | None = None, diffusion_config: dict | None = None, clip_x0: float | None = None,
+    parameterization: str = "eps",
 ) -> np.ndarray:
     set_seed((SEED if seed is None else seed) + 1000 + class_id)
-    dh = hyperparams_to_device(calc_diffusion_hyperparams(**DIFFUSION_CONFIG), device)
+    dh = hyperparams_to_device(calc_diffusion_hyperparams(**(diffusion_config or DIFFUSION_CONFIG)), device)
     net.eval()
     chunks = []
     left = n
@@ -24,7 +25,8 @@ def generate_class_batch(
         b = min(batch_size, left)
         cond = torch.zeros(b, 4, device=device)
         cond[:, class_id] = 1.0
-        x8 = sampling_label(net, (b, 8, 1000), dh, cond=cond, guidance_w=guidance_w)
+        x8 = sampling_label(net, (b, 8, 1000), dh, cond=cond, guidance_w=guidance_w, clip_x0=clip_x0,
+                            parameterization=parameterization)
         chunks.append(x8.detach().cpu().numpy())
         left -= b
     x8 = np.concatenate(chunks, axis=0)

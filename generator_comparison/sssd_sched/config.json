@@ -1,0 +1,73 @@
+{
+  "architecture": "WAVENET_4GB 8x64 (same as v1)",
+  "single_change": "noise schedule beta 1e-4->0.02 replaced by 5e-4->0.1 (terminal alpha_bar 0.13 -> 3e-5)",
+  "diffusion_config": {
+    "T": 200,
+    "beta_0": 0.0005,
+    "beta_T": 0.1
+  },
+  "ema_decay_tracked": 0.999,
+  "iters": 4000,
+  "sample_batch_size": 8,
+  "sample_seed": 42,
+  "train_cfg": {
+    "n_iters": 4000,
+    "batch_size": 1,
+    "learning_rate": 0.0002,
+    "log_every": 50,
+    "ckpt_every": 1000,
+    "use_amp": false,
+    "ema_decay": 0.999,
+    "diffusion_config": {
+      "T": 200,
+      "beta_0": 0.0005,
+      "beta_T": 0.1
+    }
+  },
+  "checkpoint": "generator_comparison\\sssd_sched\\checkpoints\\sched_8x64_last.pt",
+  "loss_last": 0.06993728876113892,
+  "raw_vs_ema": {
+    "raw": {
+      "std": 7.708404541015625,
+      "hr": {
+        "SR": 40.9,
+        "AFIB": 46.1,
+        "STACH": 36.0,
+        "SBRAD": 42.4
+      },
+      "periodicity": {
+        "SR": 0.14,
+        "AFIB": 0.16,
+        "STACH": 0.11,
+        "SBRAD": 0.13
+      },
+      "agree": {
+        "SR": 0.07,
+        "AFIB": 0.19,
+        "STACH": 0.22,
+        "SBRAD": 0.12
+      }
+    },
+    "ema": {
+      "std": 5.803041934967041,
+      "hr": {
+        "SR": 39.6,
+        "AFIB": 26.9,
+        "STACH": 27.3,
+        "SBRAD": 32.4
+      },
+      "periodicity": {
+        "SR": 0.16,
+        "AFIB": 0.12,
+        "STACH": 0.07,
+        "SBRAD": 0.07
+      },
+      "agree": {
+        "SR": 0.23,
+        "AFIB": 0.13,
+        "STACH": 0.09,
+        "SBRAD": 0.1
+      }
+    }
+  }
+}

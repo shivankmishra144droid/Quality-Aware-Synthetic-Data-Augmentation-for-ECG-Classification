@@ -1,0 +1,66 @@
+{
+  "train_cfg": {
+    "n_iters": 10000,
+    "batch_size": 8,
+    "grad_accum": 4,
+    "learning_rate": 0.0002,
+    "warmup_iters": 500,
+    "cosine_decay": true,
+    "log_every": 100,
+    "ckpt_every": 500,
+    "eval_every": 1000,
+    "use_amp": false,
+    "ema_decay": 0.999,
+    "diffusion_config": {
+      "T": 200,
+      "beta_0": 0.0005,
+      "beta_T": 0.1
+    },
+    "parameterization": "v",
+    "ema_warmup": true
+  },
+  "ecgs_seen": 320000,
+  "v1_ecgs_seen": 4000,
+  "carried_over": [
+    "noise schedule 5e-4->0.1 (sssd_sched)",
+    "EMA 0.999 (sssd_ema)",
+    "budget (sssd_budget)"
+  ],
+  "new": "v-prediction + EMA warmup",
+  "checkpoint": "generator_comparison\\sssd_vpred\\checkpoints\\vpred_8x64_last.pt",
+  "train_sec": 12109.144487142563,
+  "peak_gb_train": 1.0332832336425781,
+  "loss_last": 0.5127991437911987,
+  "raw_vs_ema": {
+    "raw": {
+      "std": 0.7123633027076721,
+      "periodicity": {
+        "SR": 0.21,
+        "AFIB": 0.24,
+        "STACH": 0.2,
+        "SBRAD": 0.2
+      },
+      "hr": {
+        "SR": 47.1,
+        "AFIB": 57.3,
+        "STACH": 53.8,
+        "SBRAD": 35.3
+      }
+    },
+    "ema": {
+      "std": 0.7223806977272034,
+      "periodicity": {
+        "SR": 0.21,
+        "AFIB": 0.24,
+        "STACH": 0.2,
+        "SBRAD": 0.23
+      },
+      "hr": {
+        "SR": 43.3,
+        "AFIB": 57.5,
+        "STACH": 56.8,
+        "SBRAD": 41.2
+      }
+    }
+  }
+}

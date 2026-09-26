@@ -1,0 +1,51 @@
+[
+  {
+    "n": 1,
+    "parameterization": "v",
+    "ref_periodicity": [
+      0.89
+    ],
+    "loss_last": 0.03618390113115311,
+    "raw": {
+      "std": 0.548,
+      "periodicity": 0.87,
+      "hr": 58.7,
+      "median_max_corr": 0.967
+    },
+    "ema": {
+      "std": 0.508,
+      "periodicity": 0.185,
+      "hr": 109.4,
+      "median_max_corr": 0.178
+    },
+    "pass": true
+  },
+  {
+    "n": 32,
+    "parameterization": "v",
+    "ref_periodicity": [
+      0.89,
+      0.89,
+      0.89,
+      0.88,
+      0.88,
+      0.88,
+      0.88,
+      0.88
+    ],
+    "loss_last": 0.6316848993301392,
+    "raw": {
+      "std": 0.656,
+      "periodicity": 0.287,
+      "hr": 30.0,
+      "median_max_corr": 0.102
+    },
+    "ema": {
+      "std": 0.858,
+      "periodicity": 0.173,
+      "hr": 112.1,
+      "median_max_corr": 0.043
+    },
+    "pass": false
+  }
+]

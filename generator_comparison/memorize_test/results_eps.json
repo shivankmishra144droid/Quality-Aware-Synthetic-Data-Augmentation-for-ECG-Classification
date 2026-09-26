@@ -1,0 +1,22 @@
+[
+  {
+    "n": 1,
+    "ref_periodicity": [
+      0.89
+    ],
+    "loss_last": 0.02552289515733719,
+    "raw": {
+      "std": 0.365,
+      "periodicity": 0.094,
+      "hr": 32.2,
+      "median_max_corr": 0.29
+    },
+    "ema": {
+      "std": 28.115,
+      "periodicity": 0.189,
+      "hr": 73.2,
+      "median_max_corr": 0.007
+    },
+    "pass": false
+  }
+]

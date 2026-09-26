@@ -24,6 +24,10 @@ POOLS = {
     "cfg_w2": ROOT / "sssd_cfg_w2",
     "cfg_w4": ROOT / "sssd_cfg_w4",
     "balanced": ROOT / "sssd_balanced",
+    "ema_raw": ROOT / "sssd_ema_raw",
+    "ema": ROOT / "sssd_ema",
+    "sched_raw": ROOT / "sssd_sched_raw",
+    "sched_ema": ROOT / "sssd_sched",
 }
 
 
