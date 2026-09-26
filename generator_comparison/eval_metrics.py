@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import numpy as np
-from scipy.signal import find_peaks
+from scipy.signal import butter, filtfilt, find_peaks
 
 from synthetic_generation.sample import basic_sanity
 
@@ -42,6 +42,66 @@ def lead_ii_hr(x12: np.ndarray) -> dict:
         "detectable_frac": float(np.isfinite(hrs).mean()),
         "mean_r_count": float(np.mean(npeaks)),
         "median_rr_std": float(np.nanmedian(rr_std)) if np.isfinite(rr_std).any() else float("nan"),
+    }
+
+
+_BP = butter(3, [5 / (FS / 2), 15 / (FS / 2)], btype="band")
+
+
+def qrs_envelope(sig: np.ndarray) -> np.ndarray:
+    """Pan-Tompkins style: 5-15 Hz bandpass -> derivative -> square -> 150 ms moving average.
+    Polarity-free and amplitude-free, so synthetic damping does not change the count."""
+    f = filtfilt(*_BP, sig)
+    d = np.gradient(f)
+    w = int(0.15 * FS)
+    return np.convolve(d * d, np.ones(w) / w, mode="same")
+
+
+def hr_from_peaks(env: np.ndarray) -> float:
+    peaks, _ = find_peaks(env, height=0.3 * np.percentile(env, 98), distance=int(0.27 * FS))
+    return float(60.0 / (np.diff(peaks).mean() / FS)) if len(peaks) >= 2 else float("nan")
+
+
+def hr_from_acf(env: np.ndarray) -> tuple[float, float]:
+    """Dominant period of the QRS envelope over 30-220 bpm, and its ACF height
+    (periodicity strength: ~1 = clean regular beats, ~0 = no rhythm)."""
+    e = env - env.mean()
+    ac = np.correlate(e, e, "full")[len(e) - 1:]
+    ac = ac / (ac[0] + 1e-12)
+    lo, hi = int(0.27 * FS), int(2.0 * FS)
+    seg = ac[lo:hi + 1]
+    p, _ = find_peaks(seg)
+    if len(p) == 0:
+        return float("nan"), 0.0
+    k = p[np.argmax(seg[p])]
+    return float(60.0 * FS / (k + lo)), float(seg[k])
+
+
+def lead_ii_hr_pt(x12: np.ndarray, agree_tol: float = 0.15) -> dict:
+    """Replacement for lead_ii_hr. The old raw find_peaks counted T/P waves
+    (real SBRAD read ~96 bpm). Peak HR is cross-checked against an autocorrelation period."""
+    hp, ha, st = [], [], []
+    for sig in x12:
+        env = qrs_envelope(np.asarray(sig[:, 1], dtype=np.float64))
+        hp.append(hr_from_peaks(env))
+        h, s = hr_from_acf(env)
+        ha.append(h)
+        st.append(s)
+    hp, ha, st = np.asarray(hp), np.asarray(ha), np.asarray(st)
+    ok = np.isfinite(hp) & np.isfinite(ha)
+    agree = np.abs(hp[ok] - ha[ok]) / ha[ok] < agree_tol
+
+    def med(v):
+        return float(np.nanmedian(v)) if np.isfinite(v).any() else float("nan")
+
+    return {
+        "n": int(len(hp)),
+        "median_hr_peaks": med(hp),
+        "median_hr_acf": med(ha),
+        "iqr_hr_peaks": [float(np.nanpercentile(hp, 25)), float(np.nanpercentile(hp, 75))] if ok.any() else None,
+        "agree_frac": float(agree.mean()) if ok.any() else float("nan"),
+        "median_periodicity": float(np.median(st)),
+        "detectable_frac": float(np.isfinite(hp).mean()),
     }
 
 

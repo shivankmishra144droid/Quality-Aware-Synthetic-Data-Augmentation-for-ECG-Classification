@@ -7,7 +7,8 @@ from pathlib import Path
 
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader
+import numpy as np
+from torch.utils.data import DataLoader, WeightedRandomSampler
 
 from .config import DIFFUSION_CONFIG, ROOT, SEED, WAVENET_4GB, WAVENET_CONFIG
 from .data import TrainECG8
@@ -54,7 +55,14 @@ def train_loop(
     set_seed(SEED)
     wavenet_config = wavenet_config or select_wavenet()
     ds = TrainECG8(x12, y)
-    loader = DataLoader(ds, batch_size=train_cfg["batch_size"], shuffle=True, drop_last=True)
+    if train_cfg.get("balanced_sampling", False):
+        # Equal expected draws per class (with replacement); default off keeps v1..cfg runs reproducible.
+        yi = np.asarray(y).astype(np.int64)
+        w = 1.0 / np.bincount(yi, minlength=4)[yi]
+        sampler = WeightedRandomSampler(torch.as_tensor(w, dtype=torch.double), num_samples=len(yi), replacement=True)
+        loader = DataLoader(ds, batch_size=train_cfg["batch_size"], sampler=sampler, drop_last=True)
+    else:
+        loader = DataLoader(ds, batch_size=train_cfg["batch_size"], shuffle=True, drop_last=True)
 
     dh = hyperparams_to_device(calc_diffusion_hyperparams(**DIFFUSION_CONFIG), device)
     n_iter = 0
