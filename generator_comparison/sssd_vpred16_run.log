@@ -1,0 +1,96 @@
+=== attempt 1 ===
+CUDA extension for cauchy multiplication not found. Install by going to extensions/cauchy/ and running `python setup.py install`. This should speed up end-to-end training by 10-50%
+Falling back on slow Cauchy kernel. Install at least one of pykeops or the CUDA extension for efficiency.
+VPRED16 PLAN {
+  "train_cfg": {
+    "n_iters": 10000,
+    "batch_size": 4,
+    "grad_accum": 8,
+    "learning_rate": 0.0002,
+    "warmup_iters": 500,
+    "cosine_decay": true,
+    "log_every": 100,
+    "ckpt_every": 500,
+    "eval_every": 500,
+    "use_amp": false,
+    "ema_decay": 0.999,
+    "diffusion_config": {
+      "T": 200,
+      "beta_0": 0.0005,
+      "beta_T": 0.1
+    },
+    "parameterization": "v",
+    "ema_warmup": true
+  },
+  "ecgs_seen": 320000,
+  "v1_ecgs_seen": 4000,
+  "compare_to": "sssd_vpred (8x64, same cfg except batch 8 x accum 4)",
+  "new": "16x128 capacity",
+  "wavenet": {
+    "in_channels": 8,
+    "out_channels": 8,
+    "num_res_layers": 16,
+    "res_channels": 128,
+    "skip_channels": 128,
+    "diffusion_step_embed_dim_in": 128,
+    "diffusion_step_embed_dim_mid": 512,
+    "diffusion_step_embed_dim_out": 512,
+    "s4_lmax": 1000,
+    "s4_d_state": 64,
+    "s4_dropout": 0.0,
+    "s4_bidirectional": 1,
+    "s4_layernorm": 1,
+    "label_embed_dim": 128,
+    "label_embed_classes": 4
+  }
+}
+resume from None
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+using wavenet {'num_res_layers': 16, 'res_channels': 128, 'in_channels': 8, 'label_embed_classes': 4}
+vpred_16x128 iter     1  loss 0.9289  peak 2.79 GB  device 3.85 GB
+vpred_16x128 iter   100  loss 1.0065  peak 2.84 GB  device 3.87 GB
+vpred_16x128 iter   200  loss 1.0710  peak 2.84 GB  device 3.87 GB
+vpred_16x128 iter   300  loss 0.7945  peak 2.84 GB  device 3.87 GB
+vpred_16x128 iter   400  loss 0.8435  peak 2.84 GB  device 3.87 GB
+vpred_16x128 iter   500  loss 0.6464  peak 2.84 GB  device 3.87 GB
+vpred_16x128 EVAL {"iter": 500, "raw": {"std": 1.229, "periodicity": 0.198, "hr": {"SR": 71.0, "AFIB": 68.3, "STACH": 58.7, "SBRAD": 65.4}}, "ema": {"std": 1.112, "periodicity": 0.177, "hr": {"SR": 59.6, "AFIB": 54.0, "STACH": 60.3, "SBRAD": 64.2}}}
+saved generator_comparison\sssd_vpred16\checkpoints\vpred_16x128_500.pt
+vpred_16x128 iter   600  loss 0.6966  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter   700  loss 0.6910  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter   800  loss 0.8815  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter   900  loss 0.6473  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter  1000  loss 1.1566  peak 2.85 GB  device 3.87 GB
+vpred_16x128 EVAL {"iter": 1000, "raw": {"std": 1.176, "periodicity": 0.211, "hr": {"SR": 68.9, "AFIB": 69.1, "STACH": 88.5, "SBRAD": 67.7}}, "ema": {"std": 1.118, "periodicity": 0.187, "hr": {"SR": 61.4, "AFIB": 70.3, "STACH": 81.2, "SBRAD": 57.3}}}
+saved generator_comparison\sssd_vpred16\checkpoints\vpred_16x128_1000.pt
+vpred_16x128 iter  1100  loss 0.6775  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter  1200  loss 0.5400  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter  1300  loss 0.8093  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter  1400  loss 0.4797  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter  1500  loss 0.5005  peak 2.85 GB  device 3.87 GB
+vpred_16x128 EVAL {"iter": 1500, "raw": {"std": 0.971, "periodicity": 0.217, "hr": {"SR": 70.0, "AFIB": 63.4, "STACH": 69.1, "SBRAD": 57.3}}, "ema": {"std": 0.988, "periodicity": 0.25, "hr": {"SR": 57.9, "AFIB": 66.3, "STACH": 71.9, "SBRAD": 48.5}}}
+saved generator_comparison\sssd_vpred16\checkpoints\vpred_16x128_1500.pt
+vpred_16x128 iter  1600  loss 0.6260  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter  1700  loss 0.5858  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter  1800  loss 0.6198  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter  1900  loss 0.4760  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter  2000  loss 0.4683  peak 2.85 GB  device 3.87 GB
+vpred_16x128 EVAL {"iter": 2000, "raw": {"std": 0.726, "periodicity": 0.231, "hr": {"SR": 48.4, "AFIB": 65.6, "STACH": 66.1, "SBRAD": 34.2}}, "ema": {"std": 0.757, "periodicity": 0.224, "hr": {"SR": 51.1, "AFIB": 65.2, "STACH": 65.4, "SBRAD": 44.7}}}
+saved generator_comparison\sssd_vpred16\checkpoints\vpred_16x128_2000.pt
+vpred_16x128 iter  2100  loss 0.4822  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter  2200  loss 0.4441  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter  2300  loss 0.5872  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter  2400  loss 0.6281  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter  2500  loss 0.4654  peak 2.85 GB  device 3.87 GB
+vpred_16x128 EVAL {"iter": 2500, "raw": {"std": 0.734, "periodicity": 0.246, "hr": {"SR": 45.1, "AFIB": 49.6, "STACH": 68.7, "SBRAD": 22.0}}, "ema": {"std": 0.636, "periodicity": 0.248, "hr": {"SR": 52.3, "AFIB": 53.3, "STACH": 59.4, "SBRAD": 43.7}}}
+saved generator_comparison\sssd_vpred16\checkpoints\vpred_16x128_2500.pt
+vpred_16x128 iter  2600  loss 0.5911  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter  2700  loss 0.6524  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter  2800  loss 0.6383  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter  2900  loss 0.4238  peak 2.85 GB  device 3.87 GB
+vpred_16x128 iter  3000  loss 0.5260  peak 2.85 GB  device 3.87 GB
+vpred_16x128 EVAL {"iter": 3000, "raw": {"std": 0.78, "periodicity": 0.206, "hr": {"SR": 35.9, "AFIB": 61.0, "STACH": 52.3, "SBRAD": 39.9}}, "ema": {"std": 0.684, "periodicity": 0.248, "hr": {"SR": 50.0, "AFIB": 48.7, "STACH": 63.1, "SBRAD": 26.4}}}
+saved generator_comparison\sssd_vpred16\checkpoints\vpred_16x128_3000.pt
+=== STOP file found, not restarting ===

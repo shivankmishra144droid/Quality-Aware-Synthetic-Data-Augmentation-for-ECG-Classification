@@ -34,3 +34,11 @@ OBSIDIAN/
 Thumbs.db
 .DS_Store
 .cursor/
+
+# Large regenerable beat-assembly intermediates (rebuild with _beat_oracle.py / _beat_ablation.py).
+# Small result files (roundtrip.json, figures) stay tracked.
+generator_comparison/beat_templates/ablation/
+generator_comparison/beat_templates/*.npz
+generator_comparison/beat_templates/*.pkl
+# Large TSTR pools (rebuild with _gen_tstr_pools.py)
+generator_comparison/tstr/pool_*.npz

@@ -1,0 +1,44 @@
+{
+  "what": "real per-recording median templates (fixed R-250..R+450 ms window) + fitted RR KDE, cross-spectral residual GP (incl. AFIB f-waves), wander GP, respiratory modulation",
+  "n_fit_per_class": 600,
+  "templates_used": {
+    "SR": 576,
+    "AFIB": 592,
+    "STACH": 490,
+    "SBRAD": 433
+  },
+  "lead_ii_hr_pt": {
+    "SR": {
+      "n": 32,
+      "median_hr_peaks": 79.471,
+      "median_hr_acf": 66.3,
+      "agree_frac": 0.719,
+      "median_periodicity": 0.694,
+      "detectable_frac": 1.0
+    },
+    "AFIB": {
+      "n": 32,
+      "median_hr_peaks": 97.719,
+      "median_hr_acf": 77.811,
+      "agree_frac": 0.531,
+      "median_periodicity": 0.288,
+      "detectable_frac": 1.0
+    },
+    "STACH": {
+      "n": 32,
+      "median_hr_peaks": 111.965,
+      "median_hr_acf": 109.091,
+      "agree_frac": 0.75,
+      "median_periodicity": 0.605,
+      "detectable_frac": 1.0
+    },
+    "SBRAD": {
+      "n": 32,
+      "median_hr_peaks": 49.734,
+      "median_hr_acf": 48.987,
+      "agree_frac": 0.844,
+      "median_periodicity": 0.745,
+      "detectable_frac": 1.0
+    }
+  }
+}

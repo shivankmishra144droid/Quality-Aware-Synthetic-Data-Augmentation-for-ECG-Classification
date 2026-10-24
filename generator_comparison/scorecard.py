@@ -46,6 +46,9 @@ POOLS = {
     "vpred_ema": ROOT / "sssd_vpred",
     "vpred5k_raw": ROOT / "sssd_vpred5k_raw",
     "vpred5k_ema": ROOT / "sssd_vpred5k",
+    "vpred16_raw": ROOT / "sssd_vpred16_raw",
+    "vpred16_ema": ROOT / "sssd_vpred16",
+    "beat_oracle": ROOT / "beat_oracle",
 }
 
 # Pass bar. Each check is a (name, description) pair; values are computed in score_pool.

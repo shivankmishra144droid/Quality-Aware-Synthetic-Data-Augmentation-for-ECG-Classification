@@ -695,6 +695,114 @@
       },
       "passed": 4,
       "n_checks": 9
+    },
+    "vpred16_raw": {
+      "invalid": 0,
+      "std": 0.7889610528945923,
+      "lead_std_logratio": 0.3162282705307007,
+      "periodicity": 0.19354392605402437,
+      "agree": 0.2211021505376344,
+      "hr": {
+        "SR": 34.4,
+        "AFIB": 62.1,
+        "STACH": 43.8,
+        "SBRAD": 35.9
+      },
+      "hr_order_ok": false,
+      "hr_mae": 33.795574761380195,
+      "psd_db": 1.2108714580535889,
+      "diversity": {
+        "SR": 0.038195833563804626,
+        "AFIB": 0.014149763621389866,
+        "STACH": 0.1382759064435959,
+        "SBRAD": 0.05479900911450386
+      },
+      "memorized": 0.0,
+      "checks": {
+        "valid": true,
+        "amplitude": false,
+        "per_lead_amp": false,
+        "heartbeat": false,
+        "hr_order": false,
+        "hr_mae": false,
+        "spectrum": true,
+        "diversity": true,
+        "not_memorized": true
+      },
+      "passed": 4,
+      "n_checks": 9
+    },
+    "vpred16_ema": {
+      "invalid": 0,
+      "std": 0.667574405670166,
+      "lead_std_logratio": 0.46653273701667786,
+      "periodicity": 0.2607537144777351,
+      "agree": 0.2415994623655914,
+      "hr": {
+        "SR": 55.0,
+        "AFIB": 57.4,
+        "STACH": 60.3,
+        "SBRAD": 32.7
+      },
+      "hr_order_ok": true,
+      "hr_mae": 26.485715768181702,
+      "psd_db": 0.7421626448631287,
+      "diversity": {
+        "SR": -0.0006426236359402537,
+        "AFIB": 0.00043577479664236307,
+        "STACH": 0.007627979386597872,
+        "SBRAD": 0.022308334708213806
+      },
+      "memorized": 0.0,
+      "checks": {
+        "valid": true,
+        "amplitude": false,
+        "per_lead_amp": false,
+        "heartbeat": false,
+        "hr_order": false,
+        "hr_mae": false,
+        "spectrum": true,
+        "diversity": true,
+        "not_memorized": true
+      },
+      "passed": 4,
+      "n_checks": 9
+    },
+    "beat_oracle": {
+      "invalid": 0,
+      "std": 1.077941656112671,
+      "lead_std_logratio": 0.045910224318504333,
+      "periodicity": 0.6942488216346595,
+      "agree": 0.7708333333333334,
+      "hr": {
+        "SR": 79.5,
+        "AFIB": 97.7,
+        "STACH": 112.0,
+        "SBRAD": 49.7
+      },
+      "hr_order_ok": true,
+      "hr_mae": 6.892480273495316,
+      "psd_db": 0.7191832065582275,
+      "diversity": {
+        "SR": 0.007647273130714893,
+        "AFIB": 0.007521558087319136,
+        "STACH": 0.007772553712129593,
+        "SBRAD": 0.009880991652607918
+      },
+      "memorized": 0.0,
+      "checks": {
+        "valid": true,
+        "amplitude": true,
+        "per_lead_amp": true,
+        "heartbeat": true,
+        "hr_order": true,
+        "hr_mae": true,
+        "spectrum": true,
+        "diversity": true,
+        "not_memorized": true
+      },
+      "passed": 9,
+      "n_checks": 9
     }
   }
 }
