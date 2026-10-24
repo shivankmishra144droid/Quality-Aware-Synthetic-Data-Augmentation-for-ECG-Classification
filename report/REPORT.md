@@ -12,11 +12,12 @@ model**, which carries most of the class information of real data (train-on-synt
 for real ECGs). A quality score (class typicality, frozen-baseline label probability, realism-detector log-odds)
 ranks the synthetic ECGs; top-ranked ones are clearly more useful than bottom-ranked ones (0.74 vs 0.58).
 
-In the main experiment (CNN-LSTM, 10 seeds, untouched test split), every augmentation improved over real-only training
-(macro-F1 0.791 → 0.820–0.835; SBRAD F1 0.49 → 0.58–0.61). **The pre-specified comparison, quality-filtered vs random
-synthetic data, was not significant** (+0.010 macro-F1, 8/10 seeds, Wilcoxon p = 0.065; power 0.43 at 10 seeds, 22
-seeds needed for 80 %). An oversampling control showed that randomly selected synthetic ECGs did not beat simply
-duplicating real minority ECGs, whereas quality-filtered synthetic ECGs did (SBRAD F1 +0.06, Holm-adjusted p ≤ 0.03).
+In the main experiment (CNN-LSTM, 10 seeds, test split), every *synthetic* augmentation improved significantly over
+real-only training (macro-F1 0.791 → 0.820–0.835; SBRAD F1 0.49 → 0.58–0.61). **The pre-specified comparison,
+quality-filtered vs random synthetic data, was not significant** (+0.010 macro-F1, 8/10 seeds, Wilcoxon p = 0.065);
+detecting an effect of this size (dz ≈ 0.6) with 80 % power would take about 22 seeds. In a *post-hoc* oversampling
+control, added after the first analysis of the test results, randomly selected synthetic ECGs did not beat simply
+duplicating real minority ECGs, while quality-filtered ones did on SBRAD F1; this is exploratory and not confirmatory.
 Synthetic ECGs remain detectable by a CNN (AUC 1.00), mainly through their inter-beat noise.
 
 ## 1. Problem and research question
@@ -142,7 +143,9 @@ TSTR on 440 per class gives top-scored **0.743** > random 0.672 > bottom-scored 
 ## 8. Main experiment
 
 **Design** (`augment_experiment.py`, `experiment/main/`). Baseline CNN-LSTM recipe unchanged (Section 3), class weights
-recomputed from each condition's training labels, epoch selected on val macro-F1, test split read once at the end.
+recomputed from each condition's training labels, epoch selected on val macro-F1. Test predictions were analysed once
+for the four planned conditions; the oversampling control and the revised statistics (seed-level bootstrap, Holm
+families) were added **after** that analysis and the statistics were rerun (see Limitations).
 Each minority class is doubled (+1,056 AFIB, +568 STACH, +446 SBRAD = 2,070 added ECGs); SR is unchanged. Conditions:
 
 | condition | added training ECGs |
@@ -151,11 +154,12 @@ Each minority class is doubled (+1,056 AFIB, +568 STACH, +446 SBRAD = 2,070 adde
 | oversample *(control, added after the first analysis)* | each real minority ECG duplicated once |
 | random | 2,070 synthetic, drawn at random from the final pool (new draw per seed) |
 | filtered | the 2,070 top-scored synthetic (same set for every seed) |
-| filtered_nolabel | as filtered, ranked without the frozen-baseline component (robustness check, pre-registered before the run) |
+| filtered_nolabel | as filtered, ranked without the frozen-baseline component (robustness check, specified before the main run) |
 
-10 seeds per condition. Primary test: **filtered vs random, test macro-F1**, paired Wilcoxon signed-rank by seed.
-Other comparisons are grouped into families with Holm correction (`stats.py`). Confidence intervals come from a
-two-level bootstrap over test patients and training seeds.
+10 seeds per condition. Primary test (specified in the plan): **filtered vs random, test macro-F1**, paired Wilcoxon
+signed-rank by seed. The other comparisons were grouped into families A–C with Holm correction **after** the first
+statistics run (`stats.py`); treat them as secondary/exploratory. Confidence intervals come from a two-level bootstrap
+over test patients and training seeds.
 
 **Results** (`experiment/main/stats.md`):
 
@@ -187,14 +191,16 @@ The real-only condition (10 seeds) matches the frozen single-seed baseline (0.78
 **Interpretation.**
 1. *Research question.* Quality-aware selection gave a small, directionally consistent gain over random selection
    (+0.010 to +0.016 macro-F1 in 8–9 of 10 seeds, in both filter variants and both metrics), but the pre-specified
-   comparison is **not significant** (p = 0.065; bootstrap 95 % CI of the difference −0.002 to +0.021). With the observed
-   effect size (dz = 0.63) the study had 43 % power; a confirmatory study needs about 22 seeds.
-2. *Augmentation helps.* Every synthetic condition beats real-only after Holm correction; SBRAD F1 rises from 0.49 to
-   0.58–0.61.
-3. *But mostly through more minority examples, unless the samples are filtered.* Duplicating real minority ECGs recovers
-   most of the random-synthetic gain, and random synthetic data is not significantly better than duplication. Only the
-   quality-filtered conditions beat duplication after correction (SBRAD F1 for both filters; macro-F1 for the no-label
-   filter). This is indirect support for quality-aware selection, not a substitute for the primary test.
+   comparison is **not significant** (p = 0.065; bootstrap 95 % CI of the difference −0.002 to +0.021). Detecting an
+   effect of this size (dz ≈ 0.6) with 80 % power would take about 22 seeds; that should be a new confirmatory run,
+   not more seeds added to this one.
+2. *Synthetic augmentation helps.* Every synthetic condition beats real-only after Holm correction; SBRAD F1 rises from
+   0.49 to 0.58–0.61. Duplicating real minority ECGs alone is not significant (Holm p 0.21).
+3. *Post hoc: mostly through more minority examples, unless the samples are filtered.* In the oversampling control
+   (added after the first test-set analysis), duplicating real minority ECGs recovers most of the random-synthetic gain,
+   and random synthetic data is not significantly better than duplication; only the quality-filtered conditions beat
+   duplication after correction (SBRAD F1 for both filters; macro-F1 for the no-label filter). This is exploratory,
+   hypothesis-generating support for quality-aware selection, not a substitute for the primary test.
 4. *The filter does not just echo the baseline.* Dropping the frozen-baseline component did not hurt (no-label vs full:
    +0.006 macro-F1, exploratory, CI includes 0).
 5. Lower seed-to-seed spread of the augmented conditions vs real-only reflects training stability. It cannot be credited to
@@ -208,18 +214,23 @@ The real-only condition (10 seeds) matches the frozen single-seed baseline (0.78
 - **Rhythm is constructed, not learned**: RR series come from fitted per-class distributions; AFIB atrial activity is
   parametric (residual Gaussian process). The learned part of the generator is beat morphology only.
 - Typical amplitude ~12 % above real (scorecard amplitude check fails); noise and wander scales are sampled independently.
-- **Power**: 10 seeds, primary test at 43 % power. One mix ratio (1.0), one generator, one classifier architecture.
+- **Power**: 10 seeds; an effect of the observed size needs ~22 seeds for 80 % power. One mix ratio (1.0), one
+  generator, one classifier architecture.
 - The whole-ECG diffusion route was limited by a 4 GB GPU (8×64 and 16×128 tried; the published 36×256 was not).
-- **Decisions made after seeing intermediate results** (none used the test split): scorecard validity recalibrated to the
+- **Decisions made after seeing intermediate results.** Before any test-set use: scorecard validity recalibrated to the
   real rate of |z| > 20 (~1 %); filter components combined as ranks and detector log-odds after probabilities saturated;
-  `score_nolabel` added before the main run; the oversampling control and the seed-level bootstrap added after the first
-  statistics run. The validation split was used for TSTR, the filter sanity check and early stopping; the test split was
-  read once.
+  `score_nolabel` added before the main run. **After the first test-set statistics run:** the oversampling control was
+  added and trained; the bootstrap was changed to also resample seeds (the patient-only version gave a difference CI
+  excluding 0 next to a non-significant per-seed test); the Holm families A–C were defined. The primary comparison and
+  its test were fixed in the plan and are unaffected. The validation split was used for TSTR, the filter sanity check and
+  early stopping.
 - Baseline CNN-LSTM confidence is one of the filter's inputs (the no-label variant shows the result does not depend on it).
 
 ## 10. Reproducibility
 
-All commands are in the repository `README.md` ("Reproduce the main result"). Hardware: RTX 3050 Laptop 4 GB; template
+The main experiment and the generator comparison are reproducible with the commands in the repository `README.md`
+("Reproduce the main result" and "Reproduce the generator comparison"); the diffusion runs of Section 5.2 have their own
+`_run_*.py` scripts and `RESULT.md` notes. Hardware: RTX 3050 Laptop 4 GB; template
 generator ~30 min, final pool ~7 min, quality scoring ~15 min, main experiment (50 runs) ~30 min. Seeds: split 42;
 template generator 42; final pool 7; experiment seeds 0–9. Package versions are pinned in `requirements.txt`. Large
 intermediates (pools, templates, checkpoints) are gitignored and rebuilt by the listed scripts.

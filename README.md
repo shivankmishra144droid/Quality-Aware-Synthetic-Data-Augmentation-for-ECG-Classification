@@ -7,8 +7,8 @@ selection** of those samples improves imbalanced rhythm classification more than
 
 **Result in one paragraph.** Augmenting the minority classes improved test macro-F1 from 0.791 (real only) to
 0.820–0.835 and SBRAD F1 from 0.49 to 0.58–0.61 (10 seeds). Quality-filtered synthetic ECGs beat randomly selected ones
-by +0.010 macro-F1 in 8/10 seeds, but the pre-specified test was **not significant** (p = 0.065, underpowered). Only the
-quality-filtered synthetic ECGs significantly beat simply duplicating real minority ECGs.
+by +0.010 macro-F1 in 8/10 seeds, but the pre-specified test was **not significant** (p = 0.065, underpowered). In a
+post-hoc oversampling control, only the quality-filtered synthetic ECGs beat simply duplicating real minority ECGs.
 
 ## Research question
 
@@ -37,7 +37,7 @@ See the report, Sections 5–6.
 
 ## Setup
 
-1. Python 3.14 (also tested 3.11 for CPU-only parts). Install a CUDA build of torch that matches your driver, then the
+1. Python 3.14. Install a CUDA build of torch that matches your driver, then the
    rest: `pip install -r requirements.txt` (versions pinned).
 2. Download PTB-XL 1.0.1 to `archive/ptb-xl-a-large-publicly-available-electrocardiography-dataset-1.0.1/` and run
    `02_PTBXL_Exploration.ipynb` to rebuild `processed_data/X_*.npy` (gitignored). Labels, metadata and train-only
@@ -56,6 +56,19 @@ py -3.14 -m generator_comparison.quality_filter generator_comparison/final_pool/
 bash run_retry.sh _run_main_experiment.py generator_comparison/experiment_main_run.log            # ~25 min GPU
 py -3.14 -m generator_comparison.stats --tag main
 py -3.14 _report_figures.py
+```
+
+## Reproduce the generator comparison (report Sections 6–7)
+
+```bash
+bash run_retry.sh _run_vpred.py generator_comparison/sssd_vpred_run.log          # v-pred diffusion 8x64 (~3 h GPU)
+py -3.14 _gen_tstr_pools.py 440                                                   # 440/class from v1 and v-pred step 5000
+py -3.14 _beat_gen_pool.py generator_comparison/template_gen/checkpoints/tpl_8x64_last.pt 440 generator_comparison/tstr/pool_beatgen.npz --weights ema --scorecard-dir generator_comparison/beat_gen
+py -3.14 -m generator_comparison.tstr                                             # TSTR table (CPU)
+py -3.14 -m generator_comparison.scorecard                                        # 9-check scorecard
+py -3.14 -m generator_comparison.realism_detector generator_comparison/tstr/pool_beatgen.npz beat_gen
+py -3.14 _filter_check.py generator_comparison/final_pool/pool.npz generator_comparison/final_pool/scores.npz 440
+py -3.14 _beat_ablation.py                                                        # detector ablations (Section 5.3)
 ```
 
 Evaluation tools: `generator_comparison/scorecard.py` (9-check pool scorecard), `realism_detector.py`
