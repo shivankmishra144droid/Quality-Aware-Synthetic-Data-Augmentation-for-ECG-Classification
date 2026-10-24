@@ -8,12 +8,14 @@
     "hr_mae_max": 15.0,
     "psd_factor": 2.0,
     "diversity_margin": 0.15,
-    "memorized_max": 0.0
+    "memorized_max": 0.0,
+    "extreme_frac_max": 0.02
   },
   "n_ref_per_class": 256,
   "pools": {
     "real_ref": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 1.065051794052124,
       "lead_std_logratio": 0.031881045550107956,
       "periodicity": 0.8442994612744799,
@@ -50,6 +52,7 @@
     },
     "week4_pool": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 0.5297490358352661,
       "lead_std_logratio": 0.8855603337287903,
       "periodicity": 0.17798078492198166,
@@ -86,6 +89,7 @@
     },
     "v1_sssd": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 0.5078192949295044,
       "lead_std_logratio": 0.8862816691398621,
       "periodicity": 0.1718978399952833,
@@ -122,6 +126,7 @@
     },
     "v2_16000": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 0.48888471722602844,
       "lead_std_logratio": 0.8676641583442688,
       "periodicity": 0.12988813375981556,
@@ -158,6 +163,7 @@
     },
     "ckpt2000": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 0.4787575304508209,
       "lead_std_logratio": 0.91966313123703,
       "periodicity": 0.17124685599372136,
@@ -194,6 +200,7 @@
     },
     "v3_16x128": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 0.6059603691101074,
       "lead_std_logratio": 0.9189539551734924,
       "periodicity": 0.14048262317722796,
@@ -230,6 +237,7 @@
     },
     "cfg_w2": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 0.5866926312446594,
       "lead_std_logratio": 0.7085151672363281,
       "periodicity": 0.15388019842671002,
@@ -266,6 +274,7 @@
     },
     "cfg_w4": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 0.9866463541984558,
       "lead_std_logratio": 0.26706305146217346,
       "periodicity": 0.13485379622546373,
@@ -302,6 +311,7 @@
     },
     "balanced": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 0.46324440836906433,
       "lead_std_logratio": 0.9566068649291992,
       "periodicity": 0.15218889166354083,
@@ -338,6 +348,7 @@
     },
     "ema_raw": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 0.5038029551506042,
       "lead_std_logratio": 0.8927230834960938,
       "periodicity": 0.12814444032088793,
@@ -374,6 +385,7 @@
     },
     "ema": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 0.4249843657016754,
       "lead_std_logratio": 0.945727527141571,
       "periodicity": 0.12081483804574256,
@@ -409,7 +421,8 @@
       "n_checks": 9
     },
     "sched_raw": {
-      "invalid": 127,
+      "invalid": 0,
+      "extreme_frac": 0.9921875,
       "std": 7.935925483703613,
       "lead_std_logratio": 1.9469043016433716,
       "periodicity": 0.12974844064589477,
@@ -445,7 +458,8 @@
       "n_checks": 9
     },
     "sched_ema": {
-      "invalid": 128,
+      "invalid": 0,
+      "extreme_frac": 1.0,
       "std": 5.981300354003906,
       "lead_std_logratio": 1.725561499595642,
       "periodicity": 0.07469726894642319,
@@ -481,7 +495,8 @@
       "n_checks": 9
     },
     "budget_raw": {
-      "invalid": 6,
+      "invalid": 0,
+      "extreme_frac": 0.046875,
       "std": 0.9100244045257568,
       "lead_std_logratio": 0.1569894701242447,
       "periodicity": 0.15602097814411303,
@@ -517,7 +532,8 @@
       "n_checks": 9
     },
     "budget_ema": {
-      "invalid": 6,
+      "invalid": 0,
+      "extreme_frac": 0.046875,
       "std": 0.8828423619270325,
       "lead_std_logratio": 0.1862141340970993,
       "periodicity": 0.15787132252346248,
@@ -554,6 +570,7 @@
     },
     "vpred_raw": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 0.7123633027076721,
       "lead_std_logratio": 0.40096166729927063,
       "periodicity": 0.20480435539798034,
@@ -590,6 +607,7 @@
     },
     "vpred_ema": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 0.7223806977272034,
       "lead_std_logratio": 0.38606977462768555,
       "periodicity": 0.2133332871591322,
@@ -626,6 +644,7 @@
     },
     "vpred5k_raw": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 0.877145528793335,
       "lead_std_logratio": 0.198727086186409,
       "periodicity": 0.21861548291855826,
@@ -662,6 +681,7 @@
     },
     "vpred5k_ema": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 0.8066754937171936,
       "lead_std_logratio": 0.28557536005973816,
       "periodicity": 0.219226412303014,
@@ -698,6 +718,7 @@
     },
     "vpred16_raw": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 0.7889610528945923,
       "lead_std_logratio": 0.3162282705307007,
       "periodicity": 0.19354392605402437,
@@ -734,6 +755,7 @@
     },
     "vpred16_ema": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 0.667574405670166,
       "lead_std_logratio": 0.46653273701667786,
       "periodicity": 0.2607537144777351,
@@ -770,6 +792,7 @@
     },
     "beat_oracle": {
       "invalid": 0,
+      "extreme_frac": 0.0,
       "std": 1.077941656112671,
       "lead_std_logratio": 0.045910224318504333,
       "periodicity": 0.6942488216346595,
@@ -802,6 +825,43 @@
         "not_memorized": true
       },
       "passed": 9,
+      "n_checks": 9
+    },
+    "beat_gen": {
+      "invalid": 0,
+      "extreme_frac": 0.0078125,
+      "std": 1.256656527519226,
+      "lead_std_logratio": 0.16334058344364166,
+      "periodicity": 0.648861387709057,
+      "agree": 0.6875,
+      "hr": {
+        "SR": 78.1,
+        "AFIB": 102.3,
+        "STACH": 109.6,
+        "SBRAD": 54.0
+      },
+      "hr_order_ok": true,
+      "hr_mae": 8.172051308716267,
+      "psd_db": 0.7580989599227905,
+      "diversity": {
+        "SR": 0.021540567278862,
+        "AFIB": -0.002052989322692156,
+        "STACH": 0.005680098198354244,
+        "SBRAD": 0.01499296072870493
+      },
+      "memorized": 0.0,
+      "checks": {
+        "valid": true,
+        "amplitude": false,
+        "per_lead_amp": true,
+        "heartbeat": true,
+        "hr_order": true,
+        "hr_mae": true,
+        "spectrum": true,
+        "diversity": true,
+        "not_memorized": true
+      },
+      "passed": 8,
       "n_checks": 9
     }
   }

@@ -13,3 +13,71 @@ tpl_8x64 iter   500  loss 0.6184  peak 0.40 GB  device 1.25 GB
 tpl_8x64 iter   750  loss 0.5358  peak 0.40 GB  device 1.25 GB
 tpl_8x64 iter  1000  loss 0.5296  peak 0.40 GB  device 1.25 GB
 tpl_8x64 iter  1250  loss 0.6075  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  1500  loss 0.6101  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  1750  loss 0.5199  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  2000  loss 0.4946  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  2250  loss 0.4570  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  2500  loss 0.4640  peak 0.40 GB  device 1.25 GB
+tpl_8x64 EVAL {"iter": 2500, "raw": {"SR": {"std": 1.152, "realism": 0.732, "copy_frac": 0.0}, "AFIB": {"std": 1.158, "realism": 0.668, "copy_frac": 0.0}, "STACH": {"std": 1.159, "realism": 0.67, "copy_frac": 0.0}, "SBRAD": {"std": 1.113, "realism": 0.725, "copy_frac": 0.0}}, "ema": {"SR": {"std": 1.14, "realism": 0.679, "copy_frac": 0.0}, "AFIB": {"std": 1.111, "realism": 0.623, "copy_frac": 0.0}, "STACH": {"std": 1.062, "realism": 0.602, "copy_frac": 0.0}, "SBRAD": {"std": 1.142, "realism": 0.708, "copy_frac": 0.0}}}
+saved generator_comparison\template_gen\checkpoints\tpl_8x64_2500.pt
+tpl_8x64 iter  2750  loss 0.5901  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  3000  loss 0.3781  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  3250  loss 0.3828  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  3500  loss 0.3845  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  3750  loss 0.3442  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  4000  loss 0.4459  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  4250  loss 0.3537  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  4500  loss 0.3032  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  4750  loss 0.3645  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  5000  loss 0.4381  peak 0.40 GB  device 1.25 GB
+tpl_8x64 EVAL {"iter": 5000, "raw": {"SR": {"std": 0.945, "realism": 0.899, "copy_frac": 0.0}, "AFIB": {"std": 1.102, "realism": 0.884, "copy_frac": 0.0}, "STACH": {"std": 1.308, "realism": 0.872, "copy_frac": 0.0}, "SBRAD": {"std": 0.941, "realism": 0.904, "copy_frac": 0.0}}, "ema": {"SR": {"std": 0.952, "realism": 0.858, "copy_frac": 0.0}, "AFIB": {"std": 0.932, "realism": 0.806, "copy_frac": 0.0}, "STACH": {"std": 0.906, "realism": 0.809, "copy_frac": 0.0}, "SBRAD": {"std": 0.949, "realism": 0.865, "copy_frac": 0.0}}}
+saved generator_comparison\template_gen\checkpoints\tpl_8x64_5000.pt
+tpl_8x64 iter  5250  loss 0.3537  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  5500  loss 0.3419  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  5750  loss 0.3033  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  6000  loss 0.3045  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  6250  loss 0.3915  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  6500  loss 0.3048  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  6750  loss 0.3001  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  7000  loss 0.3766  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  7250  loss 0.3429  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  7500  loss 0.3396  peak 0.40 GB  device 1.25 GB
+tpl_8x64 EVAL {"iter": 7500, "raw": {"SR": {"std": 0.966, "realism": 0.929, "copy_frac": 0.0}, "AFIB": {"std": 0.909, "realism": 0.899, "copy_frac": 0.0}, "STACH": {"std": 0.915, "realism": 0.885, "copy_frac": 0.0}, "SBRAD": {"std": 0.909, "realism": 0.905, "copy_frac": 0.0}}, "ema": {"SR": {"std": 0.882, "realism": 0.921, "copy_frac": 0.0}, "AFIB": {"std": 0.872, "realism": 0.885, "copy_frac": 0.0}, "STACH": {"std": 0.851, "realism": 0.883, "copy_frac": 0.0}, "SBRAD": {"std": 0.869, "realism": 0.909, "copy_frac": 0.0}}}
+saved generator_comparison\template_gen\checkpoints\tpl_8x64_7500.pt
+tpl_8x64 iter  7750  loss 0.3439  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  8000  loss 0.3948  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  8250  loss 0.2838  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  8500  loss 0.2545  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  8750  loss 0.2667  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  9000  loss 0.3610  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  9250  loss 0.3598  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  9500  loss 0.3743  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter  9750  loss 0.3195  peak 0.40 GB  device 1.25 GB
+tpl_8x64 iter 10000  loss 0.3928  peak 0.40 GB  device 1.25 GB
+tpl_8x64 EVAL {"iter": 10000, "raw": {"SR": {"std": 0.828, "realism": 0.932, "copy_frac": 0.0}, "AFIB": {"std": 0.836, "realism": 0.881, "copy_frac": 0.0}, "STACH": {"std": 0.899, "realism": 0.875, "copy_frac": 0.0}, "SBRAD": {"std": 0.801, "realism": 0.918, "copy_frac": 0.0}}, "ema": {"SR": {"std": 0.866, "realism": 0.921, "copy_frac": 0.0}, "AFIB": {"std": 0.879, "realism": 0.886, "copy_frac": 0.0}, "STACH": {"std": 0.937, "realism": 0.885, "copy_frac": 0.0}, "SBRAD": {"std": 0.865, "realism": 0.916, "copy_frac": 0.0}}}
+saved generator_comparison\template_gen\checkpoints\tpl_8x64_10000.pt
+tpl_8x64 iter 10250  loss 0.3486  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 10500  loss 0.3720  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 10750  loss 0.2688  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 11000  loss 0.4126  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 11250  loss 0.3656  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 11500  loss 0.3316  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 11750  loss 0.5289  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 12000  loss 0.3529  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 12250  loss 0.3981  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 12500  loss 0.3535  peak 0.40 GB  device 1.26 GB
+tpl_8x64 EVAL {"iter": 12500, "raw": {"SR": {"std": 0.936, "realism": 0.924, "copy_frac": 0.0}, "AFIB": {"std": 0.97, "realism": 0.895, "copy_frac": 0.0}, "STACH": {"std": 0.913, "realism": 0.879, "copy_frac": 0.0}, "SBRAD": {"std": 0.888, "realism": 0.913, "copy_frac": 0.0}}, "ema": {"SR": {"std": 0.876, "realism": 0.928, "copy_frac": 0.0}, "AFIB": {"std": 0.889, "realism": 0.89, "copy_frac": 0.0}, "STACH": {"std": 0.906, "realism": 0.886, "copy_frac": 0.0}, "SBRAD": {"std": 0.878, "realism": 0.917, "copy_frac": 0.0}}}
+saved generator_comparison\template_gen\checkpoints\tpl_8x64_12500.pt
+tpl_8x64 iter 12750  loss 0.5274  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 13000  loss 0.3722  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 13250  loss 0.2739  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 13500  loss 0.3304  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 13750  loss 0.3267  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 14000  loss 0.3396  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 14250  loss 0.5170  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 14500  loss 0.3857  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 14750  loss 0.3066  peak 0.40 GB  device 1.26 GB
+tpl_8x64 iter 15000  loss 0.3638  peak 0.40 GB  device 1.26 GB
+tpl_8x64 EVAL {"iter": 15000, "raw": {"SR": {"std": 0.912, "realism": 0.931, "copy_frac": 0.0}, "AFIB": {"std": 0.934, "realism": 0.887, "copy_frac": 0.0}, "STACH": {"std": 1.059, "realism": 0.893, "copy_frac": 0.0}, "SBRAD": {"std": 0.881, "realism": 0.919, "copy_frac": 0.0}}, "ema": {"SR": {"std": 0.874, "realism": 0.926, "copy_frac": 0.0}, "AFIB": {"std": 0.891, "realism": 0.892, "copy_frac": 0.0}, "STACH": {"std": 0.948, "realism": 0.89, "copy_frac": 0.0}, "SBRAD": {"std": 0.868, "realism": 0.917, "copy_frac": 0.0}}}
+saved generator_comparison\template_gen\checkpoints\tpl_8x64_15000.pt
+done generator_comparison\template_gen\checkpoints\tpl_8x64_last.pt

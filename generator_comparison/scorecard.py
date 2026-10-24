@@ -49,6 +49,7 @@ POOLS = {
     "vpred16_raw": ROOT / "sssd_vpred16_raw",
     "vpred16_ema": ROOT / "sssd_vpred16",
     "beat_oracle": ROOT / "beat_oracle",
+    "beat_gen": ROOT / "beat_gen",
 }
 
 # Pass bar. Each check is a (name, description) pair; values are computed in score_pool.
@@ -61,6 +62,7 @@ THRESH = {
     "psd_factor": 2.0,                      # PSD distance <= factor x real_ref's own distance
     "diversity_margin": 0.15,               # mean pairwise corr <= real_ref's + margin (every class)
     "memorized_max": 0.0,                   # fraction of samples with corr > 0.95 to a real train ECG
+    "extreme_frac_max": 0.02,               # |z| > 20 samples; real train ECGs: ~1%
 }
 
 
@@ -108,7 +110,11 @@ def score_pool(x12, y, ref, real_std_lead, X_all, y_all, exclude=None):
     med = {k: v["median_hr_peaks"] for k, v in hr.items()}
     lead_std = x12.std(axis=(0, 1))
     return {
-        "invalid": basic_sanity(x12)["fail"],
+        # NaN / flatline must be zero; |z| > 20 also occurs in ~1% of REAL train ECGs (17 of 1760,
+        # 440/class), so extreme amplitude is allowed up to extreme_frac_max (recalibrated 2026-10-25
+        # after real ECGs were found to fail the old zero-tolerance rule).
+        "invalid": (lambda s: s["nan_inf"] + s["flatline"] + s["bad_shape"])(basic_sanity(x12)),
+        "extreme_frac": basic_sanity(x12)["extreme_amp"] / len(x12),
         "std": float(x12.std()),
         "lead_std_logratio": float(np.mean(np.abs(np.log(lead_std / real_std_lead)))),
         "periodicity": float(np.median([hr[k]["median_periodicity"] for k in rhythmic])),
@@ -126,7 +132,7 @@ def checks(s, real_ref):
     t = THRESH
     beat = s["periodicity"] >= t["periodicity_min"] and s["agree"] >= t["agree_min"]
     return {
-        "valid": s["invalid"] == 0,
+        "valid": s["invalid"] == 0 and s["extreme_frac"] <= t["extreme_frac_max"],
         "amplitude": t["std_lo"] <= s["std"] <= t["std_hi"],
         "per_lead_amp": s["lead_std_logratio"] <= t["lead_std_logratio_max"],
         "heartbeat": beat,

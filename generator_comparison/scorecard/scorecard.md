@@ -24,5 +24,6 @@
 | vpred16_raw | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | 0.79 | 0.19 | 34/62/44/36 | 1.2 | 4/9 |
 | vpred16_ema | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | 0.67 | 0.26 | 55/57/60/33 | 0.7 | 4/9 |
 | beat_oracle | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 1.08 | 0.69 | 80/98/112/50 | 0.7 | 9/9 |
+| beat_gen | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 1.26 | 0.65 | 78/102/110/54 | 0.8 | 8/9 |
 
-Thresholds: `{"std_lo": 0.8, "std_hi": 1.2, "lead_std_logratio_max": 0.2, "periodicity_min": 0.5, "agree_min": 0.6, "hr_mae_max": 15.0, "psd_factor": 2.0, "diversity_margin": 0.15, "memorized_max": 0.0}`
+Thresholds: `{"std_lo": 0.8, "std_hi": 1.2, "lead_std_logratio_max": 0.2, "periodicity_min": 0.5, "agree_min": 0.6, "hr_mae_max": 15.0, "psd_factor": 2.0, "diversity_margin": 0.15, "memorized_max": 0.0, "extreme_frac_max": 0.02}`

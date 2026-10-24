@@ -42,3 +42,5 @@ generator_comparison/beat_templates/*.npz
 generator_comparison/beat_templates/*.pkl
 # Large TSTR pools (rebuild with _gen_tstr_pools.py)
 generator_comparison/tstr/pool_*.npz
+# Final synthetic pool (rebuild with _beat_gen_pool.py, see generator_comparison/final_pool/README.md)
+generator_comparison/final_pool/*.npz

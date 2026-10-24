@@ -2,7 +2,7 @@
 Same assembly models as the oracle pool (generator_comparison/beat_templates/assembly_models.pkl),
 so oracle vs generated differs only in where the templates come from.
 
-Usage: py -3.14 _beat_gen_pool.py <template ckpt.pt> <n_per_class> <out.npz> [--weights ema|raw] [--scorecard-dir DIR]
+Usage: py -3.14 _beat_gen_pool.py <template ckpt.pt> <n_per_class | SR,AFIB,STACH,SBRAD> <out.npz> [--weights ema|raw] [--scorecard-dir DIR]
   out.npz: X (N, 1000, 12), y (N,), templates (N, 8, 70)
   --scorecard-dir also writes a 32/class pool (X_synthetic.npy / y_synthetic.npy / metadata.csv) there.
 """
@@ -24,7 +24,8 @@ from synthetic_generation.sample import generate_class_batch, metadata_rows
 
 ap = argparse.ArgumentParser()
 ap.add_argument("ckpt")
-ap.add_argument("n_per_class", type=int)
+ap.add_argument("n_per_class", help="one number for every class, or four comma-separated counts "
+                                     "in SR,AFIB,STACH,SBRAD order (0 skips a class), e.g. 0,3200,1800,1400")
 ap.add_argument("out")
 ap.add_argument("--weights", choices=("ema", "raw"), default="ema")
 ap.add_argument("--scorecard-dir", default=None)
@@ -43,8 +44,13 @@ rng = np.random.default_rng(a.seed)
 
 t0 = time.time()
 xs, ys, ts = [], [], []
+counts = [int(v) for v in a.n_per_class.split(",")]
+counts = counts * 4 if len(counts) == 1 else counts
+assert len(counts) == 4, "give one count or four"
 for c in range(4):
-    tpl = generate_class_batch(net, c, a.n_per_class, device, batch_size=256, seed=a.seed + c,
+    if counts[c] == 0:
+        continue
+    tpl = generate_class_batch(net, c, counts[c], device, batch_size=256, seed=a.seed + c,
                                diffusion_config=ck["diffusion_config"], parameterization=param,
                                length=L, return_x8=True).astype(np.float64)
     # Same post-processing as real templates at extraction (beats.recording_template): zero the
@@ -63,7 +69,7 @@ print("saved", a.out, X.shape, "std %.3f" % X.std(), "%.0f s" % (time.time() - t
 if a.scorecard_dir:
     d = Path(a.scorecard_dir)
     d.mkdir(parents=True, exist_ok=True)
-    idx = np.concatenate([np.where(y == c)[0][:32] for c in range(4)])
+    idx = np.concatenate([np.where(y == c)[0][:32] for c in range(4) if (y == c).any()])
     np.save(d / "X_synthetic.npy", X[idx])
     np.save(d / "y_synthetic.npy", y[idx])
     metadata_rows(y[idx]).assign(generator=f"beat-gen ({Path(a.ckpt).name}, {a.weights}) + rule-based assembly").to_csv(
