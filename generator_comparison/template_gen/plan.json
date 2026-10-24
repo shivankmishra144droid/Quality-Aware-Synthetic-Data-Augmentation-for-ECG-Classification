@@ -1,0 +1,40 @@
+{
+  "train_cfg": {
+    "n_iters": 15000,
+    "batch_size": 64,
+    "learning_rate": 0.0002,
+    "warmup_iters": 500,
+    "cosine_decay": true,
+    "log_every": 250,
+    "ckpt_every": 2500,
+    "eval_every": 2500,
+    "use_amp": false,
+    "ema_decay": 0.999,
+    "ema_warmup": true,
+    "diffusion_config": {
+      "T": 200,
+      "beta_0": 0.0005,
+      "beta_T": 0.1
+    },
+    "parameterization": "v",
+    "balanced_sampling": true
+  },
+  "wavenet": {
+    "in_channels": 8,
+    "out_channels": 8,
+    "num_res_layers": 8,
+    "res_channels": 64,
+    "skip_channels": 64,
+    "diffusion_step_embed_dim_in": 128,
+    "diffusion_step_embed_dim_mid": 512,
+    "diffusion_step_embed_dim_out": 512,
+    "s4_lmax": 70,
+    "s4_d_state": 64,
+    "s4_dropout": 0.0,
+    "s4_bidirectional": 1,
+    "s4_layernorm": 1,
+    "label_embed_dim": 128,
+    "label_embed_classes": 4
+  },
+  "n_templates": 13244
+}

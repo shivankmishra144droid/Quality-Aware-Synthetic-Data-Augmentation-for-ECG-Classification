@@ -30,6 +30,7 @@ SOURCES = {
     "beat_oracle": ROOT / "beat_templates" / "beat_oracle_big.npz",
     "vpred5k": OUT / "pool_vpred5k.npz",
     "v1": OUT / "pool_v1.npz",
+    "beat_gen": OUT / "pool_beatgen.npz",          # generated templates + same assembly as the oracle
 }
 
 

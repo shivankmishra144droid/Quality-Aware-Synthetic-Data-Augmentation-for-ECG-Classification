@@ -83,7 +83,7 @@ def train_loop(
     else:
         try:
             net = SSSD_ECG(**wavenet_config).to(device)
-            _probe = torch.zeros(train_cfg["batch_size"], 8, 1000, device=device)
+            _probe = torch.zeros(train_cfg["batch_size"], 8, ds.x8.shape[-1], device=device)
             _lab = torch.zeros(train_cfg["batch_size"], 4, device=device)
             _lab[:, 0] = 1
             with torch.amp.autocast("cuda", enabled=bool(train_cfg.get("use_amp", True))):

@@ -1,30 +1,9 @@
 CUDA extension for cauchy multiplication not found. Install by going to extensions/cauchy/ and running `python setup.py install`. This should speed up end-to-end training by 10-50%
 Falling back on slow Cauchy kernel. Install at least one of pykeops or the CUDA extension for efficiency.
-Traceback (most recent call last):
-  File "C:\Users\Shivank\Videos\ECG - GenAi\_gen_tstr_pools.py", line 28, in <module>
-    ck = torch.load(path, map_location=device, weights_only=False)
-  File "C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\serialization.py", line 1579, in load
-    return _load(
-        opened_zipfile,
-    ...<3 lines>...
-        **pickle_load_args,
-    )
-  File "C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\serialization.py", line 2190, in _load
-    result = unpickler.load()
-  File "C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\serialization.py", line 2154, in persistent_load
-    typed_storage = load_tensor(
-        dtype, nbytes, key, _maybe_decode_ascii(location)
-    )
-  File "C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\serialization.py", line 2116, in load_tensor
-    wrap_storage = restore_location(storage, location)
-  File "C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\serialization.py", line 1920, in restore_location
-    return default_restore_location(storage, str(map_location))
-  File "C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\serialization.py", line 734, in default_restore_location
-    result = fn(storage, location)
-  File "C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\serialization.py", line 667, in _deserialize
-    device = _validate_device(location, backend_name)
-  File "C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\serialization.py", line 634, in _validate_device
-    raise RuntimeError(
-    ...<5 lines>...
-    )
-RuntimeError: Attempting to deserialize object on a CUDA device but torch.cuda.is_available() is False. If you are running on a CPU-only machine, please use torch.load with map_location=torch.device('cpu') to map your storages to the CPU.
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+v1 param eps std 0.508 1603 s
+vpred5k param v std 0.856 1561 s
+done
