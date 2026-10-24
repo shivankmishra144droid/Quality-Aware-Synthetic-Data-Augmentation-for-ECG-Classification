@@ -5,6 +5,11 @@ selection** of those samples improves imbalanced rhythm classification more than
 
 > Full write-up: [`report/REPORT.md`](report/REPORT.md).
 
+**Result in one paragraph.** Augmenting the minority classes improved test macro-F1 from 0.791 (real only) to
+0.820–0.835 and SBRAD F1 from 0.49 to 0.58–0.61 (10 seeds). Quality-filtered synthetic ECGs beat randomly selected ones
+by +0.010 macro-F1 in 8/10 seeds, but the pre-specified test was **not significant** (p = 0.065, underpowered). Only the
+quality-filtered synthetic ECGs significantly beat simply duplicating real minority ECGs.
+
 ## Research question
 
 > Can quality-aware selection of synthetic ECG samples improve imbalanced ECG classification compared with random
@@ -22,7 +27,7 @@ PTB-XL 100 Hz ─► patient split + train-only z-score (frozen)
               ─► rule-based rhythm assembly (per-class RR model, residual/wander GPs, AFIB irregular RR)
               ─► final synthetic pool (AFIB 3200 / STACH 1800 / SBRAD 1400)
               ─► quality filter (typicality + frozen-baseline label prob + realism detector)
-              ─► CNN-LSTM retrained: real | real+random | real+filtered | real+filtered(no label)  x 10 seeds
+              ─► CNN-LSTM retrained: real | real+oversample | real+random | real+filtered | real+filtered(no label)  x 10 seeds
               ─► paired tests + patient-level bootstrap on the untouched test split
 ```
 

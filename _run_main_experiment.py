@@ -6,5 +6,5 @@ from generator_comparison import augment_experiment
 
 sys.argv = ["augment_experiment", "generator_comparison/final_pool/pool.npz",
             "generator_comparison/final_pool/scores.npz", "--seeds", "10", "--ratio", "1.0",
-            "--conditions", "real,random,filtered,filtered_nolabel", "--tag", "main"]
+            "--conditions", "real,random,filtered,filtered_nolabel,oversample", "--tag", "main"]
 augment_experiment.main()

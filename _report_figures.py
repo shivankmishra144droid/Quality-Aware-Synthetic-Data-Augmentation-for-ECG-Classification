@@ -85,7 +85,7 @@ fig.savefig(OUT / "fig3_tstr.png", dpi=130)
 res_path = GC / "experiment/main/results.json"
 if res_path.exists():
     res = json.loads(res_path.read_text())
-    conds = [c for c in ("real", "random", "filtered", "filtered_nolabel") if any(k.startswith(c + "/") for k in res)]
+    conds = [c for c in ("real", "oversample", "random", "filtered", "filtered_nolabel") if any(k.startswith(c + "/") for k in res)]
     fig, axes = plt.subplots(1, 2, figsize=(11, 3.8))
     for ax, (metric, get) in zip(axes, (("test macro-F1", lambda v: v["test"]["macro_f1"]),
                                         ("test SBRAD F1", lambda v: v["test"]["f1"]["SBRAD"]))):

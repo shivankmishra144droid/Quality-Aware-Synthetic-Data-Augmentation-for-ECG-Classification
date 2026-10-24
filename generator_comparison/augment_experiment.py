@@ -4,6 +4,9 @@
   filtered      real train + the top-scoring synthetic minority ECGs (quality_filter `score`)
   filtered_nolabel  as filtered, but ranked by `score_nolabel` (no frozen-baseline component), so a
                 gain cannot come only from picking samples the baseline already agrees with
+  oversample    control (added after the main analysis): REAL minority ECGs duplicated to the same added
+                counts, so the effect of synthetic content is separated from more minority examples /
+                changed class weights
 Synthetic counts are identical in `random` and `filtered`: each minority class is doubled
 (+1056 AFIB, +568 STACH, +446 SBRAD at ratio 1.0). SR gets no synthetic data.
 
@@ -143,14 +146,21 @@ def main():
             if key in results:
                 print("skip (done)", key)
                 continue
-            sel = pick(cond, py, scores, counts, seed)
-            Xa = np.concatenate([Xtr, pX[sel]]) if len(sel) else Xtr
-            ya = np.concatenate([ytr, py[sel]]) if len(sel) else ytr
+            if cond == "oversample":
+                # Control: duplicate REAL minority ECGs to the same added counts (deterministic). Separates
+                # "more minority examples / changed class weights" from "synthetic content".
+                sel = np.array([], dtype=np.int64)
+                dup = np.concatenate([np.resize(np.where(ytr == c)[0], counts[c]) for c in MINORITY])
+                Xa, ya = np.concatenate([Xtr, Xtr[dup]]), np.concatenate([ytr, ytr[dup]])
+            else:
+                sel = pick(cond, py, scores, counts, seed)
+                Xa = np.concatenate([Xtr, pX[sel]]) if len(sel) else Xtr
+                ya = np.concatenate([ytr, py[sel]]) if len(sel) else ytr
             t0 = time.time()
             net, info = train_one(Xa, ya, Xva, yva, seed, dev, a.max_epochs)
             pte = predict(net, Xte, dev)
             np.save(out / f"test_prob_{cond}_seed{seed}.npy", pte)
-            results[key] = {**info, "n_synthetic": int(len(sel)), "val": metrics(yva, predict(net, Xva, dev)),
+            results[key] = {**info, "n_synthetic": int(len(sel)), "n_added": int(len(ya) - len(ytr)), "val": metrics(yva, predict(net, Xva, dev)),
                             "test": metrics(yte, pte), "sec": round(time.time() - t0, 1)}
             (out / "results.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
             r = results[key]

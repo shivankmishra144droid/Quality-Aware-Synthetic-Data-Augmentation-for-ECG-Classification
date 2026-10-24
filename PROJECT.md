@@ -5,7 +5,7 @@
 **Purpose:** SR dominates the four-class subset (~85%). The frozen real-only CNN-LSTM is weakest on SBRAD (test F1 0.50, mainly SR→SBRAD). The project asks whether *selected* synthetic minority ECGs help more than dumping unfiltered synthetics into training.  
 **Target users:** The student team and supervising professor; anyone reproducing the eight-week pipeline. Not a clinical product and not an end-user app.  
 **Tech stack:** Python, Jupyter, PyTorch, NumPy/Pandas, scikit-learn, WFDB, Matplotlib, Einops / Opt-Einsum (S4), SciPy (peak HR in comparison metrics).  
-**Current status:** Research prototype. Weeks 1–4 done (audit, preprocess, frozen baseline, adapted SSSD-ECG, generator comparison, quality *pilots*). Week 5 quality filtering and real+synthetic classifier runs are **not** implemented.  
+**Current status:** Research prototype, pipeline complete (2026-10-25). Whole-ECG SSSD replaced by beat-template diffusion + rule-based rhythm assembly; quality filter, main experiment (5 conditions × 10 seeds) and statistics done. Results and limitations: `report/REPORT.md`. Sections below describe the Week 1–4 state unless marked updated.  
 **Anything else:** Remote: [github.com/shivankmishra144droid/Quality-Aware-Synthetic-Data-Augmentation-for-ECG-Classification](https://github.com/shivankmishra144droid/Quality-Aware-Synthetic-Data-Augmentation-for-ECG-Classification). Hardware used: RTX 3050 Laptop **4 GB**. Do not call the 8×64 net the published SSSD-ECG (that is 36×256). Frozen Week 2–3 artifacts must not be overwritten. Generation never uses val/test waveforms.
 
 ---
@@ -34,7 +34,7 @@ This repository is an **eight-week research codebase** on [PTB-XL v1.0.1](https:
 | Adapted SSSD-ECG train + sample | Done (`synthetic_generation/`, `04_`) |
 | Honest generator comparison (1/4 runnable) | Done (`05_`, `generator_comparison/`) |
 | Quality-improvement pilots (iters, width, CFG) | Done as isolated runs |
-| Quality-aware filter + mix-in experiment | **Not done** |
+| Quality-aware filter + mix-in experiment | Done (updated): `quality_filter.py`, `augment_experiment.py`, `stats.py`; see `report/REPORT.md` |
 
 **Research question**
 
@@ -364,7 +364,7 @@ Diagnosis (`sssd_v2/STEP1.md`): conditioning is wired; no denorm bug; T=200 alre
 
 ### 7.6 Week 5 quality filter
 
-**Not implemented.** `eval_metrics.py` is comparison-only (explicit docstring).
+**Updated: implemented.** `generator_comparison/quality_filter.py` (typicality + frozen-baseline label probability + out-of-fold realism log-odds, combined as within-class ranks). Sanity check: TSTR top 0.743 > random 0.672 > bottom 0.582. Main result: filtered vs random +0.010 macro-F1, p = 0.065 (not significant); see `report/REPORT.md`.
 
 ---
 
