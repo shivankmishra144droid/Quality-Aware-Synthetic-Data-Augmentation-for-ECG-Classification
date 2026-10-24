@@ -1,7 +1,9 @@
 """Phase 3: main experiment. Same CNN-LSTM recipe as the frozen baseline, three conditions:
   real          real train only
   random        real train + synthetic minority ECGs drawn at random from the pool
-  filtered      real train + the top-scoring synthetic minority ECGs (quality_filter scores)
+  filtered      real train + the top-scoring synthetic minority ECGs (quality_filter `score`)
+  filtered_nolabel  as filtered, but ranked by `score_nolabel` (no frozen-baseline component), so a
+                gain cannot come only from picking samples the baseline already agrees with
 Synthetic counts are identical in `random` and `filtered`: each minority class is doubled
 (+1056 AFIB, +568 STACH, +446 SBRAD at ratio 1.0). SR gets no synthetic data.
 
@@ -39,15 +41,19 @@ def synthetic_counts(y_train, ratio):
     return {c: int(round(ratio * (y_train == c).sum())) for c in MINORITY}
 
 
+FILTER_KEYS = {"filtered": "score", "filtered_nolabel": "score_nolabel"}
+
+
 def pick(cond, pool_y, scores, counts, seed):
+    """scores: dict of per-sample score arrays from quality_filter."""
     """Indices into the pool for one condition. random: uniform per class; filtered: top-k."""
     if cond == "real":
         return np.array([], dtype=np.int64)
     if cond == "random":
         rng = np.random.default_rng(1000 + seed)
         return np.concatenate([rng.choice(np.where(pool_y == c)[0], counts[c], replace=False) for c in MINORITY])
-    if cond == "filtered":   # deterministic: the same top-k for every seed
-        top = select(scores, pool_y, max(counts.values()))
+    if cond in FILTER_KEYS:   # deterministic: the same top-k for every seed
+        top = select(scores[FILTER_KEYS[cond]], pool_y, max(counts.values()))
         return np.concatenate([top[pool_y[top] == c][:counts[c]] for c in MINORITY])
     raise ValueError(cond)
 
@@ -119,8 +125,8 @@ def main():
     Xte, yte = np.load(DATA / "X_test.npy").astype(np.float32), np.load(DATA / "y_test.npy").astype(np.int64)
     pool = np.load(a.pool)
     pX, py = pool["X"].astype(np.float32), pool["y"].astype(np.int64)
-    scores = np.load(a.scores)["score"]
-    assert len(scores) == len(py), "scores do not match the pool"
+    scores = dict(np.load(a.scores))
+    assert len(scores["score"]) == len(py) and np.array_equal(scores["y"], py), "scores do not match the pool"
     counts = synthetic_counts(ytr, a.ratio)
     for c in MINORITY:
         assert (py == c).sum() >= counts[c], f"pool too small for {CLASS_ORDER[c]}"

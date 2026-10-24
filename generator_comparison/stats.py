@@ -22,7 +22,7 @@ from sklearn.metrics import f1_score
 
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT.parent / "processed_data"
-CONDS = ("real", "random", "filtered")
+ALL_CONDS = ("real", "random", "filtered", "filtered_nolabel")
 
 
 def per_run(res, cond, metric):
@@ -48,6 +48,7 @@ def main():
     a = ap.parse_args()
     d = ROOT / "experiment" / a.tag
     res = json.loads((d / "results.json").read_text())
+    CONDS = tuple(c for c in ALL_CONDS if any(k.startswith(c + "/") for k in res))
     yte = np.load(DATA / "y_test.npy").astype(np.int64)
     pid = pd.read_csv(DATA / "test_metadata.csv")["patient_id"].to_numpy()
     out = {"tag": a.tag, "summary": {}, "paired": {}, "bootstrap": {}}

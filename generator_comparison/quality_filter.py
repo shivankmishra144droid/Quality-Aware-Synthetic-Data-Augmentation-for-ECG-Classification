@@ -1,13 +1,14 @@
 """Week 5 quality filter: one quality score per synthetic ECG, then keep the top-k per class.
 
-score = mean of three components, each mapped to [0, 1]:
+score = mean of the within-class percentile ranks of three components:
   typicality  class-conditional: how typical the sample's features are for ITS OWN class, judged
               against real train ECGs of that class (two-sided empirical percentile). Three equally
               weighted groups: rhythm (Lead-II periodicity, peak HR, peak-vs-ACF HR disagreement),
               amplitude (8 per-lead std), spectrum (shape distance to the real class mean).
               Real ECGs average ~0.5 by construction.
-  realism     out-of-fold P(real) from the realism detector (k-fold cross-fitting, so no sample is
-              scored by a detector that trained on it).
+  realism     out-of-fold log-odds of "real" from the realism detector (k-fold cross-fitting, so no
+              sample is scored by a detector that trained on it). Log-odds, not probability: the
+              detector separates perfectly, so probabilities saturate at 0 and lose the ranking.
   label       frozen baseline CNN-LSTM's softmax probability of the intended class (scorer only,
               never retrained).
 Uses only train-split real ECGs.
@@ -126,7 +127,9 @@ def realism_oof(X, y, folds=5, seed=0, epochs=10):
         with torch.no_grad():
             for i in range(0, len(te), 256):
                 b = te[i:i + 256]
-                p_real[b] = 1 - torch.sigmoid(net(torch.from_numpy(X[b].astype(np.float32)).to(dev))).cpu().numpy()
+                # log-odds of "real" (= -logit of "synthetic"): probabilities saturate at 0 when the
+                # detector separates perfectly, log-odds still rank the samples.
+                p_real[b] = -net(torch.from_numpy(X[b].astype(np.float32)).to(dev)).cpu().numpy()
     return p_real
 
 
@@ -139,7 +142,26 @@ def score_pool(X, y, folds=5):
         typ[m] = ref.typicality(f[m], p[m], c)
     lab = label_prob(X, y)
     rea = realism_oof(X, y, folds=folds)
-    return {"typicality": typ, "label": lab, "realism": rea, "score": (typ + lab + rea) / 3}
+    comp = {"typicality": typ, "label": lab, "realism_logodds": rea}
+    return {**comp, "score": combine(comp, y), "score_nolabel": combine(comp, y, ("typicality", "realism_logodds"))}
+
+
+def combine(comp, y, keys=("typicality", "label", "realism_logodds")):
+    """Mean of within-class percentile ranks of the chosen components (equal, scale-free weight).
+    score_nolabel drops the frozen-baseline component, so a filtered-vs-random gain cannot come
+    only from picking samples the baseline already agrees with."""
+    score = np.zeros(len(y))
+    for c in range(4):
+        m = np.where(y == c)[0]
+        if len(m):
+            score[m] = np.mean([_rank01(comp[k][m]) for k in keys], axis=0)
+    return score
+
+
+def _rank01(v):
+    """Percentile rank in [0, 1] (ties averaged)."""
+    from scipy.stats import rankdata
+    return (rankdata(v) - 1) / max(len(v) - 1, 1)
 
 
 def select(scores, y, k_per_class):
@@ -159,4 +181,5 @@ if __name__ == "__main__":
     np.savez_compressed(a.out, y=d["y"], **s)
     for c in range(4):
         m = d["y"] == c
-        print(CLASS_ORDER[c], {k: round(float(np.median(v[m])), 3) for k, v in s.items()})
+        if m.any():
+            print(CLASS_ORDER[c], {k: round(float(np.median(v[m])), 3) for k, v in s.items()})
