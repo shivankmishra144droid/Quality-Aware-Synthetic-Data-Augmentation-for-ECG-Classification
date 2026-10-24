@@ -1,0 +1,43 @@
+=== attempt 1 ===
+CONFIG {"pool": "generator_comparison/final_pool/pool.npz", "scores": "generator_comparison/final_pool/scores.npz", "ratio": 1.0, "synthetic_per_class": {"AFIB": 1056, "STACH": 568, "SBRAD": 446}, "seeds": 10, "max_epochs": 25, "device": "cuda"}
+real/seed0: val mF1 0.799 | val SBRAD F1 0.510 | ep 15 | 29.3s
+real/seed1: val mF1 0.797 | val SBRAD F1 0.583 | ep 6 | 16.2s
+real/seed2: val mF1 0.788 | val SBRAD F1 0.434 | ep 22 | 32.5s
+real/seed3: val mF1 0.762 | val SBRAD F1 0.420 | ep 11 | 23.1s
+real/seed4: val mF1 0.751 | val SBRAD F1 0.505 | ep 7 | 17.8s
+real/seed5: val mF1 0.774 | val SBRAD F1 0.456 | ep 24 | 32.3s
+real/seed6: val mF1 0.792 | val SBRAD F1 0.495 | ep 24 | 32.4s
+real/seed7: val mF1 0.781 | val SBRAD F1 0.476 | ep 17 | 31.8s
+real/seed8: val mF1 0.767 | val SBRAD F1 0.479 | ep 14 | 28.8s
+real/seed9: val mF1 0.777 | val SBRAD F1 0.426 | ep 22 | 37.0s
+random/seed0: val mF1 0.792 | val SBRAD F1 0.537 | ep 12 | 30.0s
+random/seed1: val mF1 0.803 | val SBRAD F1 0.569 | ep 10 | 26.9s
+random/seed2: val mF1 0.813 | val SBRAD F1 0.548 | ep 19 | 41.0s
+random/seed3: val mF1 0.793 | val SBRAD F1 0.523 | ep 11 | 28.8s
+random/seed4: val mF1 0.804 | val SBRAD F1 0.558 | ep 11 | 26.1s
+random/seed5: val mF1 0.789 | val SBRAD F1 0.518 | ep 12 | 27.2s
+random/seed6: val mF1 0.791 | val SBRAD F1 0.593 | ep 5 | 16.8s
+random/seed7: val mF1 0.827 | val SBRAD F1 0.597 | ep 18 | 35.2s
+random/seed8: val mF1 0.816 | val SBRAD F1 0.556 | ep 22 | 35.8s
+random/seed9: val mF1 0.822 | val SBRAD F1 0.585 | ep 23 | 35.6s
+filtered/seed0: val mF1 0.804 | val SBRAD F1 0.559 | ep 12 | 27.0s
+filtered/seed1: val mF1 0.830 | val SBRAD F1 0.617 | ep 16 | 32.7s
+filtered/seed2: val mF1 0.802 | val SBRAD F1 0.551 | ep 12 | 27.0s
+filtered/seed3: val mF1 0.800 | val SBRAD F1 0.576 | ep 8 | 21.0s
+filtered/seed4: val mF1 0.807 | val SBRAD F1 0.560 | ep 12 | 26.9s
+filtered/seed5: val mF1 0.810 | val SBRAD F1 0.582 | ep 15 | 31.1s
+filtered/seed6: val mF1 0.820 | val SBRAD F1 0.618 | ep 24 | 35.7s
+filtered/seed7: val mF1 0.821 | val SBRAD F1 0.600 | ep 18 | 35.3s
+filtered/seed8: val mF1 0.810 | val SBRAD F1 0.545 | ep 23 | 35.4s
+filtered/seed9: val mF1 0.830 | val SBRAD F1 0.605 | ep 23 | 35.5s
+filtered_nolabel/seed0: val mF1 0.796 | val SBRAD F1 0.608 | ep 13 | 28.7s
+filtered_nolabel/seed1: val mF1 0.810 | val SBRAD F1 0.581 | ep 10 | 24.6s
+filtered_nolabel/seed2: val mF1 0.813 | val SBRAD F1 0.588 | ep 12 | 28.8s
+filtered_nolabel/seed3: val mF1 0.811 | val SBRAD F1 0.567 | ep 11 | 25.8s
+filtered_nolabel/seed4: val mF1 0.808 | val SBRAD F1 0.540 | ep 24 | 35.9s
+filtered_nolabel/seed5: val mF1 0.804 | val SBRAD F1 0.550 | ep 15 | 32.1s
+filtered_nolabel/seed6: val mF1 0.807 | val SBRAD F1 0.547 | ep 11 | 25.7s
+filtered_nolabel/seed7: val mF1 0.813 | val SBRAD F1 0.580 | ep 9 | 22.9s
+filtered_nolabel/seed8: val mF1 0.820 | val SBRAD F1 0.561 | ep 24 | 35.5s
+filtered_nolabel/seed9: val mF1 0.826 | val SBRAD F1 0.606 | ep 23 | 35.1s
+done

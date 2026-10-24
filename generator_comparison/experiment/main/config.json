@@ -1,0 +1,13 @@
+{
+  "pool": "generator_comparison/final_pool/pool.npz",
+  "scores": "generator_comparison/final_pool/scores.npz",
+  "ratio": 1.0,
+  "synthetic_per_class": {
+    "AFIB": 1056,
+    "STACH": 568,
+    "SBRAD": 446
+  },
+  "seeds": 10,
+  "max_epochs": 25,
+  "device": "cuda"
+}
