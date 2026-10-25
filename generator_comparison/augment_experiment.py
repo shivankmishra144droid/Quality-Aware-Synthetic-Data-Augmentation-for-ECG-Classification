@@ -113,6 +113,7 @@ def main():
     ap.add_argument("pool")
     ap.add_argument("scores")
     ap.add_argument("--seeds", type=int, default=5)
+    ap.add_argument("--seed-start", type=int, default=0, help="first seed (confirmatory run uses 100)")
     ap.add_argument("--ratio", type=float, default=1.0)
     ap.add_argument("--conditions", default="real,random,filtered")
     ap.add_argument("--max-epochs", type=int, default=25)
@@ -134,14 +135,14 @@ def main():
     for c in MINORITY:
         assert (py == c).sum() >= counts[c], f"pool too small for {CLASS_ORDER[c]}"
     cfg = {"pool": a.pool, "scores": a.scores, "ratio": a.ratio, "synthetic_per_class":
-           {CLASS_ORDER[c]: n for c, n in counts.items()}, "seeds": a.seeds, "max_epochs": a.max_epochs,
+           {CLASS_ORDER[c]: n for c, n in counts.items()}, "seeds": a.seeds, "seed_start": a.seed_start, "max_epochs": a.max_epochs,
            "device": str(dev)}
     (out / "config.json").write_text(json.dumps(cfg, indent=2), encoding="utf-8")
     print("CONFIG", json.dumps(cfg), flush=True)
 
     results = json.loads((out / "results.json").read_text()) if (out / "results.json").exists() else {}
     for cond in a.conditions.split(","):
-        for seed in range(a.seeds):
+        for seed in range(a.seed_start, a.seed_start + a.seeds):
             key = f"{cond}/seed{seed}"
             if key in results:
                 print("skip (done)", key)
