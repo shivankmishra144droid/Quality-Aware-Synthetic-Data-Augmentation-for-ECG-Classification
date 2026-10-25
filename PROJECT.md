@@ -364,7 +364,7 @@ Diagnosis (`sssd_v2/STEP1.md`): conditioning is wired; no denorm bug; T=200 alre
 
 ### 7.6 Week 5 quality filter
 
-**Updated: implemented.** `generator_comparison/quality_filter.py` (typicality + frozen-baseline label probability + out-of-fold realism log-odds, combined as within-class ranks). Sanity check: TSTR top 0.743 > random 0.672 > bottom 0.582. Main result: filtered vs random +0.010 macro-F1, p = 0.065 (not significant); see `report/REPORT.md`.
+**Updated: implemented.** `generator_comparison/quality_filter.py` (typicality + frozen-baseline label probability + out-of-fold realism log-odds, combined as within-class ranks). Sanity check: TSTR top 0.743 > random 0.672 > bottom 0.582. Main result: exploratory filtered vs random +0.010 macro-F1 (p = 0.065); pre-registered confirmatory study (30 new seeds) found no difference (+0.0014, p = 0.79). See `report/REPORT.md`.
 
 ---
 

@@ -13,12 +13,13 @@ for real ECGs). A quality score (class typicality, frozen-baseline label probabi
 ranks the synthetic ECGs; top-ranked ones are clearly more useful than bottom-ranked ones (0.74 vs 0.58).
 
 In the main experiment (CNN-LSTM, 10 seeds, test split), every *synthetic* augmentation improved significantly over
-real-only training (macro-F1 0.791 → 0.820–0.835; SBRAD F1 0.49 → 0.58–0.61). **The pre-specified comparison,
-quality-filtered vs random synthetic data, was not significant** (+0.010 macro-F1, 8/10 seeds, Wilcoxon p = 0.065);
-detecting an effect of this size (dz ≈ 0.6) with 80 % power would take about 22 seeds. In a *post-hoc* oversampling
-control, added after the first analysis of the test results, randomly selected synthetic ECGs did not beat simply
-duplicating real minority ECGs, while quality-filtered ones did on SBRAD F1; this is exploratory and not confirmatory.
-Synthetic ECGs remain detectable by a CNN (AUC 1.00), mainly through their inter-beat noise.
+real-only training (macro-F1 0.791 → 0.820–0.835; SBRAD F1 0.49 → 0.58–0.61). Quality-filtered vs random synthetic data
+looked slightly better (+0.010 macro-F1, 8/10 seeds, p = 0.065, not significant), so a **pre-registered confirmatory
+study with 30 new seeds** was run. It found **no difference**: +0.0014 macro-F1, filtered better in 16/30 seeds,
+two-sided Wilcoxon p = 0.79, 95 % CI −0.007 to +0.010. **At this mix ratio, quality-aware selection did not improve the
+classifier over random selection**, although the quality score clearly separates more from less useful samples when
+synthetic data is used alone (train-on-synthetic 0.74 top vs 0.58 bottom). Synthetic ECGs remain detectable by a CNN
+(AUC 1.00), mainly through their inter-beat noise.
 
 ## 1. Problem and research question
 
@@ -206,6 +207,39 @@ The real-only condition (10 seeds) matches the frozen single-seed baseline (0.78
 5. Lower seed-to-seed spread of the augmented conditions vs real-only reflects training stability. It cannot be credited to
    filtering versus random, because random also varies its synthetic subset between seeds.
 
+### 8.1 Pre-registered confirmatory study
+
+Because the exploratory primary comparison was underpowered, a confirmatory run was registered before it started
+(`report/PREREGISTRATION.md`, commit `803a2b7`): filtered vs random only, **30 new seeds (100–129)**, identical pool,
+scores and recipe (SHA-256 verified), exactly 30 seeds with no interim look, two-sided Wilcoxon on test macro-F1,
+α = 0.05, frozen analysis `_confirmatory_analysis.py` run once (`experiment/confirmatory/confirmatory_result.md`).
+
+| | exploratory (seeds 0–9) | **confirmatory (seeds 100–129)** |
+|---|---|---|
+| filtered macro-F1 | 0.830 | 0.831 |
+| random macro-F1 | 0.820 | 0.830 |
+| mean difference | +0.010 | **+0.0014** |
+| filtered better | 8/10 | **16/30** |
+| Wilcoxon p (two-sided) | 0.065 | **0.79** |
+| 95 % CI of difference | −0.002 to +0.021 | −0.007 to +0.010 |
+| SBRAD F1 difference | +0.022 | −0.004 (13/30) |
+
+**Decision (pre-specified): H1 not supported.** The filtered condition performed the same in both studies; the random
+condition's first ten seeds were low by chance, which produced the exploratory gap. The confirmatory interval excludes any
+gain larger than about +0.01 macro-F1.
+
+**Consequence for the exploratory findings.** The post-hoc result "filtered beats duplicated real data, random does not"
+(Section 8, point 3) rested on the same ten random-condition seeds that the confirmatory run shows were unusually low;
+it should not be taken as evidence for quality-aware selection. The conclusions that stand are: synthetic minority
+augmentation improves over real-only training, and the quality score ranks samples by usefulness when synthetic data
+is used alone (TSTR), but this ranking does not translate into a measurable gain when synthetic data is *added* to the
+real training set at ratio 1.0.
+
+**Possible reasons (untested).** With 11,741 real SR and the full real minority set already present, the classifier may
+gain mainly from more minority examples and rebalanced class weights, which any synthetic subset provides; the quality
+differences between filtered and random subsets (both drawn from the same, already reasonably good pool) may be too small
+to matter at this ratio. Higher synthetic ratios, a weaker pool, or a stricter filter could behave differently.
+
 ## 9. Limitations
 
 - **Synthetic ECGs are detectable** (realism detector AUC 1.00). Ablations show why: the residual left after removing the
@@ -214,8 +248,8 @@ The real-only condition (10 seeds) matches the frozen single-seed baseline (0.78
 - **Rhythm is constructed, not learned**: RR series come from fitted per-class distributions; AFIB atrial activity is
   parametric (residual Gaussian process). The learned part of the generator is beat morphology only.
 - Typical amplitude ~12 % above real (scorecard amplitude check fails); noise and wander scales are sampled independently.
-- **Power**: 10 seeds; an effect of the observed size needs ~22 seeds for 80 % power. One mix ratio (1.0), one
-  generator, one classifier architecture.
+- **Scope**: one mix ratio (1.0), one generator, one classifier architecture. The confirmatory study (30 seeds) rules
+  out a filtered-vs-random gain above ~+0.01 macro-F1 in this setting only.
 - The whole-ECG diffusion route was limited by a 4 GB GPU (8×64 and 16×128 tried; the published 36×256 was not).
 - **Decisions made after seeing intermediate results.** Before any test-set use: scorecard validity recalibrated to the
   real rate of |z| > 20 (~1 %); filter components combined as ranks and detector log-odds after probabilities saturated;

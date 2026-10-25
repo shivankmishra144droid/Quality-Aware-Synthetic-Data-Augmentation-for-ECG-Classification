@@ -6,9 +6,10 @@ selection** of those samples improves imbalanced rhythm classification more than
 > Full write-up: [`report/REPORT.md`](report/REPORT.md).
 
 **Result in one paragraph.** Augmenting the minority classes improved test macro-F1 from 0.791 (real only) to
-0.820–0.835 and SBRAD F1 from 0.49 to 0.58–0.61 (10 seeds). Quality-filtered synthetic ECGs beat randomly selected ones
-by +0.010 macro-F1 in 8/10 seeds, but the pre-specified test was **not significant** (p = 0.065, underpowered). In a
-post-hoc oversampling control, only the quality-filtered synthetic ECGs beat simply duplicating real minority ECGs.
+0.820–0.835 and SBRAD F1 from 0.49 to 0.58–0.61 (10 seeds). Quality-filtered vs randomly selected synthetic ECGs looked
+slightly better at first (+0.010, p = 0.065), but a **pre-registered confirmatory study with 30 new seeds found no
+difference** (+0.0014 macro-F1, 16/30 seeds, p = 0.79). At this mix ratio, quality-aware selection did not improve the
+classifier over random selection.
 
 ## Research question
 
