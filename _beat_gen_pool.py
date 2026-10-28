@@ -17,7 +17,7 @@ import numpy as np
 import torch
 
 from generator_comparison.eval_metrics import CLASS_ORDER
-from synthetic_generation.assembly import assemble
+from synthetic_generation.assembly import MEAN_RR_BOUNDS, assemble
 from synthetic_generation.beats import TAPER_W
 from synthetic_generation.model import SSSD_ECG
 from synthetic_generation.sample import generate_class_batch, metadata_rows
@@ -30,6 +30,8 @@ ap.add_argument("out")
 ap.add_argument("--weights", choices=("ema", "raw"), default="ema")
 ap.add_argument("--scorecard-dir", default=None)
 ap.add_argument("--seed", type=int, default=2024)
+ap.add_argument("--no-rr-bounds", action="store_true",
+                help="unbounded mean RR, as for pools built before 2026-10-28 (e.g. final_pool/)")
 a = ap.parse_args()
 
 device = torch.device("cuda")
@@ -40,6 +42,8 @@ net.load_state_dict(ck[key])
 L = ck["wavenet_config"]["s4_lmax"]
 param = ck["train_cfg"].get("parameterization", "eps")
 models = pickle.load(open("generator_comparison/beat_templates/assembly_models.pkl", "rb"))
+for c, m in models.items():   # the pickle may predate the bounds; set them from the class definitions
+    m["rhythm"].mean_rr_bounds = None if a.no_rr_bounds else MEAN_RR_BOUNDS[c]
 rng = np.random.default_rng(a.seed)
 
 t0 = time.time()

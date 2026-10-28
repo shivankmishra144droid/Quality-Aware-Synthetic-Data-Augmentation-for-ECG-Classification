@@ -19,6 +19,11 @@ from .leads import reconstruct_12, to_independent_8
 
 L = 1000
 SINUS_AR = 0.8        # lag-1 correlation of sinus RR fluctuations
+# Allowed mean RR (s) per class, from the rhythm definitions: SR 60-100 bpm, STACH > 100, SBRAD < 60.
+# AFIB has no rate criterion (only the general 0.3-2.0 s range). The unbounded KDE put ~26 % of SBRAD
+# and ~15 % of STACH outside their class (by the project HR estimator; real: 2.8 % / 5.8 %).
+MEAN_RR_BOUNDS = {0: (0.6, 1.0), 1: (0.3, 2.0), 2: (0.3, 0.6), 3: (1.0, 2.0)}
+MAX_TRIES = 1000
 
 
 class CrossSpectralGP:
@@ -42,14 +47,25 @@ class CrossSpectralGP:
 
 
 class RhythmModel:
-    def __init__(self, rr_mean: np.ndarray, rr_cv: np.ndarray, irregular: bool):
+    def __init__(self, rr_mean: np.ndarray, rr_cv: np.ndarray, irregular: bool, mean_rr_bounds=None):
         self.kde = gaussian_kde(np.vstack([np.log(rr_mean), np.log(np.maximum(rr_cv, 1e-3))]))
         self.irregular = irregular
+        self.mean_rr_bounds = mean_rr_bounds
+
+    def sample_mean_cv(self, rng) -> tuple[float, float]:
+        """(mean RR, RR cv) from the KDE, rejection-sampled to the class's mean-RR bounds
+        (clipped only if MAX_TRIES draws all fall outside). Bounds None: one draw clipped to
+        0.3-2.0 s, the behaviour (and RNG use) of pools built before the bounds existed."""
+        bounds = getattr(self, "mean_rr_bounds", None)   # models pickled before the bounds existed
+        lo, hi = bounds or (0.3, 2.0)
+        for _ in range(MAX_TRIES if bounds else 1):
+            lm, lc = self.kde.resample(1, seed=rng)[:, 0]
+            if lo <= np.exp(lm) <= hi:
+                break
+        return float(np.clip(np.exp(lm), lo, hi)), float(np.exp(lc))
 
     def sample_r_positions(self, rng) -> np.ndarray:
-        lm, lc = self.kde.resample(1, seed=rng)[:, 0]
-        mean, cv = float(np.exp(lm)), float(np.exp(lc))
-        mean = float(np.clip(mean, 0.3, 2.0))
+        mean, cv = self.sample_mean_cv(rng)
         n = int(L / FS / mean) + 4
         if self.irregular:     # AFIB: independent RRs, gamma with the sampled mean and cv
             k = 1.0 / max(cv, 0.05) ** 2
@@ -84,7 +100,8 @@ def fit_class_models(X12: np.ndarray, y: np.ndarray, cls: int, n_fit: int, rng):
         wander.append(x8 - hp)
     return {
         "templates": np.stack(tpls),
-        "rhythm": RhythmModel(np.array(rr_m), np.array(rr_cv), irregular=(cls == 1)),
+        "rhythm": RhythmModel(np.array(rr_m), np.array(rr_cv), irregular=(cls == 1),
+                              mean_rr_bounds=MEAN_RR_BOUNDS[cls]),
         "residual": CrossSpectralGP(np.stack(resid)),
         "wander": CrossSpectralGP(np.stack(wander)),
         "n_used": len(tpls),

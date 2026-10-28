@@ -9,6 +9,7 @@ score = mean of the within-class percentile ranks of three components:
   realism     out-of-fold log-odds of "real" from the realism detector (k-fold cross-fitting, so no
               sample is scored by a detector that trained on it). Log-odds, not probability: the
               detector separates perfectly, so probabilities saturate at 0 and lose the ranking.
+              Ranked within each fold (and class), because the fold detectors' scales differ.
   label       frozen baseline CNN-LSTM's softmax probability of the intended class (scorer only,
               never retrained).
 Uses only train-split real ECGs.
@@ -97,7 +98,9 @@ def label_prob(X, y):
 
 
 def realism_oof(X, y, folds=5, seed=0, epochs=10):
-    """Out-of-fold P(real) for each synthetic sample (class-matched real train ECGs as negatives)."""
+    """Out-of-fold log-odds of "real" for each synthetic sample (class-matched real train ECGs as
+    negatives), and the fold that scored it. Raw log-odds are NOT comparable across folds (each fold's
+    detector has its own scale); use realism_within_fold before ranking."""
     Xr_all = np.load(DATA / "X_train.npy", mmap_mode="r")
     yr_all = np.load(DATA / "y_train.npy")
     rng = np.random.default_rng(seed)
@@ -130,7 +133,21 @@ def realism_oof(X, y, folds=5, seed=0, epochs=10):
                 # log-odds of "real" (= -logit of "synthetic"): probabilities saturate at 0 when the
                 # detector separates perfectly, log-odds still rank the samples.
                 p_real[b] = -net(torch.from_numpy(X[b].astype(np.float32)).to(dev)).cpu().numpy()
-    return p_real
+    return p_real, fold_s
+
+
+def realism_within_fold(logodds, fold, y):
+    """Percentile rank of the log-odds within each (fold, class) cell, in [0, 1].
+    The 5 detectors separate perfectly and differ in logit scale (median -13.2 to -10.4 on the final
+    pool), so ranking raw log-odds across folds selected by fold membership (top-third share
+    0.17-0.53 by fold). Folds are random, so each cell is a fair sample of its class."""
+    out = np.zeros(len(logodds))
+    for k in np.unique(fold):
+        for c in range(4):
+            m = np.where((fold == k) & (y == c))[0]
+            if len(m):
+                out[m] = _rank01(logodds[m])
+    return out
 
 
 def score_pool(X, y, folds=5):
@@ -141,12 +158,13 @@ def score_pool(X, y, folds=5):
         m = y == c
         typ[m] = ref.typicality(f[m], p[m], c)
     lab = label_prob(X, y)
-    rea = realism_oof(X, y, folds=folds)
-    comp = {"typicality": typ, "label": lab, "realism_logodds": rea}
-    return {**comp, "score": combine(comp, y), "score_nolabel": combine(comp, y, ("typicality", "realism_logodds"))}
+    rea, fold = realism_oof(X, y, folds=folds)
+    comp = {"typicality": typ, "label": lab, "realism": realism_within_fold(rea, fold, y)}
+    return {**comp, "realism_logodds": rea, "realism_fold": fold,     # raw values kept for auditing only
+            "score": combine(comp, y), "score_nolabel": combine(comp, y, ("typicality", "realism"))}
 
 
-def combine(comp, y, keys=("typicality", "label", "realism_logodds")):
+def combine(comp, y, keys=("typicality", "label", "realism")):
     """Mean of within-class percentile ranks of the chosen components (equal, scale-free weight).
     score_nolabel drops the frozen-baseline component, so a filtered-vs-random gain cannot come
     only from picking samples the baseline already agrees with."""
@@ -165,9 +183,11 @@ def _rank01(v):
 
 
 def select(scores, y, k_per_class):
-    """Indices of the top-k scoring samples per class."""
-    keep = [np.where(y == c)[0][np.argsort(-scores[y == c])[:k_per_class]] for c in range(4)]
-    return np.sort(np.concatenate(keep))
+    """Indices (pool order) of the top-k scoring samples per class.
+    k_per_class: one k for every class, or {class: k} (classes not listed get none)."""
+    ks = k_per_class if isinstance(k_per_class, dict) else dict.fromkeys(range(4), k_per_class)
+    keep = [np.where(y == c)[0][np.argsort(-scores[y == c], kind="stable")[:k]] for c, k in ks.items()]
+    return np.sort(np.concatenate(keep)).astype(np.int64)
 
 
 if __name__ == "__main__":

@@ -48,16 +48,18 @@ FILTER_KEYS = {"filtered": "score", "filtered_nolabel": "score_nolabel"}
 
 
 def pick(cond, pool_y, scores, counts, seed):
-    """scores: dict of per-sample score arrays from quality_filter."""
-    """Indices into the pool for one condition. random: uniform per class; filtered: top-k."""
+    """Indices into the pool for one condition. random: uniform per class; filtered: top-k per class.
+    scores: dict of per-sample score arrays from quality_filter."""
     if cond == "real":
         return np.array([], dtype=np.int64)
     if cond == "random":
         rng = np.random.default_rng(1000 + seed)
         return np.concatenate([rng.choice(np.where(pool_y == c)[0], counts[c], replace=False) for c in MINORITY])
     if cond in FILTER_KEYS:   # deterministic: the same top-k for every seed
-        top = select(scores[FILTER_KEYS[cond]], pool_y, max(counts.values()))
-        return np.concatenate([top[pool_y[top] == c][:counts[c]] for c in MINORITY])
+        # Each class gets its own k. (Before 2026-10-28 this took top-max(k) and sliced by POOL position, so
+        # STACH / SBRAD were not their top-k: 54 % / 38 % overlap. Results in experiment/main and
+        # experiment/confirmatory were produced with that bug.)
+        return select(scores[FILTER_KEYS[cond]], pool_y, counts)
     raise ValueError(cond)
 
 
