@@ -21,6 +21,13 @@ classifier over random selection**, although the quality score clearly separates
 synthetic data is used alone (train-on-synthetic 0.74 top vs 0.58 bottom). Synthetic ECGs remain detectable by a CNN
 (AUC 1.00), mainly through their inter-beat noise.
 
+**Protocol deviation found after both studies (Section 8.2).** A code review on 2026-10-28 found that the "filtered"
+conditions did not use the top-scored synthetic ECGs for STACH and SBRAD: a selection bug kept only 54 % (STACH) and
+38 % (SBRAD) of the true top-k (AFIB was correct). The filtered-vs-random comparison therefore did not test the
+hypothesis as specified for two of three minority classes, and the null result above must not be read as evidence that
+quality-aware selection does not work. The results are left as run; a corrected study is planned
+(`report/PREREGISTRATION_2.md`, draft).
+
 ## 1. Problem and research question
 
 PTB-XL v1.0.1 (100 Hz, 10 s, 12-lead) restricted to four mutually exclusive rhythm labels: sinus rhythm (SR),
@@ -134,7 +141,9 @@ Each synthetic ECG gets three scores (`generator_comparison/quality_filter.py`):
 - **typicality** – class-conditional percentile typicality of rhythm (periodicity, HR, HR-estimator disagreement),
   amplitude (8 per-lead std) and spectral shape, against real train ECGs of the same class;
 - **label** – the frozen baseline's probability of the intended class (scorer only);
-- **realism** – out-of-fold detector log-odds of "real" (5-fold cross-fitting).
+- **realism** – out-of-fold detector log-odds of "real" (5-fold cross-fitting). *Found later (Section 8.2): the raw
+  log-odds were ranked across folds although each fold's detector has its own scale, so this component partly reflected
+  fold membership.*
 
 The quality score is the mean within-class percentile rank of the three. `score_nolabel` drops the baseline component.
 
@@ -154,8 +163,8 @@ Each minority class is doubled (+1,056 AFIB, +568 STACH, +446 SBRAD = 2,070 adde
 | real | none |
 | oversample *(control, added after the first analysis)* | each real minority ECG duplicated once |
 | random | 2,070 synthetic, drawn at random from the final pool (new draw per seed) |
-| filtered | the 2,070 top-scored synthetic (same set for every seed) |
-| filtered_nolabel | as filtered, ranked without the frozen-baseline component (robustness check, specified before the main run) |
+| filtered | intended: the 2,070 top-scored synthetic (same set for every seed); actually not the top-k for STACH / SBRAD, see Section 8.2 |
+| filtered_nolabel | as filtered, ranked without the frozen-baseline component (robustness check, specified before the main run); same selection bug |
 
 10 seeds per condition. Primary test (specified in the plan): **filtered vs random, test macro-F1**, paired Wilcoxon
 signed-rank by seed. The other comparisons were grouped into families A–C with Holm correction **after** the first
@@ -233,14 +242,57 @@ gain larger than about +0.01 macro-F1.
 it should not be taken as evidence for quality-aware selection. The conclusions that stand are: synthetic minority
 augmentation improves over real-only training, and the quality score ranks samples by usefulness when synthetic data
 is used alone (TSTR), but this ranking does not translate into a measurable gain when synthetic data is *added* to the
-real training set at ratio 1.0.
+real training set at ratio 1.0. *(Qualified 2026-10-28: for STACH and SBRAD the "filtered" subsets were not the
+top-ranked samples, Section 8.2, so this last statement is untested for those classes.)*
 
 **Possible reasons (untested).** With 11,741 real SR and the full real minority set already present, the classifier may
 gain mainly from more minority examples and rebalanced class weights, which any synthetic subset provides; the quality
 differences between filtered and random subsets (both drawn from the same, already reasonably good pool) may be too small
 to matter at this ratio. Higher synthetic ratios, a weaker pool, or a stricter filter could behave differently.
+*Added 2026-10-28:* a further and more direct reason is the selection bug in Section 8.2, which made the filtered
+subsets for STACH and SBRAD much closer to random than intended.
+
+### 8.2 Protocol deviation: the filtered subsets were not the top-k (found 2026-10-28)
+
+**What happened.** `augment_experiment.pick` asked `quality_filter.select` for the top 1,056 per class (the largest
+class count) and then kept the first *k* of each class. `select` returns indices in pool order, not score order, so for
+classes with *k* < 1,056 the kept samples were the earliest-generated ones among the top 1,056, not the highest-scored.
+Measured on the final pool and `scores.npz`:
+
+| class | k | overlap with true top-k | mean score of subset used | true top-k | random (expected) |
+|---|---|---|---|---|---|
+| AFIB | 1,056 | 1.00 | 0.663 | 0.663 | 0.500 |
+| STACH | 568 | 0.54 | 0.608 | 0.689 | 0.500 |
+| SBRAD | 446 | **0.38** | 0.561 | 0.722 | 0.500 |
+
+`filtered_nolabel` is affected the same way (overlap 1.00 / 0.55 / 0.39). `real`, `random` and `oversample` are not
+affected. `_filter_check.py` (the TSTR sanity check in Section 7) ranks correctly and is not affected by this bug.
+
+**Consequence.** Pre-registration 1 specified "top-scored" synthetic ECGs. For STACH and SBRAD, the run used subsets
+whose mean score was closer to random than to the top-k, so H1 was **not tested as specified** for two of three minority
+classes, including SBRAD, the class with the most to gain. The confirmatory null result (Section 8.1) stands as a
+description of what was run, but it is not evidence that quality-aware selection fails. All filtered and
+filtered_nolabel comparisons in Sections 8 and 8.1 carry the same caveat. Neither study is re-run or re-analysed: a
+corrected study needs its own pre-registration (`report/PREREGISTRATION_2.md`, draft; workflow in
+`report/WORKFLOW_2.md`).
+
+**Other issues found in the same review** (they affect the quality score itself, including the Section 7 sanity check):
+- *Realism component depended on the CV fold.* Each of the 5 fold detectors separates perfectly and has its own logit
+  scale (median log-odds −13.2 to −10.4 by fold, Kruskal p ≈ 1e-158). Ranking raw log-odds across folds made the share of
+  a fold's samples in the top third range from 0.17 to 0.53.
+- *Rhythm sampling was not bounded to the class definition.* The R-peaks actually placed by the generator give a rate
+  outside the class (STACH ≤ 100 bpm, SBRAD ≥ 60 bpm) for about 5 % of samples.
+- *The HR estimator is unreliable on synthetic ECGs.* It is within 10 % of the placed-R rate for only about 56–72 % of
+  synthetic STACH/SBRAD, so the HR features of the typicality component partly measure how readable a synthetic signal
+  is. (An HR-based count of "≈ 26 % of synthetic SBRAD ≥ 60 bpm" is therefore mostly estimator error, not label noise.)
+
+**Fixes** (commit after this note): per-class top-k selection with a regression test, realism ranked within
+(fold, class), and class-specific mean-RR bounds in the rhythm model. They apply only to new pools and new studies.
 
 ## 9. Limitations
+
+- **Selection bug (Section 8.2).** The filtered conditions were not the top-scored subsets for STACH and SBRAD in
+  either study, so the filtered-vs-random question is not yet answered for those classes.
 
 - **Synthetic ECGs are detectable** (realism detector AUC 1.00). Ablations show why: the residual left after removing the
   median beat is beat-locked in real ECGs, while ours is a stationary Gaussian process, visibly noisier between beats.

@@ -3,6 +3,13 @@
 Written and committed **before** any confirmatory run. The git commit containing this file, and its timestamp, is the
 registration. Nothing below may be changed after the run starts; any deviation is reported as a deviation.
 
+> **Deviation notice (added 2026-10-28, after the run; the registered text below is unchanged).** The `filtered`
+> condition did not use the top-scored samples for STACH and SBRAD, as "top-scored by `score`" below requires. A
+> selection bug in `augment_experiment.pick` kept only 54 % (STACH) and 38 % (SBRAD) of the true top-k; AFIB was
+> correct. H1 was therefore not tested as specified for two of three minority classes. Details, numbers and
+> consequences: `report/REPORT.md` Section 8.2. The registered commit is `803a2b7`; `git show 803a2b7:report/PREREGISTRATION.md`
+> gives the original file.
+
 ## Background
 The exploratory main experiment (`experiment/main/`, seeds 0–9) found quality-filtered synthetic augmentation
 +0.010 test macro-F1 above randomly selected synthetic augmentation (8/10 seeds, two-sided Wilcoxon p = 0.065,
