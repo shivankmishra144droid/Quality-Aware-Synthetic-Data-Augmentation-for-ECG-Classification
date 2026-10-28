@@ -28,6 +28,7 @@ Usage: py -3.14 -m generator_comparison.augment_experiment <pool.npz> <scores.np
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import time
@@ -146,6 +147,18 @@ def train_steps(Xtr, ytr, Xva, yva, seed, dev, steps, eval_every=250, batch=64):
                  "val_history": hist, "class_weights": dict(zip(CLASS_ORDER, map(float, w)))}
 
 
+# Config fields that must match for a resumed run to reuse finished results (val_only, seeds, conditions may differ).
+RECIPE_KEYS = ("pool_sha256", "scores_sha256", "ratio", "max_epochs", "steps", "eval_every", "deterministic")
+
+
+def sha256(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for block in iter(lambda: f.read(1 << 20), b""):
+            h.update(block)
+    return h.hexdigest()
+
+
 def set_deterministic():
     """Deterministic kernels; must run before the first CUDA op (cuBLAS reads the workspace setting then)."""
     os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
@@ -180,6 +193,8 @@ def main(argv=None):
 
     if a.deterministic:
         set_deterministic()
+        if not torch.cuda.is_available():   # e.g. the GPU dropped out after sleep: a CPU run is neither comparable nor feasible
+            raise SystemExit("--deterministic run needs CUDA, and torch.cuda.is_available() is False. Not falling back to CPU.")
     out = OUT / a.tag
     out.mkdir(parents=True, exist_ok=True)
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -198,11 +213,17 @@ def main(argv=None):
     cfg = {"pool": a.pool, "scores": a.scores, "ratio": a.ratio, "synthetic_per_class":
            {CLASS_ORDER[c]: n for c, n in counts.items()}, "seeds": a.seeds, "seed_start": a.seed_start, "max_epochs": a.max_epochs,
            "steps": a.steps, "eval_every": a.eval_every, "deterministic": a.deterministic, "val_only": a.val_only,
-           "device": str(dev)}
+           "pool_sha256": sha256(a.pool), "scores_sha256": sha256(a.scores), "device": str(dev)}
+    results = json.loads((out / "results.json").read_text()) if (out / "results.json").exists() else {}
+    if results and (out / "config.json").exists():
+        old = json.loads((out / "config.json").read_text())
+        changed = [k for k in RECIPE_KEYS if k in old and old[k] != cfg[k]]   # keys missing in old configs: not checked
+        if changed:
+            raise SystemExit(f"{out} has finished runs made with a different {changed}; resuming would mix them. "
+                             "Use a new --tag.")
     (out / "config.json").write_text(json.dumps(cfg, indent=2), encoding="utf-8")
     print("CONFIG", json.dumps(cfg), flush=True)
 
-    results = json.loads((out / "results.json").read_text()) if (out / "results.json").exists() else {}
     for cond in a.conditions.split(","):
         for seed in range(a.seed_start, a.seed_start + a.seeds):
             key = f"{cond}/seed{seed}"

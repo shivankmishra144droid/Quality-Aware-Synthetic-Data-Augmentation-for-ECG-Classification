@@ -65,6 +65,17 @@ class RhythmModel:
         return float(np.clip(np.exp(lm), lo, hi)), float(np.exp(lc))
 
     def sample_r_positions(self, rng) -> np.ndarray:
+        """R-peak positions. With bounds, the whole series is redrawn until the REALISED mean RR of the
+        placed beats is strictly inside them: bounding only the sampled mean left ~5 % of STACH out of class,
+        because beat-to-beat variation over ~16 beats moves the realised mean across the boundary."""
+        bounds = getattr(self, "mean_rr_bounds", None)
+        for _ in range(MAX_TRIES if bounds else 1):
+            pos = self._draw_r_positions(rng)
+            if bounds is None or (len(pos) > 1 and bounds[0] < np.diff(pos).mean() / FS < bounds[1]):
+                break
+        return pos
+
+    def _draw_r_positions(self, rng) -> np.ndarray:
         mean, cv = self.sample_mean_cv(rng)
         n = int(L / FS / mean) + 4
         if self.irregular:     # AFIB: independent RRs, gamma with the sampled mean and cv

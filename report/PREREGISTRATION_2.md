@@ -39,11 +39,17 @@ the hypothesis as originally intended.
       one seed must reproduce its validation metrics exactly; this check is recorded before registration. It runs with
       `--val-only` (`_run_study2.py --val-only 1 200 filtered`; the test split is never loaded). Smoke check on the old
       final pool, 500 steps, run twice: identical validation history.
-- [ ] P6. **Pools.** Build 4 independent pools with the bounded generator (`_beat_gen_pool.py ... --seed 11/12/13/14`,
+- [x] P6. **Pools.** Build 4 independent pools with the bounded generator (`bash _build_pools2.sh`: `_beat_gen_pool.py ... --seed 11/21/31/41`, spaced so no
+      diffusion-noise seed is shared between pools,
       0,3200,1800,1400 each) and score each with the corrected `quality_filter`. SHA-256 of every pool and score file
-      recorded below.
+      recorded below. *Done 2026-10-29: all 4 pools PASS `_check_pools2.py` (exact top-k, exact replay, true rate
+      out of class 0 %, no non-finite values); hashes in `generator_comparison/pools2/checks.json`. The rhythm model
+      redraws until the realised rate of the placed beats is in class (bounding only the sampled mean left ~5 % of
+      STACH out of class in a first build, which was discarded).*
 - [ ] P7. **Validation gate (validation split only).** For each pool, run `_filter_check.py` (TSTR on real val:
-      top-k vs random-k vs bottom-k, 3 seeds). Gate: mean top − random balanced accuracy > 0 across the 4 pools. If
+      top-k vs random-k vs bottom-k, 3 seeds; run and evaluated by `_gate_study2.py`, rule fixed before any gate
+      result was seen). Gate: top > random balanced accuracy in **at least 3 of the 4 pools and** a mean
+      (top − random) > 0. (A mean-only rule would pass about half the time for a useless filter.) If
       the gate fails, the study is **not run** and that is reported; the filter is not tuned and retried under this
       registration.
 - [ ] P8. Frozen analysis script `_study2_analysis.py` and launcher `_run_study2.py`, written and committed before the run, implementing
@@ -75,9 +81,10 @@ Exactly 40 units × 4 conditions = 160 runs. No interim look at test metrics.
 
 ## Analysis (frozen in P8)
 - Outcome: test macro-F1 per run. Paired differences per unit.
-- Test: two-sided Wilcoxon signed-rank on the 40 differences for each of H1–H3; **Holm correction across H1–H3**,
-  family-wise α = 0.05.
-- Decision per hypothesis: supported if Holm-adjusted p < 0.05; direction from the mean difference.
+- Test: two-sided Wilcoxon signed-rank on the 40 differences for each of H1–H3. **H1 is the single primary test at
+  α = 0.05, unadjusted.** H2 and H3 form one secondary family with **Holm correction over H2–H3**, family-wise
+  α = 0.05. (Holm over all three would test H1 at 0.0167 and cut its power from 0.89 to 0.78.)
+- Decision per hypothesis: supported if its adjusted p (H1: unadjusted) < 0.05; direction from the mean difference.
 - Equivalence (H1 only): if not significant, TOST with paired t at bounds ±0.010; "equivalent within ±0.01" may be
   claimed only if both one-sided p < 0.05.
 - Reported with every decision: mean and median difference, wins, dz, 95 % CI from a three-level bootstrap (test

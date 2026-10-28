@@ -47,7 +47,7 @@ Phase 7  Report                     ~2 h
 | 1.4 | Pools: the launcher calls the experiment once per pool; `pool_k` uses seeds 200+10(k−1) … 209+10(k−1), results in `experiment/study2/pool<k>/`. | `_run_study2.py` |
 | 1.5 | `_filter_check.py` takes an output path, so the 4 pools do not overwrite each other. | `_filter_check.py` |
 | 1.6 | Launcher `_run_study2.py` (for `run_retry.sh`, resumes by skipping finished runs). | new |
-| 1.7 | Frozen analysis `_study2_analysis.py`: Wilcoxon for H1–H3, Holm, TOST ±0.01 for H1, 3-level bootstrap, per-pool sensitivity. Refuses to run unless all 160 runs exist. Test it on **fake** result files only. | new |
+| 1.7 | Frozen analysis `_study2_analysis.py`: Wilcoxon for H1–H3 (H1 primary at α 0.05, Holm over H2–H3), TOST ±0.01 for H1, 3-level bootstrap, per-pool sensitivity. Refuses to run unless all 160 runs exist. Test it on **fake** result files only. | new |
 | 1.8 | `.gitignore`: `generator_comparison/pools2/*.npz`. | `.gitignore` |
 | 1.9 | Tests: fixed step count equal across conditions; `--val-only` writes no test files; analysis script on a fake results file gives the expected decision. | `tests/` |
 
@@ -57,30 +57,29 @@ Phase 7  Report                     ~2 h
 **Goal:** 4 independent pools from the frozen generator, scored with the corrected filter.
 
 ```bash
-py -3.14 _beat_gen_pool.py generator_comparison/template_gen/checkpoints/tpl_8x64_last.pt 0,3200,1800,1400 generator_comparison/pools2/pool_1.npz --weights ema --seed 11
+bash _build_pools2.sh > generator_comparison/pools2/build.log 2>&1
+py -3.14 _check_pools2.py
 ```
-Repeat with `--seed 12 / 13 / 14` → `pool_2..4.npz` (~7 min each). Then score each one (~15 min each):
-```bash
-py -3.14 -m generator_comparison.quality_filter generator_comparison/pools2/pool_1.npz generator_comparison/pools2/scores_1.npz
-```
+The build makes `pool_1..4.npz` with `--seed 11 / 21 / 31 / 41` (spaced so no diffusion-noise seed is shared between
+pools; 11–14 shared seeds across classes) and scores each one; ~8 min per pool in total.
 
-**Checks per pool (record the numbers):**
+**Checks per pool (`_check_pools2.py`, written to `pools2/checks.json`):**
 - `pick('filtered')` overlap with true top-k = 1.00 for all three classes.
-- Realism top-third share by fold: max − min < 0.10.
-- True placed-R rate out of class ≤ 2 % (STACH, SBRAD).
+- Realism top-third share by fold: max − min < 0.10 (holds by construction after the within-fold ranking).
+- Replay: regenerating every ECG from the stored template and the pool seed reproduces the pool exactly.
+- True placed-R rate out of class ≤ 2 % (STACH, SBRAD). The rhythm model redraws until the realised rate is in class.
 - Sanity: no NaN/inf, |z| > 20 rate near the old pool's 0.14 %.
 
-**Exit check:** 4 pools and 4 score files exist; SHA-256 of each recorded in a scratch list for Phase 4.
+**Exit check:** all 4 pools PASS; SHA-256 of pools, scores and frozen inputs in `checks.json` for Phase 4.
 
 ## Phase 3: Validation gate (val only) — GO / NO-GO
 **Goal:** prove on validation data that the corrected filter is worth testing, and that runs repeat exactly.
 
-1. Filter check per pool (TSTR on real val, 3 seeds, top vs random vs bottom):
-   `py -3.14 _filter_check.py generator_comparison/pools2/pool_1.npz generator_comparison/pools2/scores_1.npz 440 <out_1>`
-2. **Gate G1:** the mean over the 4 pools of (top − random) balanced accuracy is > 0.
-3. Determinism check: run `py -3.14 _run_study2.py --val-only 1 200 filtered` twice (delete
-   `experiment/study2_check/` in between, or the second call skips the finished run); **Gate G2:** identical val
-   metrics.
+Everything below is one command, `py -3.14 _gate_study2.py` (writes `generator_comparison/pools2/gate.json`):
+1. Filter check per pool (TSTR on real val, 3 seeds, top vs random vs bottom) via `_filter_check.py`.
+2. **Gate G1:** top > random balanced accuracy in **at least 3 of 4 pools**, and mean (top − random) > 0.
+3. Determinism check: the study recipe (pool 1, seed 200, filtered, `--val-only`) run twice in fresh folders;
+   **Gate G2:** identical val metrics and val history.
 4. Write the gate results into the draft pre-registration (Preconditions P5–P7).
 
 **If G1 fails:** stop. Report "the corrected filter does not pick more useful samples on validation". No test run.

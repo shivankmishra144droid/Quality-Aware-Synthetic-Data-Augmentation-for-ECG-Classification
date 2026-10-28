@@ -15,8 +15,15 @@ POOL_SCORES = Path(__file__).resolve().parent.parent / "generator_comparison" / 
 
 
 def true_top_k(scores, y, c, k):
+    """Top-k with ties at the cut-off broken by pool order, the documented behaviour of select()."""
     ic = np.where(y == c)[0]
-    return set(ic[np.argsort(-scores[ic])[:k]])
+    return set(ic[np.argsort(-scores[ic], kind="stable")[:k]])
+
+
+def test_select_breaks_ties_by_pool_order():
+    y = np.array([1] * 5)
+    s = np.array([0.9, 0.5, 0.7, 0.5, 0.5])                 # three-way tie for places 3-5
+    assert list(select(s, y, {1: 3})) == [0, 1, 2]           # the earliest tied sample wins, every time
 
 
 @pytest.mark.parametrize("cond", ["filtered", "filtered_nolabel"])
@@ -81,6 +88,17 @@ def test_rhythm_mean_rr_within_class_bounds(cls):
     rng = np.random.default_rng(1)
     means = np.array([m.sample_mean_cv(rng)[0] for _ in range(2000)])
     assert means.min() >= lo and means.max() <= hi
+
+
+@pytest.mark.parametrize("cls", [0, 2, 3])
+def test_realised_rate_of_placed_beats_within_class(cls):
+    lo, hi = MEAN_RR_BOUNDS[cls]
+    m = _kde_straddling(lo, hi)
+    m.mean_rr_bounds = (lo, hi)
+    m.kde.set_bandwidth(m.kde.factor * 3)                 # wider KDE: more draws near and over the boundary
+    rng = np.random.default_rng(2)
+    realised = np.array([np.diff(m.sample_r_positions(rng)).mean() / 100 for _ in range(1000)])
+    assert realised.min() > lo and realised.max() < hi
 
 
 def test_rhythm_without_bounds_matches_legacy_rng_use():
