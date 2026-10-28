@@ -18,7 +18,7 @@ held-out real_ref scores 9/9). Periodicity = median Lead-II QRS-envelope ACF pea
 Step 5000 was picked from the in-training 8/class evals (same metric family as the scorecard),
 so the 6/9 carries a small selection bias.
 
-## Memorization test (`_run_memorize.py`, `memorize_test/`)
+## Memorization test (`test/_run_memorize.py`, `memorize_test/`)
 
 8x64, one clean SBRAD train ECG (periodicity 0.89), 2000 steps:
 - eps: raw samples corr 0.29 with the training ECG, periodicity 0.09 -> cannot memorize ONE ECG.

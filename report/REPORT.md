@@ -264,7 +264,7 @@ to matter at this ratio. Higher synthetic ratios, a weaker pool, or a stricter f
 
 The main experiment and the generator comparison are reproducible with the commands in the repository `README.md`
 ("Reproduce the main result" and "Reproduce the generator comparison"); the diffusion runs of Section 5.2 have their own
-`_run_*.py` scripts and `RESULT.md` notes. Hardware: RTX 3050 Laptop 4 GB; template
+scripts in `test/` (see `test/README.md`) and `RESULT.md` notes. Hardware: RTX 3050 Laptop 4 GB; template
 generator ~30 min, final pool ~7 min, quality scoring ~15 min, main experiment (50 runs) ~30 min. Seeds: split 42;
 template generator 42; final pool 7; experiment seeds 0–9. Package versions are pinned in `requirements.txt`. Large
 intermediates (pools, templates, checkpoints) are gitignored and rebuilt by the listed scripts.

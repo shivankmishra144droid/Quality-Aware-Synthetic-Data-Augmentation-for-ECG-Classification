@@ -79,7 +79,7 @@ This repository is an **eight-week research codebase** on [PTB-XL v1.0.1](https:
 | **matplotlib** | Plots in notebooks and `generator_comparison/plots/` |
 | **einops**, **opt_einsum** | S4 layer (`synthetic_generation/s4.py`) |
 | **SciPy** (`scipy.signal.find_peaks`) | Lead-II peak **HR** in `generator_comparison/eval_metrics.py`. **Not listed in `requirements.txt`** (often pulled in with scientific stack; pin it if a clean venv fails). |
-| **nbformat** | Used by `_build_w4.py` / `_build_compare.py` to regenerate notebooks. **Not listed in `requirements.txt`**. |
+| **nbformat** | Used by `test/_build_w4.py` / `test/_build_compare.py` to regenerate notebooks. **Not listed in `requirements.txt`**. |
 | **PTB-XL 1.0.1** (PhysioNet) | Source ECGs; local path under `archive/` (gitignored) |
 | **GitHub** | Code hosting; 100 MB file cap → `X_*.npy` omitted from git |
 | **CUDA GPU** | SSSD train/sample. Official 36×256 probed ~**8.2 GB**; this laptop used **8×64** (~1 GB train) |
@@ -125,18 +125,18 @@ flowchart LR
   EPS --> MSE["MSE vs true z"]
 ```
 
-Sampling (optional CFG): `eps = eps_uncond + w * (eps_cond − eps_uncond)` with null cond = zero one-hot. Implemented in `synthetic_generation/utils.py`. Ran **w=2** and **w=4** only (`_run_cfg.py`). No **w=3**.
+Sampling (optional CFG): `eps = eps_uncond + w * (eps_cond − eps_uncond)` with null cond = zero one-hot. Implemented in `synthetic_generation/utils.py`. Ran **w=2** and **w=4** only (`test/_run_cfg.py`). No **w=3**.
 
 **Component map**
 
 | Component | Role |
 |-----------|------|
 | Notebooks `01`–`05` | Human-run pipeline and write-up |
-| `preprocess_ptbxl.py` | Tiny rhythm-count helper on the raw CSV (7 rhythms, not the frozen 4-class rule) |
+| `test/preprocess_ptbxl.py` | Tiny rhythm-count helper on the raw CSV (7 rhythms, not the frozen 4-class rule) |
 | `synthetic_generation/` | Trainable generator package |
 | `baseline/` | Frozen classifier contract |
 | `generator_comparison/` | Pilot pools, metrics, not-runnable records |
-| `_build_*.py`, `_run_*.py`, `_check_ab.py` | One-off experiment / notebook builders (not a library API) |
+| `_build_*.py`, `_run_*.py`, `test/_check_ab.py` | One-off experiment / notebook builders (not a library API) |
 
 ---
 
@@ -153,12 +153,12 @@ ECG - GenAi/
 ├── 03_CNN_LSTM_Baseline.ipynb          # Week 3: train/eval frozen CNN-LSTM
 ├── 04_Synthetic_ECG_Generation.ipynb   # Week 4: SSSD adapt, train, sample
 ├── 05_Generator_Comparison_Pilot.ipynb # Generator selection pilot (not Week 5)
-├── preprocess_ptbxl.py                 # Prints 7-rhythm counts from ptbxl_database.csv
-├── _build_w4.py                        # Regenerates 04_ notebook
-├── _build_compare.py                   # Regenerates 05_ notebook
-├── _run_sssd_v2.py                     # Isolated 4000→16000 iter run
-├── _check_ab.py                        # Check A ckpt 2000; Check B 16×128
-├── _run_cfg.py                         # CFG train + sample w=2 and w=4
+├── test/preprocess_ptbxl.py                 # Prints 7-rhythm counts from ptbxl_database.csv
+├── test/_build_w4.py                        # Regenerates 04_ notebook
+├── test/_build_compare.py                   # Regenerates 05_ notebook
+├── test/_run_sssd_v2.py                     # Isolated 4000→16000 iter run
+├── test/_check_ab.py                        # Check A ckpt 2000; Check B 16×128
+├── test/_run_cfg.py                         # CFG train + sample w=2 and w=4
 ├── archive/                            # Local PTB-XL (gitignored)
 ├── OBSIDIAN/                           # Local notes (gitignored)
 ├── processed_data/                     # Frozen split + labels + stats
@@ -282,9 +282,9 @@ jupyter notebook 05_Generator_Comparison_Pilot.ipynb
 Isolated generator experiments (CUDA, from repo root):
 
 ```bash
-python _run_sssd_v2.py
-python _check_ab.py
-python _run_cfg.py
+python test/_run_sssd_v2.py
+python test/_check_ab.py
+python test/_run_cfg.py
 ```
 
 These write under `generator_comparison/` and must **not** overwrite `synthetic_data/` or `generator_comparison/sssd/` unless you intend to break the selected-pool contract.
@@ -517,7 +517,7 @@ Ponytail / YAGNI: smallest change; no unrequested generators.
 - **CFG w=4** SBRAD pairwise correlation **0.90** (mode-collapse risk). Near-dup vs real train remains low (max corr ≪ 0.95).
 - **README CFG bullet is stale** (“sampling/eval still in progress”); `sssd_cfg_w2` / `w4` metrics exist.
 - **`scipy` / `nbformat` missing** from `requirements.txt`.
-- **`preprocess_ptbxl.py` uses a 7-class first-match rule**, not the frozen exclusive 4-class pipeline — do not treat its counts as the experiment.
+- **`test/preprocess_ptbxl.py` uses a 7-class first-match rule**, not the frozen exclusive 4-class pipeline — do not treat its counts as the experiment.
 - **4000 iters, batch 1** sees a small fraction of 13,811 train ECGs; loss can dip then drift (v3).
 - **AMP off**, batch 1 → slow training.
 - **No Week 5 / no synthetic-in-classifier results.** Do not claim augmentation helped Macro-F1.
