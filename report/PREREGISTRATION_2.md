@@ -1,8 +1,8 @@
-# Pre-registration 2 (DRAFT, not registered): quality-filtered vs random synthetic augmentation, corrected selection
+# Pre-registration 2: quality-filtered vs random synthetic augmentation, corrected selection
 
-**Status: DRAFT.** This document becomes a registration only when it is committed, together with the code and
-frozen inputs it names, *after* every item in "Preconditions" is done and *before* any run under this protocol.
-Until then nothing here is binding, and no part of this study may touch the test split.
+**Status: REGISTERED 2026-10-29.** The git commit that changes this line from DRAFT, with the code and frozen inputs
+it names, is the registration; it was made after every precondition below was done and before any study-2 run touched
+the test split. Nothing below may be changed after this commit; any deviation is reported as a deviation.
 
 ## Why a new study
 Pre-registration 1 (`report/PREREGISTRATION.md`, seeds 100–129) found no filtered-vs-random difference (p = 0.79).
@@ -58,8 +58,13 @@ the hypothesis as originally intended.
       (top − random) > 0. (A mean-only rule would pass about half the time for a useless filter.) If
       the gate fails, the study is **not run** and that is reported; the filter is not tuned and retried under this
       registration.
-- [ ] P8. Frozen analysis script `_study2_analysis.py` and launcher `_run_study2.py`, written and committed before the run, implementing
-      exactly the analysis below, refusing to run on an incomplete result set.
+- [x] P8. Frozen analysis script `_study2_analysis.py` and launcher `_run_study2.py`, written and committed before the run, implementing
+      exactly the analysis below, refusing to run on an incomplete result set or a second time; tested on fake data
+      only (`tests/test_study2.py`).
+
+Launch: `bash run_retry.sh _run_study2.py generator_comparison/experiment_study2_run.log` (resumes by skipping
+finished runs; refuses to resume across changed inputs or without CUDA). Analysis, once, after all 160 runs:
+`py -3.14 _study2_analysis.py`.
 
 ## Hypotheses
 - **H1 (primary):** filtered ≠ random in test macro-F1 (expected filtered > random).
