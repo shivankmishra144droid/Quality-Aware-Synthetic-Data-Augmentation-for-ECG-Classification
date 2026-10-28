@@ -27,8 +27,10 @@ the hypothesis as originally intended.
       `tests/test_selection_and_rhythm.py::test_pick_*`.
 - [x] P2. Realism ranked within (fold, class) (`quality_filter.realism_within_fold`); test
       `test_realism_within_fold_removes_fold_offset`.
-- [x] P3. Mean RR bounded per class (`assembly.MEAN_RR_BOUNDS`: SR 0.6–1.0 s, STACH 0.3–0.6, SBRAD 1.0–2.0,
-      AFIB 0.3–2.0), by rejection sampling.
+- [x] P3. Rate kept inside the class (`assembly.MEAN_RR_BOUNDS`: SR 0.6–1.0 s, STACH 0.3–0.6, SBRAD 1.0–2.0,
+      AFIB 0.3–2.0): the sampled mean RR is rejection-sampled into the bounds, and the whole R-peak series is redrawn
+      until the realised mean RR of the placed beats is strictly inside them; tests
+      `test_rhythm_mean_rr_within_class_bounds`, `test_realised_rate_of_placed_beats_within_class`.
 - [x] P4. **Fixed optimisation budget** (`augment_experiment.train_steps`, `--steps`). Every condition trains for the
       same number of optimizer steps (not epochs), S = 6,250 steps of batch 64 (≈ 25 epochs of the largest
       augmented set), validation every 250 steps, LR halved after 3 evaluations without improvement, no early
@@ -97,8 +99,10 @@ Exactly 40 units × 4 conditions = 160 runs. No interim look at test metrics.
   pool means (treats the pool as the unit; a mixed model was dropped because statsmodels is not in the environment).
 
 ## Secondary (descriptive only)
-SBRAD F1, per-class recall, per-class AUPRC (from saved probabilities), and the filtered-subset overlap with true top-k
-(must be 1.00; a check, not a result).
+Computed by the frozen analysis script and reported without inference: mean SBRAD F1, per-class recall and per-class
+AUPRC (one-vs-rest, from the saved probabilities) per condition, and the SBRAD F1 difference and wins for H1–H3.
+The filtered-subset overlap with the true top-k is a check, not a result: it is 1.00 for every pool
+(`pools2/checks.json`).
 
 ## Known limitations, stated in advance
 - **What the validation gate does and does not show.** In TSTR (synthetic minorities only, same synthetic SR in every
@@ -112,11 +116,25 @@ SBRAD F1, per-class recall, per-class AUPRC (from saved probabilities), and the 
 - The custom patient-level split is not PTB-XL's recommended `strat_fold` split, so absolute numbers are not
   comparable with the literature.
 
-## Frozen inputs (SHA-256), filled in at registration
+## Frozen inputs (SHA-256)
+Paths relative to `generator_comparison/` unless noted. The training run records the pool and score hashes in every
+`config.json` and refuses to resume if they change.
 ```
-<pool_1..4.npz>          TBD
-<scores_1..4.npz>        TBD
+pools2/pool_1.npz                           bf7daeca6e6ef95d0c6f643885d746246af7037ec5b976560c6361e356cd2141
+pools2/pool_2.npz                           e428a704812b61f06c30f4b52762083a0e2d575265faf9c48b4a0136c24bcbb1
+pools2/pool_3.npz                           95892db476faacdb7855d76da946f052a604c14c923f85bd486fa5f988b8c7c8
+pools2/pool_4.npz                           1d05494af6065e8dbf933d959c89e05450106854a231d95c38c389f108ab6b27
+pools2/scores_1.npz                         6c9df2113470c01027a162c96575323052f035021118a406cf62bd6480bf7a8b
+pools2/scores_2.npz                         be82eaa0397eb59db72ca45869e2de8d86ef6ad26853ae3676e8ebd3b55d61a9
+pools2/scores_3.npz                         e3e5a3d2d4a692258376d9e4f6c057ff919498197c7b51a4107e7618cba66ffa
+pools2/scores_4.npz                         2a779e1aeb7a87db29f70b20d08b302769978ed5b862c2f30136d3e451211cda
 template_gen/checkpoints/tpl_8x64_last.pt   19a8e764681f0a0a897a7edf9d0f46565798d686948aa1d43ba076801ad979df
-beat_templates/assembly_models.pkl          TBD
-baseline/cnn_lstm_baseline.pt               51466880ac3c50a9d6957f1d90be58db72fb2f06a40bb94704ba0751fbfd327e
+beat_templates/assembly_models.pkl          b2b133a6b2289c611accdbdafe0b4f315ea361fb170e2fcfde415507337fa9f5
+baseline/cnn_lstm_baseline.pt (repo root)   51466880ac3c50a9d6957f1d90be58db72fb2f06a40bb94704ba0751fbfd327e
 ```
+Generator and baseline hashes are identical to pre-registration 1.
+
+## Environment
+Exact reproducibility (P5) holds for this hardware and software only: NVIDIA GeForce RTX 3050 Laptop GPU, driver
+591.59, Python 3.14, torch 2.11.0+cu128 (CUDA 12.8, cuDNN 9.19), numpy 2.5.2, scipy 1.17.1, scikit-learn 1.9.0
+(Windows 11). On other hardware results will differ slightly; the protocol does not depend on bit-exactness.

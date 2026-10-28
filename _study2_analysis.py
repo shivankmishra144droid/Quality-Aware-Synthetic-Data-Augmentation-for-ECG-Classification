@@ -17,6 +17,7 @@ from pathlib import Path
 import numpy as np
 from scipy.stats import ttest_1samp, wilcoxon
 
+from generator_comparison.eval_metrics import CLASS_ORDER
 from generator_comparison.stats import fast_f1, holm
 
 POOLS = (1, 2, 3, 4)
@@ -38,8 +39,26 @@ def load(d: Path):
     if missing:
         raise SystemExit(f"Incomplete: {len(missing)} runs missing, e.g. {missing[:3]}. The analysis needs all 160.")
     f1 = {c: np.array([res[k][f"{c}/seed{s}"]["test"]["macro_f1"] for k, s in units]) for c in CONDS}
-    pred = {c: [np.load(d / f"pool{k}" / f"test_prob_{c}_seed{s}.npy").argmax(1) for k, s in units] for c in CONDS}
-    return units, f1, pred
+    prob = {c: [np.load(d / f"pool{k}" / f"test_prob_{c}_seed{s}.npy") for k, s in units] for c in CONDS}
+    test = {c: [res[k][f"{c}/seed{s}"]["test"] for k, s in units] for c in CONDS}
+    return units, f1, prob, test
+
+
+def descriptive(prob, test, y):
+    """Secondary, descriptive only (no inference): per condition, mean SBRAD F1, per-class recall and per-class
+    AUPRC (one-vs-rest, from the saved probabilities); per hypothesis, the SBRAD F1 difference and wins."""
+    from sklearn.metrics import average_precision_score
+    out = {"per_condition": {}, "sbrad_f1_diff": {}}
+    for c in CONDS:
+        out["per_condition"][c] = {
+            "sbrad_f1": float(np.mean([t["f1"]["SBRAD"] for t in test[c]])),
+            "recall": {cl: float(np.mean([t["recall"][cl] for t in test[c]])) for cl in CLASS_ORDER},
+            "auprc": {cl: float(np.mean([average_precision_score(y == j, p[:, j]) for p in prob[c]]))
+                      for j, cl in enumerate(CLASS_ORDER)}}
+    for h, (a, r) in HYP.items():
+        dd = np.array([ta["f1"]["SBRAD"] - tr["f1"]["SBRAD"] for ta, tr in zip(test[a], test[r])])
+        out["sbrad_f1_diff"][h] = {"mean": float(dd.mean()), "wins": int((dd > 0).sum()), "n": len(dd)}
+    return out
 
 
 def bootstrap(units, pred, y, pid, boot, seed=0):
@@ -58,7 +77,8 @@ def bootstrap(units, pred, y, pid, boot, seed=0):
 
 
 def analyse(d: Path, y, pid, boot=BOOT):
-    units, f1, pred = load(d)
+    units, f1, prob, test = load(d)
+    pred = {c: [p.argmax(1) for p in prob[c]] for c in CONDS}
     pool_of = np.array([k for k, _ in units])
     rows = {}
     for h, (a, r) in HYP.items():
@@ -90,7 +110,8 @@ def analyse(d: Path, y, pid, boot=BOOT):
             v["decision"] = "NOT SUPPORTED; inconclusive (not equivalent within the bounds)" if h == "H1" \
                 else "NOT SUPPORTED"
     means = {c: float(f1[c].mean()) for c in CONDS}
-    return {"alpha": ALPHA, "sesoi": SESOI, "boot": boot, "condition_means": means, "hypotheses": rows}
+    return {"alpha": ALPHA, "sesoi": SESOI, "boot": boot, "condition_means": means, "hypotheses": rows,
+            "descriptive": descriptive(prob, test, y)}
 
 
 def to_md(out):
@@ -108,6 +129,15 @@ def to_md(out):
           "Sensitivity (descriptive): per-pool mean differences "
           + "; ".join(f"{h} " + ", ".join(f"{x:+.4f}" for x in v["pool_mean_diffs"].values())
                       + f" (pool-level t p {v['pool_level_t_p']:.3f})" for h, v in out["hypotheses"].items()) + "."]
+    ds = out["descriptive"]
+    L += ["", "## Secondary (descriptive only, no inference)", "",
+          "| condition | SBRAD F1 | recall " + " / ".join(CLASS_ORDER) + " | AUPRC " + " / ".join(CLASS_ORDER) + " |",
+          "|---|---|---|---|"]
+    for c, v in ds["per_condition"].items():
+        L.append(f"| {c} | {v['sbrad_f1']:.3f} | " + " / ".join(f"{x:.2f}" for x in v["recall"].values()) + " | "
+                 + " / ".join(f"{x:.3f}" for x in v["auprc"].values()) + " |")
+    L += [""] + [f"- {h} SBRAD F1 difference: {v['mean']:+.4f}, {v['wins']}/{v['n']} wins"
+                 for h, v in ds["sbrad_f1_diff"].items()]
     return "\n".join(L) + "\n"
 
 

@@ -104,7 +104,9 @@ def write_fake_study(d, f1_of, rng, n_test=120):
         (d / f"pool{k}").mkdir(parents=True)
         for c in A.CONDS:
             for s in A.SEEDS[k]:
-                res[f"{c}/seed{s}"] = {"test": {"macro_f1": f1_of(c, k, s)}}
+                m = f1_of(c, k, s)
+                res[f"{c}/seed{s}"] = {"test": {"macro_f1": m, "f1": {cl: m for cl in ("SR", "AFIB", "STACH", "SBRAD")},
+                                                "recall": {cl: m for cl in ("SR", "AFIB", "STACH", "SBRAD")}}}
                 np.save(d / f"pool{k}" / f"test_prob_{c}_seed{s}.npy", rng.random((n_test, 4)))
         (d / f"pool{k}" / "results.json").write_text(json.dumps(res))
     return rng.integers(0, 4, n_test), np.repeat(np.arange(n_test // 2), 2)
@@ -121,7 +123,12 @@ def test_analysis_detects_a_clear_effect(tmp_path):
     assert h["H2"]["decision"].startswith("SUPPORTED") and h["H3"]["decision"].startswith("SUPPORTED")
     assert h["H1"]["adjusted_p"] == h["H1"]["wilcoxon_p"]                  # primary: unadjusted
     assert all(h[x]["adjusted_p"] >= h[x]["wilcoxon_p"] for x in ("H2", "H3"))
-    assert "H1" in A.to_md(out)
+    md = A.to_md(out)
+    assert "H1" in md and "Secondary (descriptive only" in md
+    ds = out["descriptive"]
+    assert set(ds["per_condition"]) == set(A.CONDS)
+    assert all(0 <= x <= 1 for v in ds["per_condition"].values() for x in v["auprc"].values())
+    assert ds["sbrad_f1_diff"]["H1"]["mean"] > 0.02 and ds["sbrad_f1_diff"]["H1"]["n"] == 40
 
 
 def test_analysis_null_with_equivalence(tmp_path):
