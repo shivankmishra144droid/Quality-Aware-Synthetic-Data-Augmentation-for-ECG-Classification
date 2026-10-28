@@ -34,7 +34,9 @@ the hypothesis as originally intended.
       augmented set), validation every 250 steps, LR halved after 3 evaluations without improvement, no early
       stopping; the state with the best validation macro-F1 is kept. Removes the confound that augmented sets get
       ~15 % more steps per epoch and that many study-1 runs stopped at the 25-epoch cap.
-- [ ] P5. **Determinism** (`--deterministic`; implemented). `torch.use_deterministic_algorithms(True)`,
+- [x] P5. **Determinism** (`--deterministic`; implemented). *G2 passed 2026-10-29: pool 1, seed 200, filtered, full
+      6,250 steps, run twice in fresh folders: all 25 validation evaluations identical (val macro-F1 0.820, best step
+      5,500, ~53 s per run). `generator_comparison/pools2/gate.json`.* `torch.use_deterministic_algorithms(True)`,
       `torch.backends.cudnn.deterministic = True`, `benchmark = False`, `CUBLAS_WORKSPACE_CONFIG=:4096:8`. A rerun of
       one seed must reproduce its validation metrics exactly; this check is recorded before registration. It runs with
       `--val-only` (`_run_study2.py --val-only 1 200 filtered`; the test split is never loaded). Smoke check on the old
@@ -46,7 +48,9 @@ the hypothesis as originally intended.
       out of class 0 %, no non-finite values); hashes in `generator_comparison/pools2/checks.json`. The rhythm model
       redraws until the realised rate of the placed beats is in class (bounding only the sampled mean left ~5 % of
       STACH out of class in a first build, which was discarded).*
-- [ ] P7. **Validation gate (validation split only).** For each pool, run `_filter_check.py` (TSTR on real val:
+- [x] P7. **Validation gate (validation split only).** *G1 passed 2026-10-29: top − random TSTR balanced accuracy
+      +0.049 / +0.041 / +0.035 / +0.013 (pools 1–4; 4 of 4 won, mean +0.035); top − bottom +0.12 to +0.19.
+      `generator_comparison/pools2/filter_check_1..4.md`, `gate.json`.* For each pool, run `_filter_check.py` (TSTR on real val:
       top-k vs random-k vs bottom-k, 3 seeds; run and evaluated by `_gate_study2.py`, rule fixed before any gate
       result was seen). Gate: top > random balanced accuracy in **at least 3 of the 4 pools and** a mean
       (top − random) > 0. (A mean-only rule would pass about half the time for a useless filter.) If
@@ -97,6 +101,11 @@ SBRAD F1, per-class recall, per-class AUPRC (from saved probabilities), and the 
 (must be 1.00; a check, not a result).
 
 ## Known limitations, stated in advance
+- **What the validation gate does and does not show.** In TSTR (synthetic minorities only, same synthetic SR in every
+  subset), the top-scored subsets raised minority recall and lowered SR recall in all 4 pools (SR recall 0.41–0.52
+  top vs 0.56–0.70 random). Part of the filter's validation advantage is therefore a shift toward predicting the
+  minority classes. With 11,741 real SR ECGs in the augmented training set this may not carry over; H1 tests whether
+  it does. Pool 4's margin (+0.013) is within its seed spread (± 0.03).
 - The test split was already analysed in study 1 and the exploratory run. Fresh seeds, fresh pools and one
   pre-specified analysis are the available safeguard; results are not claims about an untouched test set.
 - One generator family, one classifier, one ratio. Results do not extend to other ratios or filters; those are new studies.

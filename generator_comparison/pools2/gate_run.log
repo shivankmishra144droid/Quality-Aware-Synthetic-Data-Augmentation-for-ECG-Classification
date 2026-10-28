@@ -1,0 +1,133 @@
+top seed 0 bal acc 0.733
+top seed 1 bal acc 0.771
+top seed 2 bal acc 0.738
+random seed 0 bal acc 0.706
+random seed 1 bal acc 0.691
+random seed 2 bal acc 0.697
+bottom seed 0 bal acc 0.575
+bottom seed 1 bal acc 0.642
+bottom seed 2 bal acc 0.603
+| subset | TSTR balanced acc (real val) | recall SR / AFIB / STACH / SBRAD |
+|---|---|---|
+| top-440 | 0.747 ± 0.017 | 0.52 / 0.61 / 0.88 / 0.97 |
+| random-440 | 0.698 ± 0.006 | 0.63 / 0.58 / 0.75 / 0.82 |
+| bottom-440 | 0.607 ± 0.027 | 0.82 / 0.47 / 0.59 / 0.54 |
+top seed 0 bal acc 0.764
+top seed 1 bal acc 0.735
+top seed 2 bal acc 0.759
+random seed 0 bal acc 0.712
+random seed 1 bal acc 0.748
+random seed 2 bal acc 0.674
+bottom seed 0 bal acc 0.559
+bottom seed 1 bal acc 0.503
+bottom seed 2 bal acc 0.637
+| subset | TSTR balanced acc (real val) | recall SR / AFIB / STACH / SBRAD |
+|---|---|---|
+| top-440 | 0.753 ± 0.013 | 0.46 / 0.71 / 0.90 / 0.94 |
+| random-440 | 0.711 ± 0.031 | 0.56 / 0.61 / 0.77 / 0.90 |
+| bottom-440 | 0.566 ± 0.055 | 0.79 / 0.52 / 0.47 / 0.49 |
+top seed 0 bal acc 0.729
+top seed 1 bal acc 0.752
+top seed 2 bal acc 0.723
+random seed 0 bal acc 0.703
+random seed 1 bal acc 0.688
+random seed 2 bal acc 0.706
+bottom seed 0 bal acc 0.535
+bottom seed 1 bal acc 0.568
+bottom seed 2 bal acc 0.580
+| subset | TSTR balanced acc (real val) | recall SR / AFIB / STACH / SBRAD |
+|---|---|---|
+| top-440 | 0.734 ± 0.012 | 0.41 / 0.66 / 0.90 / 0.96 |
+| random-440 | 0.699 ± 0.008 | 0.69 / 0.54 / 0.83 / 0.75 |
+| bottom-440 | 0.561 ± 0.019 | 0.84 / 0.53 / 0.41 / 0.46 |
+top seed 0 bal acc 0.719
+top seed 1 bal acc 0.744
+top seed 2 bal acc 0.670
+random seed 0 bal acc 0.682
+random seed 1 bal acc 0.733
+random seed 2 bal acc 0.680
+bottom seed 0 bal acc 0.595
+bottom seed 1 bal acc 0.634
+bottom seed 2 bal acc 0.557
+| subset | TSTR balanced acc (real val) | recall SR / AFIB / STACH / SBRAD |
+|---|---|---|
+| top-440 | 0.711 ± 0.031 | 0.49 / 0.64 / 0.76 / 0.95 |
+| random-440 | 0.698 ± 0.024 | 0.70 / 0.47 / 0.77 / 0.86 |
+| bottom-440 | 0.596 ± 0.031 | 0.65 / 0.67 / 0.55 / 0.50 |
+CONFIG {"pool": "generator_comparison/pools2/pool_1.npz", "scores": "generator_comparison/pools2/scores_1.npz", "ratio": 1.0, "synthetic_per_class": {"AFIB": 1056, "STACH": 568, "SBRAD": 446}, "seeds": 1, "seed_start": 200, "max_epochs": 25, "steps": 6250, "eval_every": 250, "deterministic": true, "val_only": true, "pool_sha256": "bf7daeca6e6ef95d0c6f643885d746246af7037ec5b976560c6361e356cd2141", "scores_sha256": "6c9df2113470c01027a162c96575323052f035021118a406cf62bd6480bf7a8b", "device": "cuda"}
+filtered/seed200: val mF1 0.820 | val SBRAD F1 0.582 | step 5500 | 51.7s
+done
+CONFIG {"pool": "generator_comparison/pools2/pool_1.npz", "scores": "generator_comparison/pools2/scores_1.npz", "ratio": 1.0, "synthetic_per_class": {"AFIB": 1056, "STACH": 568, "SBRAD": 446}, "seeds": 1, "seed_start": 200, "max_epochs": 25, "steps": 6250, "eval_every": 250, "deterministic": true, "val_only": true, "pool_sha256": "bf7daeca6e6ef95d0c6f643885d746246af7037ec5b976560c6361e356cd2141", "scores_sha256": "6c9df2113470c01027a162c96575323052f035021118a406cf62bd6480bf7a8b", "device": "cuda"}
+filtered/seed200: val mF1 0.820 | val SBRAD F1 0.582 | step 5500 | 54.9s
+done
+{
+  "G1": {
+    "per_pool_top_minus_random": [
+      0.049128694105209925,
+      0.04141240651330114,
+      0.03526213354791885,
+      0.01270359391271425
+    ],
+    "pools_won": 4,
+    "mean": 0.03462670701978604,
+    "pass": true
+  },
+  "G2": {
+    "run_a": [
+      0.5453,
+      0.6654,
+      0.716,
+      0.6955,
+      0.7495,
+      0.7864,
+      0.7606,
+      0.7469,
+      0.8025,
+      0.7677,
+      0.7603,
+      0.7696,
+      0.7834,
+      0.7976,
+      0.7897,
+      0.7753,
+      0.786,
+      0.7965,
+      0.78,
+      0.7958,
+      0.7892,
+      0.8201,
+      0.8067,
+      0.8083,
+      0.792
+    ],
+    "run_b": [
+      0.5453,
+      0.6654,
+      0.716,
+      0.6955,
+      0.7495,
+      0.7864,
+      0.7606,
+      0.7469,
+      0.8025,
+      0.7677,
+      0.7603,
+      0.7696,
+      0.7834,
+      0.7976,
+      0.7897,
+      0.7753,
+      0.786,
+      0.7965,
+      0.78,
+      0.7958,
+      0.7892,
+      0.8201,
+      0.8067,
+      0.8083,
+      0.792
+    ],
+    "pass": true
+  },
+  "GO": true
+}

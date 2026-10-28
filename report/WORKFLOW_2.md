@@ -16,7 +16,7 @@ Phase 1  Finish the code            ~2-3 h   no GPU, no test
 Phase 2  Build 4 pools + scores     ~1.5 h   GPU, no test
 Phase 3  Validation gate            ~1 h     GPU, val only        <- GO / NO-GO
 Phase 4  Register                   ~0.5 h   no GPU
-Phase 5  Run the study              ~4 h     GPU, test saved but not looked at
+Phase 5  Run the study              ~2.5 h   GPU, test saved but not looked at
 Phase 6  Analyse (once)             ~0.2 h
 Phase 7  Report                     ~2 h
 ```
@@ -98,7 +98,8 @@ Everything below is one command, `py -3.14 _gate_study2.py` (writes `generator_c
 ```bash
 bash run_retry.sh _run_study2.py generator_comparison/experiment_study2_run.log
 ```
-- 4 conditions × 4 pools × 10 seeds = **160 runs**, about 85 s each at 6,250 steps (~3.8 h plus restarts).
+- 4 conditions × 4 pools × 10 seeds = **160 runs**, about 53 s each at 6,250 steps (measured in G2; ~2.4 h plus
+  restarts).
 - The log prints validation metrics only. Do not open `results.json` test fields.
 - A crash is rerun with the same seed (the launcher does this). No run is excluded. Stop with a `STOP` file if needed.
 
