@@ -1,0 +1,61 @@
+=== pool 1 (seed 11) 00:43:27 ===
+CUDA extension for cauchy multiplication not found. Install by going to extensions/cauchy/ and running `python setup.py install`. This should speed up end-to-end training by 10-50%
+Falling back on slow Cauchy kernel. Install at least one of pykeops or the CUDA extension for efficiency.
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+AFIB templates std 0.936
+STACH templates std 0.850
+SBRAD templates std 0.887
+saved generator_comparison/pools2/pool_1.npz (6400, 1000, 12) std 1.226 404 s
+=== scores 1 00:50:20 ===
+AFIB {'typicality': 0.604, 'label': 0.941, 'realism': 0.5, 'realism_logodds': -11.552, 'realism_fold': 2.0, 'score': 0.508, 'score_nolabel': 0.504}
+STACH {'typicality': 0.616, 'label': 0.951, 'realism': 0.5, 'realism_logodds': -11.203, 'realism_fold': 2.0, 'score': 0.497, 'score_nolabel': 0.497}
+SBRAD {'typicality': 0.534, 'label': 0.381, 'realism': 0.5, 'realism_logodds': -12.841, 'realism_fold': 2.0, 'score': 0.484, 'score_nolabel': 0.497}
+=== pool 2 (seed 21) 00:51:30 ===
+CUDA extension for cauchy multiplication not found. Install by going to extensions/cauchy/ and running `python setup.py install`. This should speed up end-to-end training by 10-50%
+Falling back on slow Cauchy kernel. Install at least one of pykeops or the CUDA extension for efficiency.
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+AFIB templates std 0.943
+STACH templates std 0.847
+SBRAD templates std 0.877
+saved generator_comparison/pools2/pool_2.npz (6400, 1000, 12) std 1.224 403 s
+=== scores 2 00:58:22 ===
+AFIB {'typicality': 0.602, 'label': 0.941, 'realism': 0.5, 'realism_logodds': -11.89, 'realism_fold': 2.0, 'score': 0.505, 'score_nolabel': 0.504}
+STACH {'typicality': 0.61, 'label': 0.955, 'realism': 0.5, 'realism_logodds': -10.909, 'realism_fold': 2.0, 'score': 0.486, 'score_nolabel': 0.491}
+SBRAD {'typicality': 0.543, 'label': 0.385, 'realism': 0.5, 'realism_logodds': -13.276, 'realism_fold': 2.0, 'score': 0.489, 'score_nolabel': 0.502}
+=== pool 3 (seed 31) 00:59:31 ===
+CUDA extension for cauchy multiplication not found. Install by going to extensions/cauchy/ and running `python setup.py install`. This should speed up end-to-end training by 10-50%
+Falling back on slow Cauchy kernel. Install at least one of pykeops or the CUDA extension for efficiency.
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+AFIB templates std 0.936
+STACH templates std 0.865
+SBRAD templates std 0.877
+saved generator_comparison/pools2/pool_3.npz (6400, 1000, 12) std 1.228 403 s
+=== scores 3 01:06:23 ===
+AFIB {'typicality': 0.6, 'label': 0.939, 'realism': 0.5, 'realism_logodds': -12.622, 'realism_fold': 2.0, 'score': 0.507, 'score_nolabel': 0.51}
+STACH {'typicality': 0.615, 'label': 0.95, 'realism': 0.5, 'realism_logodds': -12.252, 'realism_fold': 2.0, 'score': 0.492, 'score_nolabel': 0.496}
+SBRAD {'typicality': 0.545, 'label': 0.4, 'realism': 0.5, 'realism_logodds': -13.836, 'realism_fold': 2.0, 'score': 0.482, 'score_nolabel': 0.492}
+=== pool 4 (seed 41) 01:07:30 ===
+CUDA extension for cauchy multiplication not found. Install by going to extensions/cauchy/ and running `python setup.py install`. This should speed up end-to-end training by 10-50%
+Falling back on slow Cauchy kernel. Install at least one of pykeops or the CUDA extension for efficiency.
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+AFIB templates std 0.942
+STACH templates std 0.851
+SBRAD templates std 0.877
+saved generator_comparison/pools2/pool_4.npz (6400, 1000, 12) std 1.217 406 s
+=== scores 4 01:14:25 ===
+AFIB {'typicality': 0.605, 'label': 0.942, 'realism': 0.5, 'realism_logodds': -11.826, 'realism_fold': 2.0, 'score': 0.502, 'score_nolabel': 0.507}
+STACH {'typicality': 0.609, 'label': 0.954, 'realism': 0.5, 'realism_logodds': -11.202, 'realism_fold': 2.0, 'score': 0.49, 'score_nolabel': 0.491}
+SBRAD {'typicality': 0.542, 'label': 0.375, 'realism': 0.5, 'realism_logodds': -13.55, 'realism_fold': 2.0, 'score': 0.48, 'score_nolabel': 0.491}
+=== all done 01:15:47 ===
