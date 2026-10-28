@@ -25,8 +25,16 @@ synthetic data is used alone (train-on-synthetic 0.74 top vs 0.58 bottom). Synth
 conditions did not use the top-scored synthetic ECGs for STACH and SBRAD: a selection bug kept only 54 % (STACH) and
 38 % (SBRAD) of the true top-k (AFIB was correct). The filtered-vs-random comparison therefore did not test the
 hypothesis as specified for two of three minority classes, and the null result above must not be read as evidence that
-quality-aware selection does not work. The results are left as run; a corrected study is planned
-(`report/PREREGISTRATION_2.md`, draft).
+quality-aware selection does not work. The results are left as run.
+
+**Study 2: corrected, pre-registered (Section 8.3).** With the bug fixed, the score recalibrated, 4 independent
+synthetic pools and 40 new seeds (160 runs, fixed training budget, deterministic GPU training), filtered vs random was
+again **not supported**: −0.0041 macro-F1 (filtered better in 16/40 units), two-sided Wilcoxon p = 0.058. The
+registered equivalence test passed (TOST ±0.01), so the decision is "no gain larger than 0.01". The three-level bootstrap
+CI (−0.012 to +0.003) is wider than the seed-level TOST, so a loss slightly larger than 0.01 cannot be excluded. Random
+synthetic augmentation beat real-only training (+0.036, 40/40) and duplicating real minority ECGs (+0.020, 37/40),
+both significant after Holm correction. The per-class detail shows that this gain comes mainly from higher precision
+(fewer SR ECGs called SBRAD), not better ranking: SBRAD AUPRC is unchanged.
 
 ## 1. Problem and research question
 
@@ -243,7 +251,8 @@ it should not be taken as evidence for quality-aware selection. The conclusions 
 augmentation improves over real-only training, and the quality score ranks samples by usefulness when synthetic data
 is used alone (TSTR), but this ranking does not translate into a measurable gain when synthetic data is *added* to the
 real training set at ratio 1.0. *(Qualified 2026-10-28: for STACH and SBRAD the "filtered" subsets were not the
-top-ranked samples, Section 8.2, so this last statement is untested for those classes.)*
+top-ranked samples, Section 8.2, so this last statement is untested for those classes. Section 8.3 tests it with the
+corrected code; the statement holds.)*
 
 **Possible reasons (untested).** With 11,741 real SR and the full real minority set already present, the classifier may
 gain mainly from more minority examples and rebalanced class weights, which any synthetic subset provides; the quality
@@ -273,7 +282,7 @@ whose mean score was closer to random than to the top-k, so H1 was **not tested 
 classes, including SBRAD, the class with the most to gain. The confirmatory null result (Section 8.1) stands as a
 description of what was run, but it is not evidence that quality-aware selection fails. All filtered and
 filtered_nolabel comparisons in Sections 8 and 8.1 carry the same caveat. Neither study is re-run or re-analysed: a
-corrected study needs its own pre-registration (`report/PREREGISTRATION_2.md`, draft; workflow in
+corrected study needs its own pre-registration (`report/PREREGISTRATION_2.md`, now run: Section 8.3; workflow in
 `report/WORKFLOW_2.md`).
 
 **Other issues found in the same review** (they affect the quality score itself, including the Section 7 sanity check):
@@ -289,10 +298,90 @@ corrected study needs its own pre-registration (`report/PREREGISTRATION_2.md`, d
 **Fixes** (commit after this note): per-class top-k selection with a regression test, realism ranked within
 (fold, class), and class-specific mean-RR bounds in the rhythm model. They apply only to new pools and new studies.
 
+### 8.3 Study 2: the corrected filtered-vs-random study (pre-registered)
+
+Registered in `report/PREREGISTRATION_2.md` (commit `d8c7024`, 2026-10-29) before any study 2 run; workflow in
+`report/WORKFLOW_2.md`. Result files: `generator_comparison/experiment/study2/study2_result.{json,md}` (commit `4cfb6ef`).
+The analysis script `_study2_analysis.py` was frozen at registration and run once.
+
+**Design.** The same frozen generator, assembly models and baseline as study 1 (SHA-256 checked before and after the
+run). Changes from study 1:
+- *Selection:* per-class top-k (bug in Section 8.2 fixed, overlap with the true top-k 1.00 for every class and pool).
+- *Score:* realism ranked within (CV fold, class); rhythm sampling redraws until the placed-R rate is inside the class.
+- *Pools:* 4 independently generated pools (seeds 11/21/31/41), each scored on its own. Each pool gets 10 new training
+  seeds (200–239), giving 40 paired units of (pool, seed).
+- *Training:* a fixed budget of 6,250 steps (batch 64) for every condition, so conditions with more data do not get more
+  updates; best validation checkpoint kept. Deterministic CUDA (identical reruns verified in gate G2).
+- *Conditions:* real, oversample, random, filtered (no `filtered_nolabel`). 4 × 40 = 160 runs.
+
+**Validation gate (before registration, validation data only).** G1: in the train-on-synthetic check, top-scored samples
+beat random ones in all 4 pools (balanced accuracy +0.049, +0.041, +0.035, +0.013; rule: ≥ 3 of 4 and mean > 0).
+G2: two runs of the study recipe gave identical 25-point validation histories. Both passed, so the study went ahead.
+
+**Run (Phase 5 audit).** All 160 runs finished in one attempt with no restarts. Every run trained exactly 6,250 steps.
+Pool and score hashes in every config match the registration. The 160 saved test-probability files are all distinct, and
+each one reproduces the macro-F1 recorded for its run.
+
+**Result (as registered).**
+
+| condition | test macro-F1, mean of 40 |
+|---|---|
+| real | 0.8030 |
+| oversample | 0.8199 |
+| random | 0.8393 |
+| filtered | 0.8352 |
+
+| | comparison | mean diff | wins | Wilcoxon p | adjusted p | 95 % CI (3-level bootstrap) | decision |
+|---|---|---|---|---|---|---|---|
+| H1 (primary) | filtered − random | −0.0041 | 16/40 | 0.058 | 0.058 (none) | −0.0116 to +0.0031 | **not supported; equivalent within ±0.01 (TOST)** |
+| H2 | random − real | +0.0364 | 40/40 | < 0.0001 | < 0.0001 (Holm) | +0.0264 to +0.0465 | **supported** |
+| H3 | random − oversample | +0.0195 | 37/40 | < 0.0001 | < 0.0001 (Holm) | +0.0084 to +0.0305 | **supported** |
+
+H1 TOST (paired t over the 40 units, bounds ±0.01): p_lower 0.005, p_upper < 0.0001. Per-pool H1 means: −0.0083,
+−0.0039, −0.0021, −0.0022 (one-sample t on the 4 pool means, p = 0.067).
+
+**How to read H1.** No evidence that the filter helps. The point estimate slightly favours random selection: all four
+pool means are negative, but neither the primary test nor the pool-level test is significant, so this is not evidence
+that the filter hurts. The "equivalent" decision follows the registered rule and stands. That rule is a paired t-test
+over seeds and pools on one fixed test set. It does not include test-patient sampling. The bootstrap, which does
+resample patients, gives a CI whose lower end (−0.0116) is just beyond −0.01. So the fair summary is: no gain of 0.01 or
+more, and a loss of slightly more than 0.01 is not ruled out.
+
+**Why the gate passed but H1 did not.** G1 measures how useful samples are *on their own* (train on synthetic only,
+balanced accuracy on validation). H1 measures what they add *on top of* the full real training set (macro-F1 on test).
+The score does find better standalone samples, but at ratio 1.0 next to the real data, that does not turn into a better
+classifier. This is a finding in itself, not a contradiction: the sample quality that matters on its own is not the
+quality that matters for augmentation.
+
+**Secondary outputs (registered as descriptive, no inference).**
+
+| condition | SBRAD F1 | recall SR / AFIB / STACH / SBRAD | AUPRC SR / AFIB / STACH / SBRAD |
+|---|---|---|---|
+| real | 0.493 | 0.93 / 0.93 / 0.90 / 0.81 | 0.996 / 0.954 / 0.937 / 0.761 |
+| oversample | 0.543 | 0.94 / 0.93 / 0.88 / 0.79 | 0.996 / 0.951 / 0.933 / 0.750 |
+| random | 0.610 | 0.96 / 0.92 / 0.91 / 0.77 | 0.997 / 0.958 / 0.937 / 0.756 |
+| filtered | 0.604 | 0.95 / 0.93 / 0.90 / 0.77 | 0.997 / 0.952 / 0.939 / 0.758 |
+
+SBRAD F1 differences: H1 −0.006 (18/40), H2 +0.117 (40/40), H3 +0.067 (34/40).
+
+*Post hoc reading of the table above (not a registered analysis).* The H2/H3 gain comes from a change in the
+operating point, not from better discrimination. SBRAD F1 rises from 0.49 to 0.61 while SBRAD recall *falls*
+(0.81 → 0.77) and SR recall rises (0.93 → 0.96). So the gain is from fewer sinus ECGs being called SBRAD (higher precision).
+SBRAD AUPRC, which does not depend on the threshold, is flat (0.761 vs 0.756). Synthetic augmentation therefore improves
+the classifier's decisions under class imbalance, but not its ability to rank SBRAD cases. Since the weighted loss
+already rebalances classes, the most likely mechanism is that more minority examples change the learned class boundary.
+A threshold-tuned real-only baseline would be the right control and was not run.
+
 ## 9. Limitations
 
 - **Selection bug (Section 8.2).** The filtered conditions were not the top-scored subsets for STACH and SBRAD in
-  either study, so the filtered-vs-random question is not yet answered for those classes.
+  study 1 or its confirmation. Study 2 (Section 8.3) repeats the comparison with the bug fixed.
+- **Study 2 reuses the study 1 test split**, which had already been used for two filtered-vs-random analyses. The
+  study 2 code, gate and registration did not use test data, but the test set is not new.
+- **Equivalence is seed-level.** The registered TOST ignores test-patient sampling. The patient-level bootstrap CI for H1
+  reaches −0.0116.
+- **No threshold-tuned baseline.** The augmentation gain is mostly a precision/operating-point shift (Section 8.3), so
+  part of it might be reachable by tuning the real-only decision threshold on validation. This was not tested.
 
 - **Synthetic ECGs are detectable** (realism detector AUC 1.00). Ablations show why: the residual left after removing the
   median beat is beat-locked in real ECGs, while ours is a stationary Gaussian process, visibly noisier between beats.
@@ -300,8 +389,8 @@ corrected study needs its own pre-registration (`report/PREREGISTRATION_2.md`, d
 - **Rhythm is constructed, not learned**: RR series come from fitted per-class distributions; AFIB atrial activity is
   parametric (residual Gaussian process). The learned part of the generator is beat morphology only.
 - Typical amplitude ~12 % above real (scorecard amplitude check fails); noise and wander scales are sampled independently.
-- **Scope**: one mix ratio (1.0), one generator, one classifier architecture. The confirmatory study (30 seeds) rules
-  out a filtered-vs-random gain above ~+0.01 macro-F1 in this setting only.
+- **Scope**: one mix ratio (1.0), one generator, one classifier architecture, one dataset. Study 2 rules out a
+  filtered-vs-random gain above +0.01 macro-F1 in this setting only.
 - The whole-ECG diffusion route was limited by a 4 GB GPU (8×64 and 16×128 tried; the published 36×256 was not).
 - **Decisions made after seeing intermediate results.** Before any test-set use: scorecard validity recalibrated to the
   real rate of |z| > 20 (~1 %); filter components combined as ranks and detector log-odds after probabilities saturated;
@@ -320,3 +409,8 @@ scripts in `test/` (see `test/README.md`) and `RESULT.md` notes. Hardware: RTX 3
 generator ~30 min, final pool ~7 min, quality scoring ~15 min, main experiment (50 runs) ~30 min. Seeds: split 42;
 template generator 42; final pool 7; experiment seeds 0–9. Package versions are pinned in `requirements.txt`. Large
 intermediates (pools, templates, checkpoints) are gitignored and rebuilt by the listed scripts.
+
+Study 2 (Section 8.3): `bash _build_pools2.sh`, `py -3.14 _check_pools2.py`, `py -3.14 _gate_study2.py`, then
+`bash run_retry.sh _run_study2.py generator_comparison/experiment_study2_run.log` (~2.5 h, 160 runs of ~57 s) and
+`py -3.14 _study2_analysis.py`. Pool seeds 11/21/31/41, training seeds 200–239, deterministic CUDA
+(torch 2.11.0+cu128, cuDNN 9.19). Tests: `py -3.14 -m pytest tests -q`.

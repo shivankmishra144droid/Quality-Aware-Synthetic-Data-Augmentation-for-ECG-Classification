@@ -8,8 +8,12 @@ selection** of those samples improves imbalanced rhythm classification more than
 **Result in one paragraph.** Augmenting the minority classes improved test macro-F1 from 0.791 (real only) to
 0.820–0.835 and SBRAD F1 from 0.49 to 0.58–0.61 (10 seeds). Quality-filtered vs randomly selected synthetic ECGs looked
 slightly better at first (+0.010, p = 0.065), but a **pre-registered confirmatory study with 30 new seeds found no
-difference** (+0.0014 macro-F1, 16/30 seeds, p = 0.79). At this mix ratio, quality-aware selection did not improve the
-classifier over random selection.
+difference** (+0.0014 macro-F1, 16/30 seeds, p = 0.79). A later code review found that those "filtered" subsets were
+not the true top-scored samples for STACH and SBRAD. **Study 2** fixed this and was pre-registered: 4 independent pools ×
+10 seeds, 160 runs. Filtered vs random was −0.0041 macro-F1 (16/40, p = 0.058), equivalent within ±0.01 under the
+registered test. Random synthetic augmentation beat real-only training (+0.036, 40/40) and duplicating real minority ECGs
+(+0.020). At this mix ratio, quality-aware selection does not improve the classifier over random selection
+(report Section 8.3).
 
 ## Research question
 
@@ -57,6 +61,16 @@ py -3.14 -m generator_comparison.quality_filter generator_comparison/final_pool/
 bash run_retry.sh _run_main_experiment.py generator_comparison/experiment_main_run.log            # ~25 min GPU
 py -3.14 -m generator_comparison.stats --tag main
 py -3.14 _report_figures.py
+```
+
+## Reproduce study 2 (pre-registered, report Section 8.3)
+
+```bash
+bash _build_pools2.sh                                # 4 pools (seeds 11/21/31/41) + scores, ~8 min each
+py -3.14 _check_pools2.py                            # per-pool checks + SHA-256 -> pools2/checks.json
+py -3.14 _gate_study2.py                             # validation-only gate G1/G2 -> pools2/gate.json
+bash run_retry.sh _run_study2.py generator_comparison/experiment_study2_run.log   # 160 runs, ~2.5 h GPU
+py -3.14 _study2_analysis.py                         # runs once; refuses if the result file exists
 ```
 
 ## Reproduce the generator comparison (report Sections 6–7)
