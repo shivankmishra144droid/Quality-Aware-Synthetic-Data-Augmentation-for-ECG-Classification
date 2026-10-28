@@ -15,13 +15,21 @@ patience 7 and ReduceLROnPlateau(0.5, patience 3) on val macro-F1, weighted CE w
 w_c = n_total / (4 n_c) from that condition's training labels. Val selects the epoch; test is
 reported per run, and per-sample test probabilities are saved for the statistics step.
 
+Study 2 (report/PREREGISTRATION_2.md) adds, all off by default so earlier tags are unchanged:
+  --steps S        fixed budget: exactly S optimizer steps of batch 64 for every condition (no early stopping),
+                   val every --eval-every steps, best-val state kept (train_steps)
+  --deterministic  deterministic CUDA / cuDNN kernels (set_deterministic)
+  --val-only       never loads the test split, saves no test predictions (checks before registration)
+
 Usage: py -3.14 -m generator_comparison.augment_experiment <pool.npz> <scores.npz> [--seeds 5] [--ratio 1.0]
        [--conditions real,random,filtered] [--max-epochs 25] [--tag NAME]
+       [--steps S --eval-every 250] [--deterministic] [--val-only]
 """
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import time
 from pathlib import Path
 
@@ -102,6 +110,50 @@ def train_one(Xtr, ytr, Xva, yva, seed, dev, max_epochs=25):
                  "class_weights": dict(zip(CLASS_ORDER, map(float, w)))}
 
 
+def train_steps(Xtr, ytr, Xva, yva, seed, dev, steps, eval_every=250, batch=64):
+    """Fixed optimisation budget: exactly `steps` optimizer steps of `batch` samples, whatever the training-set
+    size, so augmented conditions get no extra updates. Val macro-F1 every `eval_every` steps; LR halves after
+    3 evaluations without improvement; the best-val state is kept. No early stopping."""
+    torch.manual_seed(seed)
+    np.random.seed(seed)
+    rng = np.random.default_rng(seed)
+    w = len(ytr) / (4.0 * np.bincount(ytr, minlength=4))
+    net = CNNLSTM().to(dev)
+    opt = torch.optim.Adam(net.parameters(), lr=1e-3, weight_decay=1e-4)
+    sched = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, mode="max", factor=0.5, patience=3)
+    lossf = nn.CrossEntropyLoss(weight=torch.tensor(w, dtype=torch.float32, device=dev))
+    Xt, yt = torch.from_numpy(Xtr), torch.from_numpy(ytr.astype(np.int64))
+    order, pos = rng.permutation(len(Xt)), 0
+    best, best_state, best_step, hist = -1.0, None, 0, []
+    for step in range(1, steps + 1):
+        if pos + batch > len(order):          # new pass over the data; the partial last batch is dropped
+            order, pos = rng.permutation(len(Xt)), 0
+        b = order[pos:pos + batch]
+        pos += batch
+        net.train()
+        opt.zero_grad()
+        lossf(net(Xt[b].to(dev)), yt[b].to(dev)).backward()
+        opt.step()
+        if step % eval_every == 0 or step == steps:
+            f1 = f1_score(yva, predict(net, Xva, dev).argmax(1), average="macro")
+            sched.step(f1)
+            hist.append(round(float(f1), 4))
+            if f1 > best:
+                best, best_step = f1, step
+                best_state = {k: v.detach().clone() for k, v in net.state_dict().items()}
+    net.load_state_dict(best_state)
+    return net, {"best_val_macro_f1": float(best), "best_step": best_step, "steps": steps, "eval_every": eval_every,
+                 "val_history": hist, "class_weights": dict(zip(CLASS_ORDER, map(float, w)))}
+
+
+def set_deterministic():
+    """Deterministic kernels; must run before the first CUDA op (cuBLAS reads the workspace setting then)."""
+    os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
+    torch.use_deterministic_algorithms(True)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
+
 def metrics(y, prob):
     pred = prob.argmax(1)
     return {"macro_f1": float(f1_score(y, pred, average="macro")),
@@ -110,7 +162,7 @@ def metrics(y, prob):
             "recall": dict(zip(CLASS_ORDER, map(float, recall_score(y, pred, average=None, labels=range(4)))))}
 
 
-def main():
+def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("pool")
     ap.add_argument("scores")
@@ -120,15 +172,22 @@ def main():
     ap.add_argument("--conditions", default="real,random,filtered")
     ap.add_argument("--max-epochs", type=int, default=25)
     ap.add_argument("--tag", default="main")
-    a = ap.parse_args()
+    ap.add_argument("--steps", type=int, default=0, help="fixed optimizer-step budget (0: epoch recipe)")
+    ap.add_argument("--eval-every", type=int, default=250)
+    ap.add_argument("--deterministic", action="store_true")
+    ap.add_argument("--val-only", action="store_true", help="never load the test split")
+    a = ap.parse_args(argv)
 
+    if a.deterministic:
+        set_deterministic()
     out = OUT / a.tag
     out.mkdir(parents=True, exist_ok=True)
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     Xtr = np.load(DATA / "X_train.npy").astype(np.float32)
     ytr = np.load(DATA / "y_train.npy").astype(np.int64)
     Xva, yva = np.load(DATA / "X_val.npy").astype(np.float32), np.load(DATA / "y_val.npy").astype(np.int64)
-    Xte, yte = np.load(DATA / "X_test.npy").astype(np.float32), np.load(DATA / "y_test.npy").astype(np.int64)
+    if not a.val_only:
+        Xte, yte = np.load(DATA / "X_test.npy").astype(np.float32), np.load(DATA / "y_test.npy").astype(np.int64)
     pool = np.load(a.pool)
     pX, py = pool["X"].astype(np.float32), pool["y"].astype(np.int64)
     scores = dict(np.load(a.scores))
@@ -138,6 +197,7 @@ def main():
         assert (py == c).sum() >= counts[c], f"pool too small for {CLASS_ORDER[c]}"
     cfg = {"pool": a.pool, "scores": a.scores, "ratio": a.ratio, "synthetic_per_class":
            {CLASS_ORDER[c]: n for c, n in counts.items()}, "seeds": a.seeds, "seed_start": a.seed_start, "max_epochs": a.max_epochs,
+           "steps": a.steps, "eval_every": a.eval_every, "deterministic": a.deterministic, "val_only": a.val_only,
            "device": str(dev)}
     (out / "config.json").write_text(json.dumps(cfg, indent=2), encoding="utf-8")
     print("CONFIG", json.dumps(cfg), flush=True)
@@ -146,7 +206,7 @@ def main():
     for cond in a.conditions.split(","):
         for seed in range(a.seed_start, a.seed_start + a.seeds):
             key = f"{cond}/seed{seed}"
-            if key in results:
+            if key in results and (a.val_only or "test" in results[key]):   # a val-only entry is redone in a full run
                 print("skip (done)", key)
                 continue
             if cond == "oversample":
@@ -160,16 +220,23 @@ def main():
                 Xa = np.concatenate([Xtr, pX[sel]]) if len(sel) else Xtr
                 ya = np.concatenate([ytr, py[sel]]) if len(sel) else ytr
             t0 = time.time()
-            net, info = train_one(Xa, ya, Xva, yva, seed, dev, a.max_epochs)
-            pte = predict(net, Xte, dev)
-            np.save(out / f"test_prob_{cond}_seed{seed}.npy", pte)
-            results[key] = {**info, "n_synthetic": int(len(sel)), "n_added": int(len(ya) - len(ytr)), "val": metrics(yva, predict(net, Xva, dev)),
-                            "test": metrics(yte, pte), "sec": round(time.time() - t0, 1)}
+            if a.steps:
+                net, info = train_steps(Xa, ya, Xva, yva, seed, dev, a.steps, a.eval_every)
+            else:
+                net, info = train_one(Xa, ya, Xva, yva, seed, dev, a.max_epochs)
+            results[key] = {**info, "n_synthetic": int(len(sel)), "n_added": int(len(ya) - len(ytr)),
+                            "val": metrics(yva, predict(net, Xva, dev))}
+            if not a.val_only:
+                pte = predict(net, Xte, dev)
+                np.save(out / f"test_prob_{cond}_seed{seed}.npy", pte)
+                results[key]["test"] = metrics(yte, pte)
+            results[key]["sec"] = round(time.time() - t0, 1)
             (out / "results.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
             r = results[key]
+            when = f"step {r['best_step']}" if a.steps else f"ep {r['best_epoch']}"
             # Test numbers are saved but not printed: they are read once, in the statistics step.
             print(f"{key}: val mF1 {r['val']['macro_f1']:.3f} | val SBRAD F1 {r['val']['f1']['SBRAD']:.3f} "
-                  f"| ep {r['best_epoch']} | {r['sec']}s", flush=True)
+                  f"| {when} | {r['sec']}s", flush=True)
     print("done")
 
 

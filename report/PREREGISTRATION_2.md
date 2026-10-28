@@ -29,14 +29,16 @@ the hypothesis as originally intended.
       `test_realism_within_fold_removes_fold_offset`.
 - [x] P3. Mean RR bounded per class (`assembly.MEAN_RR_BOUNDS`: SR 0.6–1.0 s, STACH 0.3–0.6, SBRAD 1.0–2.0,
       AFIB 0.3–2.0), by rejection sampling.
-- [ ] P4. **Fixed optimisation budget.** Every condition trains for the same number of optimizer steps (not epochs),
-      set to S = 6,250 steps of batch 64 (≈ 25 epochs of the largest augmented set), with validation every 250
-      steps; the checkpoint with the best validation macro-F1 is kept. Removes the confound that augmented sets get
+- [x] P4. **Fixed optimisation budget** (`augment_experiment.train_steps`, `--steps`). Every condition trains for the
+      same number of optimizer steps (not epochs), S = 6,250 steps of batch 64 (≈ 25 epochs of the largest
+      augmented set), validation every 250 steps, LR halved after 3 evaluations without improvement, no early
+      stopping; the state with the best validation macro-F1 is kept. Removes the confound that augmented sets get
       ~15 % more steps per epoch and that many study-1 runs stopped at the 25-epoch cap.
-- [ ] P5. **Determinism.** `torch.use_deterministic_algorithms(True)`, `torch.backends.cudnn.deterministic = True`,
-      `benchmark = False`, `CUBLAS_WORKSPACE_CONFIG=:4096:8`. A rerun of one seed must reproduce its validation
-      metrics exactly; this check is recorded before registration. It runs with `--val-only` (no test forward
-      pass, no test files), so the check does not touch the test split.
+- [ ] P5. **Determinism** (`--deterministic`; implemented). `torch.use_deterministic_algorithms(True)`,
+      `torch.backends.cudnn.deterministic = True`, `benchmark = False`, `CUBLAS_WORKSPACE_CONFIG=:4096:8`. A rerun of
+      one seed must reproduce its validation metrics exactly; this check is recorded before registration. It runs with
+      `--val-only` (`_run_study2.py --val-only 1 200 filtered`; the test split is never loaded). Smoke check on the old
+      final pool, 500 steps, run twice: identical validation history.
 - [ ] P6. **Pools.** Build 4 independent pools with the bounded generator (`_beat_gen_pool.py ... --seed 11/12/13/14`,
       0,3200,1800,1400 each) and score each with the corrected `quality_filter`. SHA-256 of every pool and score file
       recorded below.
@@ -55,8 +57,8 @@ the hypothesis as originally intended.
 ## Design
 - Conditions: `real`, `oversample`, `random`, `filtered` (no `filtered_nolabel`). Ratio 1.0
   (+1,056 AFIB, +568 STACH, +446 SBRAD); SR gets nothing.
-- Units: 4 pools × 10 seeds = **40 paired units**. Pool p uses seeds 200 + 10p … 209 + 10p (seeds 200–239, never
-  used before). Within a unit all four conditions share the seed (same init and, where sizes match, same batch order).
+- Units: 4 pools × 10 seeds = **40 paired units**. `pool_1` uses seeds 200–209, `pool_2` 210–219, `pool_3` 220–229,
+  `pool_4` 230–239 (never used before); results in `experiment/study2/pool<k>/`. Within a unit all four conditions share the seed (same init and, where sizes match, same batch order).
 - `filtered`: per-class top-k of the pool's `score`, fixed within a pool. `random`: uniform per class, rng
   1000 + seed.
 - Recipe: as study 1 except P4 (fixed steps) and P5 (determinism). Class-weighted CE from each condition's labels.
@@ -80,7 +82,8 @@ Exactly 40 units × 4 conditions = 160 runs. No interim look at test metrics.
   claimed only if both one-sided p < 0.05.
 - Reported with every decision: mean and median difference, wins, dz, 95 % CI from a three-level bootstrap (test
   patients × pools × seeds-within-pool, 2,000 resamples, seed 0).
-- Sensitivity (descriptive, does not change decisions): linear mixed model diff ~ 1 + (1 | pool); per-pool means.
+- Sensitivity (descriptive, does not change decisions): per-pool mean differences and a one-sample t-test on the 4
+  pool means (treats the pool as the unit; a mixed model was dropped because statsmodels is not in the environment).
 
 ## Secondary (descriptive only)
 SBRAD F1, per-class recall, per-class AUPRC (from saved probabilities), and the filtered-subset overlap with true top-k

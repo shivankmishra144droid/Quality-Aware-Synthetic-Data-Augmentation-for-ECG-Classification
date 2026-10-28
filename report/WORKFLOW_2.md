@@ -16,7 +16,7 @@ Phase 1  Finish the code            ~2-3 h   no GPU, no test
 Phase 2  Build 4 pools + scores     ~1.5 h   GPU, no test
 Phase 3  Validation gate            ~1 h     GPU, val only        <- GO / NO-GO
 Phase 4  Register                   ~0.5 h   no GPU
-Phase 5  Run the study              ~2 h     GPU, test saved but not looked at
+Phase 5  Run the study              ~4 h     GPU, test saved but not looked at
 Phase 6  Analyse (once)             ~0.2 h
 Phase 7  Report                     ~2 h
 ```
@@ -44,10 +44,10 @@ Phase 7  Report                     ~2 h
 | 1.1 | Fixed step budget (P4): train for S = 6,250 steps of batch 64, validate every 250 steps, keep the best-val checkpoint. Same S for every condition. | `augment_experiment.py` |
 | 1.2 | Determinism (P5): `use_deterministic_algorithms(True)`, cuDNN deterministic, `benchmark=False`, `CUBLAS_WORKSPACE_CONFIG=:4096:8`. | `augment_experiment.py` |
 | 1.3 | `--val-only` flag: skip the test forward pass and save no test files. Used in Phase 3. | `augment_experiment.py` |
-| 1.4 | `--pools` support: one run = (pool, seed, condition); pool p uses seeds 200+10p … 209+10p. Results keyed `pool{p}/{cond}/seed{s}`. | `augment_experiment.py` |
+| 1.4 | Pools: the launcher calls the experiment once per pool; `pool_k` uses seeds 200+10(k−1) … 209+10(k−1), results in `experiment/study2/pool<k>/`. | `_run_study2.py` |
 | 1.5 | `_filter_check.py` takes an output path, so the 4 pools do not overwrite each other. | `_filter_check.py` |
 | 1.6 | Launcher `_run_study2.py` (for `run_retry.sh`, resumes by skipping finished runs). | new |
-| 1.7 | Frozen analysis `_study2_analysis.py`: Wilcoxon for H1–H3, Holm, TOST ±0.01 for H1, 3-level bootstrap, mixed-model sensitivity. Refuses to run unless all 160 runs exist. Test it on **fake** result files only. | new |
+| 1.7 | Frozen analysis `_study2_analysis.py`: Wilcoxon for H1–H3, Holm, TOST ±0.01 for H1, 3-level bootstrap, per-pool sensitivity. Refuses to run unless all 160 runs exist. Test it on **fake** result files only. | new |
 | 1.8 | `.gitignore`: `generator_comparison/pools2/*.npz`. | `.gitignore` |
 | 1.9 | Tests: fixed step count equal across conditions; `--val-only` writes no test files; analysis script on a fake results file gives the expected decision. | `tests/` |
 
@@ -78,7 +78,8 @@ py -3.14 -m generator_comparison.quality_filter generator_comparison/pools2/pool
 1. Filter check per pool (TSTR on real val, 3 seeds, top vs random vs bottom):
    `py -3.14 _filter_check.py generator_comparison/pools2/pool_1.npz generator_comparison/pools2/scores_1.npz 440 <out_1>`
 2. **Gate G1:** the mean over the 4 pools of (top − random) balanced accuracy is > 0.
-3. Determinism check: run one (pool 1, seed 200, filtered) twice with `--val-only`; **Gate G2:** identical val
+3. Determinism check: run `py -3.14 _run_study2.py --val-only 1 200 filtered` twice (delete
+   `experiment/study2_check/` in between, or the second call skips the finished run); **Gate G2:** identical val
    metrics.
 4. Write the gate results into the draft pre-registration (Preconditions P5–P7).
 
@@ -98,7 +99,7 @@ py -3.14 -m generator_comparison.quality_filter generator_comparison/pools2/pool
 ```bash
 bash run_retry.sh _run_study2.py generator_comparison/experiment_study2_run.log
 ```
-- 4 conditions × 4 pools × 10 seeds = **160 runs**, about 36 s each (~1.6 h plus restarts).
+- 4 conditions × 4 pools × 10 seeds = **160 runs**, about 85 s each at 6,250 steps (~3.8 h plus restarts).
 - The log prints validation metrics only. Do not open `results.json` test fields.
 - A crash is rerun with the same seed (the launcher does this). No run is excluded. Stop with a `STOP` file if needed.
 
