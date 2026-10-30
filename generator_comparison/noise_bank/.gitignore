@@ -1,0 +1,2 @@
+# Regenerable variant arrays (rebuild with _noise_bank_variants.py); results.{json,md} and the plot stay tracked.
+*.npz
