@@ -1,0 +1,20 @@
+{
+  "pool": "generator_comparison/pools2/pool_2.npz",
+  "scores": "generator_comparison/pools2/scores_2.npz",
+  "ratio": 1.0,
+  "synthetic_per_class": {
+    "AFIB": 1056,
+    "STACH": 568,
+    "SBRAD": 446
+  },
+  "seeds": 10,
+  "seed_start": 210,
+  "max_epochs": 25,
+  "steps": 6250,
+  "eval_every": 250,
+  "deterministic": true,
+  "val_only": false,
+  "pool_sha256": "e428a704812b61f06c30f4b52762083a0e2d575265faf9c48b4a0136c24bcbb1",
+  "scores_sha256": "be82eaa0397eb59db72ca45869e2de8d86ef6ad26853ae3676e8ebd3b55d61a9",
+  "device": "cuda"
+}

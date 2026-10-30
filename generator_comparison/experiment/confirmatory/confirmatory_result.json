@@ -1,0 +1,26 @@
+{
+  "primary": {
+    "metric": "test macro-F1",
+    "n_pairs": 30,
+    "test": "two-sided Wilcoxon signed-rank",
+    "alpha": 0.05,
+    "p": 0.7921590935438871,
+    "mean_diff": 0.0014105735738034937,
+    "median_diff": 0.000892647770192101,
+    "wins": 16,
+    "ties": 0,
+    "dz": 0.07303880464874095,
+    "bootstrap_ci95_mean_diff": [
+      -0.006546753749707692,
+      0.009924255474495018
+    ],
+    "filtered_mean": 0.8309351316060399,
+    "random_mean": 0.8295245580322362,
+    "decision": "NOT SUPPORTED: no significant difference (p >= 0.05)"
+  },
+  "secondary_descriptive": {
+    "paired_t_p_macro_f1": 0.6920513024793243,
+    "sbrad_f1_mean_diff": -0.004178483427861494,
+    "sbrad_f1_wins": 13
+  }
+}

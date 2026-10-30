@@ -1,0 +1,62 @@
+{
+  "architecture": "WAVENET_4GB 8x64 (same as v1)",
+  "single_change": "sample from EMA weights (decay 0.999); raw weights sampled too as the control",
+  "iters": 4000,
+  "sample_batch_size": 8,
+  "sample_seed": 42,
+  "train_cfg": {
+    "n_iters": 4000,
+    "batch_size": 1,
+    "learning_rate": 0.0002,
+    "log_every": 50,
+    "ckpt_every": 1000,
+    "use_amp": false,
+    "ema_decay": 0.999
+  },
+  "checkpoint": "generator_comparison\\sssd_ema\\checkpoints\\ema_8x64_last.pt",
+  "loss_last": 0.12486090511083603,
+  "raw_vs_ema": {
+    "raw": {
+      "std": 0.4909175932407379,
+      "hr": {
+        "SR": 64.2,
+        "AFIB": 55.5,
+        "STACH": 44.4,
+        "SBRAD": 58.9
+      },
+      "periodicity": {
+        "SR": 0.13,
+        "AFIB": 0.14,
+        "STACH": 0.17,
+        "SBRAD": 0.1
+      },
+      "agree": {
+        "SR": 0.12,
+        "AFIB": 0.22,
+        "STACH": 0.19,
+        "SBRAD": 0.1
+      }
+    },
+    "ema": {
+      "std": 0.40951597690582275,
+      "hr": {
+        "SR": 45.1,
+        "AFIB": 38.1,
+        "STACH": 55.3,
+        "SBRAD": 57.5
+      },
+      "periodicity": {
+        "SR": 0.1,
+        "AFIB": 0.14,
+        "STACH": 0.16,
+        "SBRAD": 0.12
+      },
+      "agree": {
+        "SR": 0.16,
+        "AFIB": 0.31,
+        "STACH": 0.16,
+        "SBRAD": 0.19
+      }
+    }
+  }
+}

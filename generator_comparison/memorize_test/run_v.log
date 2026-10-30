@@ -1,0 +1,29 @@
+CUDA extension for cauchy multiplication not found. Install by going to extensions/cauchy/ and running `python setup.py install`. This should speed up end-to-end training by 10-50%
+Falling back on slow Cauchy kernel. Install at least one of pykeops or the CUDA extension for efficiency.
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+using wavenet {'num_res_layers': 8, 'res_channels': 64, 'in_channels': 8, 'label_embed_classes': 4}
+mem1_v iter     1  loss 0.6224  peak 1.01 GB  device 1.95 GB
+mem1_v iter   250  loss 0.3109  peak 1.03 GB  device 1.96 GB
+mem1_v iter   500  loss 0.1785  peak 1.03 GB  device 1.96 GB
+mem1_v iter   750  loss 0.0974  peak 1.03 GB  device 1.96 GB
+mem1_v iter  1000  loss 0.0906  peak 1.03 GB  device 1.96 GB
+mem1_v iter  1250  loss 0.1849  peak 1.03 GB  device 1.96 GB
+mem1_v iter  1500  loss 0.0176  peak 1.03 GB  device 1.96 GB
+mem1_v iter  1750  loss 0.0861  peak 1.03 GB  device 1.96 GB
+mem1_v iter  2000  loss 0.0362  peak 1.03 GB  device 1.96 GB
+RESULT {"n": 1, "parameterization": "v", "ref_periodicity": [0.89], "loss_last": 0.03618390113115311, "raw": {"std": 0.548, "periodicity": 0.87, "hr": 58.7, "median_max_corr": 0.967}, "ema": {"std": 0.508, "periodicity": 0.185, "hr": 109.4, "median_max_corr": 0.178}, "pass": true}
+using wavenet {'num_res_layers': 8, 'res_channels': 64, 'in_channels': 8, 'label_embed_classes': 4}
+mem32_v iter     1  loss 0.8668  peak 1.01 GB  device 2.01 GB
+mem32_v iter   250  loss 0.5979  peak 1.03 GB  device 2.01 GB
+mem32_v iter   500  loss 0.5143  peak 1.03 GB  device 2.01 GB
+mem32_v iter   750  loss 0.9594  peak 1.03 GB  device 2.01 GB
+mem32_v iter  1000  loss 0.6334  peak 1.03 GB  device 2.01 GB
+mem32_v iter  1250  loss 1.2278  peak 1.03 GB  device 2.01 GB
+mem32_v iter  1500  loss 0.4697  peak 1.03 GB  device 2.01 GB
+mem32_v iter  1750  loss 0.6103  peak 1.03 GB  device 2.01 GB
+mem32_v iter  2000  loss 0.6317  peak 1.03 GB  device 2.01 GB
+RESULT {"n": 32, "parameterization": "v", "ref_periodicity": [0.89, 0.89, 0.89, 0.88, 0.88, 0.88, 0.88, 0.88], "loss_last": 0.6316848993301392, "raw": {"std": 0.656, "periodicity": 0.287, "hr": 30.0, "median_max_corr": 0.102}, "ema": {"std": 0.858, "periodicity": 0.173, "hr": 112.1, "median_max_corr": 0.043}, "pass": false}
+done

@@ -1,0 +1,7 @@
+{
+  "architecture": "WAVENET_4GB 8x64 (same as v1)",
+  "single_change": "sample from EMA weights (decay 0.999); raw weights sampled too as the control",
+  "iters": 4000,
+  "sample_batch_size": 8,
+  "sample_seed": 42
+}

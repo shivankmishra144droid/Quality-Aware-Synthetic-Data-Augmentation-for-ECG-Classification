@@ -1,0 +1,39 @@
+{
+  "k_per_class": 440,
+  "pool": "generator_comparison\\pools2\\pool_2.npz",
+  "results": {
+    "top": {
+      "balanced_acc_mean": 0.7527077593960049,
+      "balanced_acc_std": 0.012735724531484862,
+      "recall_mean": {
+        "SR": 0.4595096090125912,
+        "AFIB": 0.7098214285714285,
+        "STACH": 0.9039999999999999,
+        "SBRAD": 0.9375
+      },
+      "mean_score": 0.5
+    },
+    "random": {
+      "balanced_acc_mean": 0.7112953528827037,
+      "balanced_acc_std": 0.03053607193902389,
+      "recall_mean": {
+        "SR": 0.5614314115308151,
+        "AFIB": 0.6145833333333334,
+        "STACH": 0.7733333333333334,
+        "SBRAD": 0.8958333333333334
+      },
+      "mean_score": 0.5
+    },
+    "bottom": {
+      "balanced_acc_mean": 0.5663664836378554,
+      "balanced_acc_std": 0.05510991573114942,
+      "recall_mean": {
+        "SR": 0.7948310139165011,
+        "AFIB": 0.5178571428571428,
+        "STACH": 0.4666666666666666,
+        "SBRAD": 0.48611111111111116
+      },
+      "mean_score": 0.5
+    }
+  }
+}

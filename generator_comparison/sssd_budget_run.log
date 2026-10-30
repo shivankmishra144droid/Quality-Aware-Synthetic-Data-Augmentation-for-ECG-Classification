@@ -1,0 +1,206 @@
+=== attempt 1 ===
+CUDA extension for cauchy multiplication not found. Install by going to extensions/cauchy/ and running `python setup.py install`. This should speed up end-to-end training by 10-50%
+Falling back on slow Cauchy kernel. Install at least one of pykeops or the CUDA extension for efficiency.
+BUDGET PLAN {
+  "train_cfg": {
+    "n_iters": 10000,
+    "batch_size": 8,
+    "grad_accum": 4,
+    "learning_rate": 0.0002,
+    "warmup_iters": 500,
+    "cosine_decay": true,
+    "log_every": 100,
+    "ckpt_every": 500,
+    "eval_every": 1000,
+    "use_amp": false,
+    "ema_decay": 0.999,
+    "diffusion_config": {
+      "T": 200,
+      "beta_0": 0.0005,
+      "beta_T": 0.1
+    }
+  },
+  "ecgs_seen": 320000,
+  "v1_ecgs_seen": 4000,
+  "carried_over": [
+    "noise schedule 5e-4->0.1 (sssd_sched)",
+    "EMA 0.999 (sssd_ema)"
+  ]
+}
+resume from None
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+using wavenet {'num_res_layers': 8, 'res_channels': 64, 'in_channels': 8, 'label_embed_classes': 4}
+budget_8x64 iter     1  loss 1.0006  peak 1.02 GB  device 1.95 GB
+budget_8x64 iter   100  loss 0.9890  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter   200  loss 0.8089  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter   300  loss 0.6107  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter   400  loss 0.3650  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter   500  loss 0.2819  peak 1.03 GB  device 1.97 GB
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_500.pt
+budget_8x64 iter   600  loss 0.1306  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter   700  loss 0.0582  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter   800  loss 0.0792  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter   900  loss 0.0547  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  1000  loss 0.0918  peak 1.03 GB  device 1.97 GB
+budget_8x64 EVAL {"iter": 1000, "raw": {"std": 2.149, "periodicity": 0.082, "hr": {"SR": 27.1, "AFIB": 42.3, "STACH": 27.9, "SBRAD": 26.7}}, "ema": {"std": 214.198, "periodicity": 0.156, "hr": {"SR": 123.7, "AFIB": 116.1, "STACH": 121.7, "SBRAD": 115.2}}}
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_1000.pt
+budget_8x64 iter  1100  loss 0.0822  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  1200  loss 0.0610  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  1300  loss 0.0659  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  1400  loss 0.0920  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  1500  loss 0.0358  peak 1.03 GB  device 1.97 GB
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_1500.pt
+budget_8x64 iter  1600  loss 0.0689  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  1700  loss 0.0822  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  1800  loss 0.0598  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  1900  loss 0.0550  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  2000  loss 0.0672  peak 1.03 GB  device 1.97 GB
+budget_8x64 EVAL {"iter": 2000, "raw": {"std": 2.089, "periodicity": 0.109, "hr": {"SR": 35.9, "AFIB": 47.4, "STACH": 36.3, "SBRAD": 24.9}}, "ema": {"std": 46.477, "periodicity": 0.229, "hr": {"SR": 79.9, "AFIB": 66.1, "STACH": 104.5, "SBRAD": 80.0}}}
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_2000.pt
+budget_8x64 iter  2100  loss 0.0873  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  2200  loss 0.0656  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  2300  loss 0.0645  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  2400  loss 0.0523  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  2500  loss 0.0597  peak 1.03 GB  device 1.97 GB
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_2500.pt
+budget_8x64 iter  2600  loss 0.0550  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  2700  loss 0.0539  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  2800  loss 0.0492  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  2900  loss 0.0629  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  3000  loss 0.0490  peak 1.03 GB  device 1.97 GB
+budget_8x64 EVAL {"iter": 3000, "raw": {"std": 1.052, "periodicity": 0.047, "hr": {"SR": 25.2, "AFIB": 50.5, "STACH": 44.0, "SBRAD": 25.5}}, "ema": {"std": 4.397, "periodicity": 0.108, "hr": {"SR": 32.0, "AFIB": 39.5, "STACH": 24.0, "SBRAD": 33.6}}}
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_3000.pt
+budget_8x64 iter  3100  loss 0.0426  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  3200  loss 0.0575  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  3300  loss 0.0661  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  3400  loss 0.1020  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  3500  loss 0.0470  peak 1.03 GB  device 1.97 GB
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_3500.pt
+budget_8x64 iter  3600  loss 0.0538  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  3700  loss 0.0814  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  3800  loss 0.0482  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  3900  loss 0.0328  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  4000  loss 0.0388  peak 1.03 GB  device 1.97 GB
+budget_8x64 EVAL {"iter": 4000, "raw": {"std": 0.983, "periodicity": 0.097, "hr": {"SR": 38.9, "AFIB": 49.3, "STACH": 48.0, "SBRAD": 27.4}}, "ema": {"std": 1.433, "periodicity": 0.091, "hr": {"SR": 39.2, "AFIB": 52.1, "STACH": 43.7, "SBRAD": 31.2}}}
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_4000.pt
+budget_8x64 iter  4100  loss 0.0559  peak 1.03 GB  device 1.97 GB
+budget_8x64 iter  4200  loss 0.0650  peak 1.03 GB  device 1.97 GB
+=== attempt 2 ===
+CUDA extension for cauchy multiplication not found. Install by going to extensions/cauchy/ and running `python setup.py install`. This should speed up end-to-end training by 10-50%
+Falling back on slow Cauchy kernel. Install at least one of pykeops or the CUDA extension for efficiency.
+BUDGET PLAN {
+  "train_cfg": {
+    "n_iters": 10000,
+    "batch_size": 8,
+    "grad_accum": 4,
+    "learning_rate": 0.0002,
+    "warmup_iters": 500,
+    "cosine_decay": true,
+    "log_every": 100,
+    "ckpt_every": 500,
+    "eval_every": 1000,
+    "use_amp": false,
+    "ema_decay": 0.999,
+    "diffusion_config": {
+      "T": 200,
+      "beta_0": 0.0005,
+      "beta_T": 0.1
+    }
+  },
+  "ecgs_seen": 320000,
+  "v1_ecgs_seen": 4000,
+  "carried_over": [
+    "noise schedule 5e-4->0.1 (sssd_sched)",
+    "EMA 0.999 (sssd_ema)"
+  ]
+}
+resume from generator_comparison\sssd_budget\checkpoints\budget_8x64_4000.pt
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+resume generator_comparison\sssd_budget\checkpoints\budget_8x64_4000.pt from iter 4000
+budget_8x64 iter  4100  loss 0.0532  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  4200  loss 0.0593  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  4300  loss 0.0700  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  4400  loss 0.0902  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  4500  loss 0.0281  peak 1.05 GB  device 1.99 GB
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_4500.pt
+budget_8x64 iter  4600  loss 0.0644  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  4700  loss 0.0525  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  4800  loss 0.0486  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  4900  loss 0.0378  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  5000  loss 0.0845  peak 1.05 GB  device 1.99 GB
+budget_8x64 EVAL {"iter": 5000, "raw": {"std": 0.859, "periodicity": 0.124, "hr": {"SR": 37.3, "AFIB": 44.3, "STACH": 40.3, "SBRAD": 30.7}}, "ema": {"std": 0.975, "periodicity": 0.096, "hr": {"SR": 37.7, "AFIB": 54.3, "STACH": 42.7, "SBRAD": 28.5}}}
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_5000.pt
+budget_8x64 iter  5100  loss 0.0712  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  5200  loss 0.0447  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  5300  loss 0.0576  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  5400  loss 0.0767  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  5500  loss 0.0304  peak 1.05 GB  device 1.99 GB
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_5500.pt
+budget_8x64 iter  5600  loss 0.0634  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  5700  loss 0.0487  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  5800  loss 0.0374  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  5900  loss 0.0572  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  6000  loss 0.0514  peak 1.05 GB  device 1.99 GB
+budget_8x64 EVAL {"iter": 6000, "raw": {"std": 0.888, "periodicity": 0.129, "hr": {"SR": 36.1, "AFIB": 54.3, "STACH": 44.2, "SBRAD": 29.8}}, "ema": {"std": 0.905, "periodicity": 0.118, "hr": {"SR": 39.0, "AFIB": 51.7, "STACH": 47.6, "SBRAD": 28.2}}}
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_6000.pt
+budget_8x64 iter  6100  loss 0.0729  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  6200  loss 0.0366  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  6300  loss 0.0458  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  6400  loss 0.0457  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  6500  loss 0.0663  peak 1.05 GB  device 1.99 GB
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_6500.pt
+budget_8x64 iter  6600  loss 0.0569  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  6700  loss 0.0323  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  6800  loss 0.0413  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  6900  loss 0.0645  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  7000  loss 0.0392  peak 1.05 GB  device 1.99 GB
+budget_8x64 EVAL {"iter": 7000, "raw": {"std": 0.96, "periodicity": 0.156, "hr": {"SR": 45.0, "AFIB": 46.6, "STACH": 45.6, "SBRAD": 35.7}}, "ema": {"std": 0.895, "periodicity": 0.126, "hr": {"SR": 40.6, "AFIB": 49.1, "STACH": 48.7, "SBRAD": 29.8}}}
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_7000.pt
+budget_8x64 iter  7100  loss 0.0319  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  7200  loss 0.0451  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  7300  loss 0.0455  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  7400  loss 0.0649  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  7500  loss 0.0394  peak 1.05 GB  device 1.99 GB
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_7500.pt
+budget_8x64 iter  7600  loss 0.0507  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  7700  loss 0.0754  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  7800  loss 0.0517  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  7900  loss 0.0417  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  8000  loss 0.0282  peak 1.05 GB  device 1.99 GB
+budget_8x64 EVAL {"iter": 8000, "raw": {"std": 0.888, "periodicity": 0.141, "hr": {"SR": 43.2, "AFIB": 48.2, "STACH": 45.4, "SBRAD": 34.7}}, "ema": {"std": 0.895, "periodicity": 0.133, "hr": {"SR": 43.2, "AFIB": 46.7, "STACH": 46.8, "SBRAD": 30.7}}}
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_8000.pt
+budget_8x64 iter  8100  loss 0.0468  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  8200  loss 0.0621  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  8300  loss 0.0432  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  8400  loss 0.0713  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  8500  loss 0.0759  peak 1.05 GB  device 1.99 GB
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_8500.pt
+budget_8x64 iter  8600  loss 0.0489  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  8700  loss 0.0929  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  8800  loss 0.0493  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  8900  loss 0.0954  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  9000  loss 0.0576  peak 1.05 GB  device 1.99 GB
+budget_8x64 EVAL {"iter": 9000, "raw": {"std": 0.898, "periodicity": 0.148, "hr": {"SR": 45.0, "AFIB": 44.8, "STACH": 43.4, "SBRAD": 33.2}}, "ema": {"std": 0.887, "periodicity": 0.132, "hr": {"SR": 45.0, "AFIB": 44.2, "STACH": 49.7, "SBRAD": 30.7}}}
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_9000.pt
+budget_8x64 iter  9100  loss 0.0436  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  9200  loss 0.0599  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  9300  loss 0.0645  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  9400  loss 0.0418  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  9500  loss 0.0509  peak 1.05 GB  device 1.99 GB
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_9500.pt
+budget_8x64 iter  9600  loss 0.0548  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  9700  loss 0.0619  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  9800  loss 0.0345  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter  9900  loss 0.0650  peak 1.05 GB  device 1.99 GB
+budget_8x64 iter 10000  loss 0.0592  peak 1.05 GB  device 1.99 GB
+budget_8x64 EVAL {"iter": 10000, "raw": {"std": 0.917, "periodicity": 0.167, "hr": {"SR": 45.0, "AFIB": 45.7, "STACH": 46.8, "SBRAD": 35.7}}, "ema": {"std": 0.893, "periodicity": 0.139, "hr": {"SR": 45.0, "AFIB": 46.6, "STACH": 46.8, "SBRAD": 33.2}}}
+saved generator_comparison\sssd_budget\checkpoints\budget_8x64_10000.pt
+raw {"std": 0.9100244045257568, "periodicity": {"SR": 0.16, "AFIB": 0.17, "STACH": 0.16, "SBRAD": 0.14}, "hr": {"SR": 40.8, "AFIB": 46.5, "STACH": 48.5, "SBRAD": 33.1}}
+ema {"std": 0.8828423619270325, "periodicity": {"SR": 0.17, "AFIB": 0.17, "STACH": 0.16, "SBRAD": 0.14}, "hr": {"SR": 41.6, "AFIB": 47.1, "STACH": 46.0, "SBRAD": 36.0}}
+done

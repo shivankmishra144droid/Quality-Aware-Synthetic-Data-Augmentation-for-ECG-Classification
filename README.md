@@ -1,149 +1,128 @@
 # Quality-Aware Synthetic Data Augmentation for Robust Imbalanced ECG Classification
 
-Eight-week research project on **PTB-XL**: generate class-conditional synthetic 12-lead ECGs and test whether **quality-aware selection** of those samples improves imbalanced rhythm classification versus random synthetic augmentation (or real data only).
+Research project on **PTB-XL**: generate class-conditional synthetic 12-lead ECGs and test whether **quality-aware
+selection** of those samples improves imbalanced rhythm classification more than random synthetic augmentation.
+
+> Full write-up: [`report/REPORT.md`](report/REPORT.md).
+
+**Result in one paragraph.** Augmenting the minority classes improved test macro-F1 from 0.791 (real only) to
+0.820–0.835 and SBRAD F1 from 0.49 to 0.58–0.61 (10 seeds). Quality-filtered vs randomly selected synthetic ECGs looked
+slightly better at first (+0.010, p = 0.065), but a **pre-registered confirmatory study with 30 new seeds found no
+difference** (+0.0014 macro-F1, 16/30 seeds, p = 0.79). A later code review found that those "filtered" subsets were
+not the true top-scored samples for STACH and SBRAD. **Study 2** fixed this and was pre-registered: 4 independent pools ×
+10 seeds, 160 runs. Filtered vs random was −0.0041 macro-F1 (16/40, p = 0.058), equivalent within ±0.01 under the
+registered test. Random synthetic augmentation beat real-only training (+0.036, 40/40) and duplicating real minority ECGs
+(+0.020). At this mix ratio, quality-aware selection does not improve the classifier over random selection
+(report Section 8.3).
 
 ## Research question
 
-> Can quality-aware selection of synthetic ECG samples improve imbalanced ECG classification compared with random synthetic augmentation?
+> Can quality-aware selection of synthetic ECG samples improve imbalanced ECG classification compared with random
+> synthetic augmentation?
 
-Primary experiment: four rhythm classes **SR / AFIB / STACH / SBRAD**. We are **not** inventing a new generative architecture, replacing real data, or claiming SOTA on all seven PTB-XL rhythm codes.
+Four rhythm classes: **SR / AFIB / STACH / SBRAD** (SR ≈ 85 %). The frozen real-only CNN-LSTM baseline reaches test
+macro-F1 0.783; SBRAD is the weak class (F1 0.497).
 
-**Status:** Weeks 1–4 are done (audit, preprocess, frozen CNN-LSTM baseline, adapted SSSD-ECG generation, generator comparison, quality-improvement pilots). **Week 5 quality filtering is not done.** Classifier experiments that mix synthetic pools into training have not started.
-
-## Dataset, classes, and split
-
-Source: [PTB-XL v1.0.1](https://physionet.org/content/ptb-xl/1.0.1/) (PhysioNet). We use **100 Hz**, 10 s recordings → shape `(12, 1000)`.
-
-Labels come from SCP rhythm codes in `scp_codes`. A recording is kept only if **exactly one** of {SR, AFIB, STACH, SBRAD} is present (0 conflicts among these four). AFLT / SARRH / SVTAC are out of the primary experiment.
-
-| | Recordings | Patients |
-|--|----------:|---------:|
-| Labelled 4-class | 19,759 | 17,320 |
-| Train (70%) | 13,811 | 12,124 |
-| Val (15%) | 2,960 | 2,598 |
-| Test (15%) | 2,988 | 2,598 |
-
-Split is **patient-level** (not PTB-XL `strat_fold`, which is recording-level). Train ∩ val ∩ test patient overlap is **0**. Stratification is on each patient’s primary rhythm so class mix is similar across splits (SR ~85% everywhere).
-
-Per-split class counts:
-
-| Split | SR | AFIB | STACH | SBRAD |
-|-------|---:|-----:|------:|------:|
-| Train | 11,741 | 1,056 | 568 | 446 |
-| Val | 2,515 | 224 | 125 | 96 |
-| Test | 2,526 | 234 | 133 | 95 |
-
-**Normalization is train-only:** per-lead mean/std fitted on the train split, then applied to val/test (`processed_data/normalization_stats.json`). Do not recompute stats on the full dataset.
-
-## Pipeline
+## Pipeline (current)
 
 ```
-PTB-XL (100 Hz) → patient split + train-only z-score
-       → frozen real-only CNN-LSTM baseline
-       → class-conditional generator (train split only)
-       → synthetic pool (npy + metadata)
-       → Week 5: quality filter  [NOT DONE]
-       → later: train with real + (filtered vs random) synthetic
+PTB-XL 100 Hz ─► patient split + train-only z-score (frozen)
+              ─► frozen CNN-LSTM baseline
+              ─► beat templates from train ECGs ─► template generator (v-pred SSSD backbone, 8x64, L=70)
+              ─► rule-based rhythm assembly (per-class RR model, residual/wander GPs, AFIB irregular RR)
+              ─► final synthetic pool (AFIB 3200 / STACH 1800 / SBRAD 1400)
+              ─► quality filter (typicality + frozen-baseline label prob + realism detector)
+              ─► CNN-LSTM retrained: real | real+oversample | real+random | real+filtered | real+filtered(no label)  x 10 seeds
+              ─► paired tests + patient-level bootstrap on the untouched test split
 ```
 
-Generation never sees val/test recordings. Independent leads I, II, V1–V6 are modeled; III / aVR / aVL / aVF are reconstructed from Einthoven/Goldberger relations.
+The whole-ECG diffusion generator from Week 4 (adapted SSSD-ECG) was investigated in depth and replaced: it produced
+no regular heartbeat at this model size, and a classifier trained on its samples alone scores at chance on real data.
+See the report, Sections 5–6.
 
 ## Setup
 
-1. Python 3.10+ recommended. GPU optional for the baseline (trained on CPU); generator training expects **CUDA PyTorch** on a small GPU.
-2. Create a venv and install:
+1. Python 3.14. Install a CUDA build of torch that matches your driver, then the
+   rest: `pip install -r requirements.txt` (versions pinned).
+2. Download PTB-XL 1.0.1 to `archive/ptb-xl-a-large-publicly-available-electrocardiography-dataset-1.0.1/` and run
+   `02_PTBXL_Exploration.ipynb` to rebuild `processed_data/X_*.npy` (gitignored). Labels, metadata and train-only
+   normalization stats are committed.
+3. GPU steps were run on an RTX 3050 Laptop (4 GB). Long runs use `bash run_retry.sh <script.py> <log>`, which restarts
+   from the newest checkpoint; create a file named `STOP` to stop it cleanly.
+
+## Reproduce the main result
 
 ```bash
-pip install -r requirements.txt
+py -3.14 _beat_templates_all.py                     # median beat templates from train ECGs
+py -3.14 _beat_oracle.py                            # fit assembly models (+ oracle pool)
+bash run_retry.sh _run_template_gen.py generator_comparison/template_gen_run.log   # ~30 min GPU
+py -3.14 _beat_gen_pool.py generator_comparison/template_gen/checkpoints/tpl_8x64_last.pt 0,3200,1800,1400 generator_comparison/final_pool/pool.npz --weights ema --seed 7
+py -3.14 -m generator_comparison.quality_filter generator_comparison/final_pool/pool.npz generator_comparison/final_pool/scores.npz
+bash run_retry.sh _run_main_experiment.py generator_comparison/experiment_main_run.log            # ~25 min GPU
+py -3.14 -m generator_comparison.stats --tag main
+py -3.14 _report_figures.py
 ```
 
-Install a CUDA build of `torch` that matches your driver, then the rest of `requirements.txt` (`pandas`, `numpy`, `matplotlib`, `scikit-learn`, `wfdb`, `jupyter`, `einops`, `opt_einsum`).
+## Reproduce study 2 (pre-registered, report Section 8.3)
 
-3. Download PTB-XL 1.0.1 and place it at:
-
+```bash
+bash _build_pools2.sh                                # 4 pools (seeds 11/21/31/41) + scores, ~8 min each
+py -3.14 _check_pools2.py                            # per-pool checks + SHA-256 -> pools2/checks.json
+py -3.14 _gate_study2.py                             # validation-only gate G1/G2 -> pools2/gate.json
+bash run_retry.sh _run_study2.py generator_comparison/experiment_study2_run.log   # 160 runs, ~2.5 h GPU
+py -3.14 _study2_analysis.py                         # runs once; refuses if the result file exists
 ```
-archive/ptb-xl-a-large-publicly-available-electrocardiography-dataset-1.0.1/
+
+## Reproduce the generator comparison (report Sections 6–7)
+
+```bash
+bash run_retry.sh _run_vpred.py generator_comparison/sssd_vpred_run.log          # v-pred diffusion 8x64 (~3 h GPU)
+py -3.14 _gen_tstr_pools.py 440                                                   # 440/class from v1 and v-pred step 5000
+py -3.14 _beat_gen_pool.py generator_comparison/template_gen/checkpoints/tpl_8x64_last.pt 440 generator_comparison/tstr/pool_beatgen.npz --weights ema --scorecard-dir generator_comparison/beat_gen
+py -3.14 -m generator_comparison.tstr                                             # TSTR table (CPU)
+py -3.14 -m generator_comparison.scorecard                                        # 9-check scorecard
+py -3.14 -m generator_comparison.realism_detector generator_comparison/tstr/pool_beatgen.npz beat_gen
+py -3.14 _filter_check.py generator_comparison/final_pool/pool.npz generator_comparison/final_pool/scores.npz 440
+py -3.14 _beat_ablation.py                                                        # detector ablations (Section 5.3)
 ```
 
-The raw archive is **not** in this repo (multi-GB). Waveform arrays `processed_data/X_*.npy` are also omitted (GitHub 100 MB limit). Rebuild them with `02_PTBXL_Exploration.ipynb` (dataset finalization sections). Labels, metadata CSVs, and `normalization_stats.json` **are** committed.
+Evaluation tools: `generator_comparison/scorecard.py` (9-check pool scorecard), `realism_detector.py`
+(real-vs-synthetic AUC), `tstr.py` (train on synthetic, test on real), `_filter_check.py` (filter sanity check).
 
-4. Run notebooks in order: `01` audit → `02` preprocess → `03` baseline (load frozen weights; do not retrain) → `04` generation → `05` generator comparison.
-
-## Frozen artifacts — do not retrain to “improve” later weeks
-
-These are Baseline V1 / Week 2–3 contracts. Changing them would make synthetic experiments incomparable.
+## Frozen artifacts — do not retrain to "improve" later results
 
 | Path | What it is |
-|------|------------|
-| `baseline/cnn_lstm_baseline.pt` | Real-only CNN-LSTM (seed 42, best epoch 12) |
-| `baseline/metrics.json` | Test Macro-F1 **0.783**, accuracy **0.918** |
-| `baseline/class_weights.json` | Weighted CE from **train labels only** |
+|---|---|
+| `baseline/cnn_lstm_baseline.pt`, `baseline/metrics.json` | Real-only CNN-LSTM (seed 42), test macro-F1 0.783 |
 | `processed_data/*.json`, `*_metadata.csv`, `y_*.npy` | Split, labels, train-only stats |
-| `processed_data/dataset_config.json` | Seed 42, 4-class rule, patient split |
-
-Do **not** retune the CNN-LSTM so later synthetic runs look better. Architecture: Conv1d 12→32 k=7 → Conv1d 32→64 k=5 → LSTM 64 → Linear 4 (~47k params). Weak class: SBRAD (F1 0.50); main confusion SR→SBRAD.
-
-## Generator comparison (honest)
-
-Pilot, not a SOTA claim. Four candidates; **only one ran**.
-
-| Generator | Runnable? | Outcome |
-|-----------|-----------|---------|
-| **SSSD-ECG (adapted)** | Yes | Selected. 8 residual layers × 64 channels (not the paper’s 36×256). Train-only, T=200, batch 1, AMP off. ~1.5M params, ~1 GB peak on RTX 3050 4 GB. 32 samples/class in the comparison pool. |
-| TransDiffECG | No | No public code. Paper uses QTDB/LUDB, not PTB-XL. We did not substitute another model. |
-| SE-Diff | No | Official repo exists, but needs unpublished latents / VAE weights / simulator prior and OpenAI embeddings. From-scratch 4-class training on our `X_train` is not a fair drop-in; published batch 4096 does not fit 4 GB. |
-| FlowECG | No | No public implementation (GitHub search returned 0 repos). We did not reimplement flow matching on the SSSD sampler. PPGFlowECG is a different method and was not used. The paper’s 36×256 backbone also does not fit 4 GB (~8.2 GB in our SSSD-sized probe). |
-
-**Why SSSD:** only leakage-free generator that matches this 4-class, 12-lead, 100 Hz, 4 GB setup.
-
-Known gap after Week 4: synthetic amplitude is damped vs real (syn std ~0.5 vs real ~1.0) and class-conditional heart rate is weakly separated (HR MAE vs real ~29 bpm in the first pool). That is a generator-quality issue, not a stats-file bug.
-
-Quality-improvement pilots (still **not** Week 5 filtering):
-
-- **v2:** more iterations (4000 → 16000) at 8×64 — loss did not keep improving cleanly.
-- **ckpt2000:** sample from the 2000-iter snapshot instead of last.
-- **v3:** 16×128 capacity, 4000 iters.
-- **CFG:** classifier-free guidance training (label dropout 0.1, 8×64, 4000 iters) — training finished; sampling/eval still in progress.
-
-See `generator_comparison/metadata/selection.json` and each generator’s `NOT_RUNNABLE.json` or `metrics.json`.
+| `generator_comparison/template_gen/checkpoints/tpl_8x64_last.pt` (gitignored) | Selected template generator |
 
 ## Directory map
 
 ```
-01_PTBXL_Data_Audit.ipynb          Week 1
-02_PTBXL_Exploration.ipynb         Week 2 preprocess + saved dataset
-03_CNN_LSTM_Baseline.ipynb         Week 3 frozen baseline
-04_Synthetic_ECG_Generation.ipynb  Week 4 SSSD adaptation
-05_Generator_Comparison_Pilot.ipynb
-preprocess_ptbxl.py                Small label-count helper
-requirements.txt
-baseline/                          Frozen CNN-LSTM + metrics
-processed_data/                    Stats, labels, metadata (no X_*.npy in git)
-synthetic_generation/              Adapted SSSD-ECG code
-synthetic_data/                    Week 4 sample pool (small npy)
+01–05_*.ipynb                 Weeks 1–4 notebooks (audit, preprocessing, baseline, SSSD adaptation, comparison)
+baseline/                     Frozen CNN-LSTM + metrics
+processed_data/               Split, labels, stats (X_*.npy gitignored)
+synthetic_generation/         SSSD backbone (model, S4, train loop with EMA / v-pred / schedules),
+                              beats.py (templates), assembly.py (rhythm assembly), leads.py (12-lead derivation)
 generator_comparison/
-  sssd/                            Selected generator pool + checkpoint
-  transdiff|sediff|flowecg/        Not-runnable records
-  sssd_v2|sssd_ckpt2000|sssd_v3|sssd_cfg/  Quality pilots
-archive/                           Local PTB-XL only (gitignored)
+  eval_metrics.py             HR / periodicity metric (lead_ii_hr_pt)
+  scorecard.py, realism_detector.py, tstr.py
+  quality_filter.py, augment_experiment.py, stats.py
+  sssd_*/                     Diffusion experiments (each with metrics / RESULT.md)
+  beat_templates/, template_gen/, beat_gen/, final_pool/   Selected generator and its outputs
+  tstr/, scorecard/, experiment/                           Results
+report/                       REPORT.md + figures
+_run_*.py, _beat_*.py         Experiment entry points
 ```
-
-## Reproducibility
-
-- Global seed **42** for split, baseline, and the selected SSSD run (other generator probes used 43/44 where noted).
-- Hardware limit: **4 GB RTX 3050**. Official SSSD-ECG width **36×256 does not fit**; we use **8×64**. Do not describe 8×64 as the published architecture.
-- Generator batch size 1, AMP off.
-- Intermediate generator `.pt` snapshots are gitignored (tens to hundreds of MB). The frozen baseline weights and `generator_comparison/sssd/checkpoint.pt` are kept.
-
-## Week 5 (not done)
-
-Quality filtering of the synthetic pool (statistical / temporal / feature-space scores, then keep vs discard) has **not** been implemented. Downstream CNN-LSTM training with real + synthetic (quality vs random, same ratio) is also not done.
 
 ## Citation — SSSD-ECG
 
-This repo adapts the official SSSD-ECG implementation (architecture and diffusion setup; width reduced for 4 GB VRAM):
+The template generator uses the SSSD-ECG architecture (width reduced, v-prediction, rescaled noise schedule); it is not
+the published model.
 
 - Code: [AI4HealthUOL/SSSD-ECG](https://github.com/AI4HealthUOL/SSSD-ECG)
-- Alcaraz, J. M. L., & Strodthoff, N. *Diffusion-based conditional ECG generation with structured state space models.* Computers in Biology and Medicine, 2023.
+- Alcaraz, J. M. L., & Strodthoff, N. *Diffusion-based conditional ECG generation with structured state space models.*
+  Computers in Biology and Medicine, 2023.
 
-PTB-XL: Wagner, P., et al. *PTB-XL, a large publicly available electrocardiography dataset.* Scientific Data, 2020. PhysioNet.
+PTB-XL: Wagner, P., et al. *PTB-XL, a large publicly available electrocardiography dataset.* Scientific Data, 2020.

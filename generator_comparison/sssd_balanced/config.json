@@ -1,0 +1,31 @@
+{
+  "architecture": "WAVENET_4GB 8x64 (same as v1)",
+  "single_change": "class-balanced WeightedRandomSampler (weight 1/class_count, with replacement)",
+  "iters": 4000,
+  "label_dropout_p": 0.0,
+  "guidance_w": null,
+  "fresh_run": true,
+  "expected_draws_v1": {
+    "SR": 3400,
+    "AFIB": 306,
+    "STACH": 165,
+    "SBRAD": 129
+  },
+  "expected_draws_balanced": {
+    "SR": 1000,
+    "AFIB": 1000,
+    "STACH": 1000,
+    "SBRAD": 1000
+  },
+  "train_cfg": {
+    "n_iters": 4000,
+    "batch_size": 1,
+    "learning_rate": 0.0002,
+    "log_every": 50,
+    "ckpt_every": 1000,
+    "use_amp": false,
+    "balanced_sampling": true
+  },
+  "checkpoint": "generator_comparison\\sssd_balanced\\checkpoints\\balanced_8x64_last.pt",
+  "loss_last": 0.14922121167182922
+}

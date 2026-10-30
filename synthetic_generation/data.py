@@ -28,8 +28,11 @@ def class_counts(y: np.ndarray) -> dict:
 
 
 class TrainECG8(Dataset):
+    """x: (N, 1000, 12) 12-lead ECGs, or (N, 8, L) already in independent-lead layout
+    (e.g. beat templates, L = 70)."""
+
     def __init__(self, x12: np.ndarray, y: np.ndarray):
-        self.x8 = to_independent_8(x12)
+        self.x8 = np.ascontiguousarray(x12, dtype=np.float32) if x12.shape[1] == 8 else to_independent_8(x12)
         self.y_oh = one_hot(y)
 
     def __len__(self):

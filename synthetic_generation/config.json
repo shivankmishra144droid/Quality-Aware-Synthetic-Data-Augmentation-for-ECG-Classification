@@ -105,5 +105,5 @@
   },
   "peak_gb_pilot": 0.9676632881164551,
   "peak_gb_full": 0.9829549789428711,
-  "checkpoint": "C:/Users/Shivank/Videos/ECG - GenAi/synthetic_generation/checkpoints/full_last.pt"
+  "checkpoint": "synthetic_generation/checkpoints/full_last.pt"
 }

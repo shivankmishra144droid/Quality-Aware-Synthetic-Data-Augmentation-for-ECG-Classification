@@ -1,0 +1,62 @@
+{
+  "train_cfg": {
+    "n_iters": 10000,
+    "batch_size": 8,
+    "grad_accum": 4,
+    "learning_rate": 0.0002,
+    "warmup_iters": 500,
+    "cosine_decay": true,
+    "log_every": 100,
+    "ckpt_every": 500,
+    "eval_every": 1000,
+    "use_amp": false,
+    "ema_decay": 0.999,
+    "diffusion_config": {
+      "T": 200,
+      "beta_0": 0.0005,
+      "beta_T": 0.1
+    }
+  },
+  "ecgs_seen": 320000,
+  "v1_ecgs_seen": 4000,
+  "carried_over": [
+    "noise schedule 5e-4->0.1 (sssd_sched)",
+    "EMA 0.999 (sssd_ema)"
+  ],
+  "checkpoint": "generator_comparison\\sssd_budget\\checkpoints\\budget_8x64_last.pt",
+  "train_sec": 10463.897513151169,
+  "peak_gb_train": 1.0487170219421387,
+  "loss_last": 0.05924118310213089,
+  "raw_vs_ema": {
+    "raw": {
+      "std": 0.9100244045257568,
+      "periodicity": {
+        "SR": 0.16,
+        "AFIB": 0.17,
+        "STACH": 0.16,
+        "SBRAD": 0.14
+      },
+      "hr": {
+        "SR": 40.8,
+        "AFIB": 46.5,
+        "STACH": 48.5,
+        "SBRAD": 33.1
+      }
+    },
+    "ema": {
+      "std": 0.8828423619270325,
+      "periodicity": {
+        "SR": 0.17,
+        "AFIB": 0.17,
+        "STACH": 0.16,
+        "SBRAD": 0.14
+      },
+      "hr": {
+        "SR": 41.6,
+        "AFIB": 47.1,
+        "STACH": 46.0,
+        "SBRAD": 36.0
+      }
+    }
+  }
+}

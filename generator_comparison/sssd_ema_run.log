@@ -1,0 +1,110 @@
+CUDA extension for cauchy multiplication not found. Install by going to extensions/cauchy/ and running `python setup.py install`. This should speed up end-to-end training by 10-50%
+Falling back on slow Cauchy kernel. Install at least one of pykeops or the CUDA extension for efficiency.
+EMA PLAN {
+  "architecture": "WAVENET_4GB 8x64 (same as v1)",
+  "single_change": "sample from EMA weights (decay 0.999); raw weights sampled too as the control",
+  "iters": 4000,
+  "sample_batch_size": 8,
+  "sample_seed": 42
+}
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+using wavenet {'num_res_layers': 8, 'res_channels': 64, 'in_channels': 8, 'label_embed_classes': 4}
+ema_8x64 iter     1  loss 1.0201  peak 0.55 GB
+ema_8x64 iter    50  loss 0.9219  peak 0.56 GB
+ema_8x64 iter   100  loss 0.8196  peak 0.56 GB
+ema_8x64 iter   150  loss 0.7225  peak 0.56 GB
+ema_8x64 iter   200  loss 0.6625  peak 0.56 GB
+ema_8x64 iter   250  loss 0.6124  peak 0.56 GB
+ema_8x64 iter   300  loss 0.5472  peak 0.56 GB
+ema_8x64 iter   350  loss 0.4948  peak 0.56 GB
+ema_8x64 iter   400  loss 0.4675  peak 0.56 GB
+ema_8x64 iter   450  loss 0.4131  peak 0.56 GB
+ema_8x64 iter   500  loss 0.3769  peak 0.56 GB
+ema_8x64 iter   550  loss 0.2747  peak 0.56 GB
+ema_8x64 iter   600  loss 0.3890  peak 0.56 GB
+ema_8x64 iter   650  loss 0.4349  peak 0.56 GB
+ema_8x64 iter   700  loss 0.2728  peak 0.56 GB
+ema_8x64 iter   750  loss 0.2152  peak 0.56 GB
+ema_8x64 iter   800  loss 0.1148  peak 0.56 GB
+ema_8x64 iter   850  loss 0.1196  peak 0.56 GB
+ema_8x64 iter   900  loss 0.0989  peak 0.56 GB
+ema_8x64 iter   950  loss 0.3906  peak 0.56 GB
+ema_8x64 iter  1000  loss 0.1807  peak 0.56 GB
+saved generator_comparison\sssd_ema\checkpoints\ema_8x64_1000.pt
+ema_8x64 iter  1050  loss 0.1257  peak 0.56 GB
+ema_8x64 iter  1100  loss 0.0691  peak 0.56 GB
+ema_8x64 iter  1150  loss 0.0845  peak 0.56 GB
+ema_8x64 iter  1200  loss 0.0871  peak 0.56 GB
+ema_8x64 iter  1250  loss 0.1572  peak 0.56 GB
+ema_8x64 iter  1300  loss 0.2467  peak 0.56 GB
+ema_8x64 iter  1350  loss 0.1063  peak 0.56 GB
+ema_8x64 iter  1400  loss 0.1717  peak 0.56 GB
+ema_8x64 iter  1450  loss 0.1236  peak 0.56 GB
+ema_8x64 iter  1500  loss 0.0883  peak 0.56 GB
+ema_8x64 iter  1550  loss 0.0727  peak 0.56 GB
+ema_8x64 iter  1600  loss 0.1452  peak 0.56 GB
+ema_8x64 iter  1650  loss 0.1760  peak 0.56 GB
+ema_8x64 iter  1700  loss 0.3396  peak 0.56 GB
+ema_8x64 iter  1750  loss 0.9043  peak 0.56 GB
+ema_8x64 iter  1800  loss 0.0714  peak 0.56 GB
+ema_8x64 iter  1850  loss 0.0642  peak 0.56 GB
+ema_8x64 iter  1900  loss 0.0785  peak 0.56 GB
+ema_8x64 iter  1950  loss 0.0669  peak 0.56 GB
+ema_8x64 iter  2000  loss 0.0535  peak 0.56 GB
+saved generator_comparison\sssd_ema\checkpoints\ema_8x64_2000.pt
+ema_8x64 iter  2050  loss 0.2556  peak 0.56 GB
+ema_8x64 iter  2100  loss 0.0533  peak 0.56 GB
+ema_8x64 iter  2150  loss 0.0629  peak 0.56 GB
+ema_8x64 iter  2200  loss 0.2576  peak 0.56 GB
+ema_8x64 iter  2250  loss 0.5377  peak 0.56 GB
+ema_8x64 iter  2300  loss 0.1174  peak 0.56 GB
+ema_8x64 iter  2350  loss 0.0617  peak 0.56 GB
+ema_8x64 iter  2400  loss 0.0933  peak 0.56 GB
+ema_8x64 iter  2450  loss 0.0868  peak 0.56 GB
+ema_8x64 iter  2500  loss 0.0786  peak 0.56 GB
+ema_8x64 iter  2550  loss 0.1197  peak 0.56 GB
+ema_8x64 iter  2600  loss 0.0449  peak 0.56 GB
+ema_8x64 iter  2650  loss 0.0859  peak 0.56 GB
+ema_8x64 iter  2700  loss 0.1775  peak 0.56 GB
+ema_8x64 iter  2750  loss 0.0694  peak 0.56 GB
+ema_8x64 iter  2800  loss 0.0521  peak 0.56 GB
+ema_8x64 iter  2850  loss 0.4787  peak 0.56 GB
+ema_8x64 iter  2900  loss 0.0907  peak 0.56 GB
+ema_8x64 iter  2950  loss 0.4498  peak 0.56 GB
+ema_8x64 iter  3000  loss 0.0600  peak 0.56 GB
+saved generator_comparison\sssd_ema\checkpoints\ema_8x64_3000.pt
+ema_8x64 iter  3050  loss 0.0630  peak 0.56 GB
+ema_8x64 iter  3100  loss 0.0739  peak 0.56 GB
+ema_8x64 iter  3150  loss 0.0513  peak 0.56 GB
+ema_8x64 iter  3200  loss 0.3363  peak 0.56 GB
+ema_8x64 iter  3250  loss 0.2212  peak 0.56 GB
+ema_8x64 iter  3300  loss 0.0727  peak 0.56 GB
+ema_8x64 iter  3350  loss 0.0947  peak 0.56 GB
+ema_8x64 iter  3400  loss 0.3962  peak 0.56 GB
+ema_8x64 iter  3450  loss 0.1094  peak 0.56 GB
+ema_8x64 iter  3500  loss 0.1321  peak 0.56 GB
+ema_8x64 iter  3550  loss 0.1411  peak 0.56 GB
+ema_8x64 iter  3600  loss 0.0744  peak 0.56 GB
+ema_8x64 iter  3650  loss 0.0879  peak 0.56 GB
+ema_8x64 iter  3700  loss 0.0678  peak 0.56 GB
+ema_8x64 iter  3750  loss 0.0525  peak 0.56 GB
+ema_8x64 iter  3800  loss 0.1626  peak 0.56 GB
+ema_8x64 iter  3850  loss 0.1033  peak 0.56 GB
+ema_8x64 iter  3900  loss 0.1063  peak 0.56 GB
+ema_8x64 iter  3950  loss 0.1915  peak 0.56 GB
+ema_8x64 iter  4000  loss 0.1249  peak 0.56 GB
+saved generator_comparison\sssd_ema\checkpoints\ema_8x64_4000.pt
+raw SR std=0.3460
+raw AFIB std=0.5495
+raw STACH std=0.4771
+raw SBRAD std=0.5551
+raw {"std": 0.4909175932407379, "hr": {"SR": 64.2, "AFIB": 55.5, "STACH": 44.4, "SBRAD": 58.9}, "periodicity": {"SR": 0.13, "AFIB": 0.14, "STACH": 0.17, "SBRAD": 0.1}, "agree": {"SR": 0.12, "AFIB": 0.22, "STACH": 0.19, "SBRAD": 0.1}}
+ema SR std=0.3704
+ema AFIB std=0.4186
+ema STACH std=0.4677
+ema SBRAD std=0.3736
+ema {"std": 0.40951597690582275, "hr": {"SR": 45.1, "AFIB": 38.1, "STACH": 55.3, "SBRAD": 57.5}, "periodicity": {"SR": 0.1, "AFIB": 0.14, "STACH": 0.16, "SBRAD": 0.12}, "agree": {"SR": 0.16, "AFIB": 0.31, "STACH": 0.16, "SBRAD": 0.19}}
+done

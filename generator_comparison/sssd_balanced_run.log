@@ -1,0 +1,119 @@
+CUDA extension for cauchy multiplication not found. Install by going to extensions/cauchy/ and running `python setup.py install`. This should speed up end-to-end training by 10-50%
+Falling back on slow Cauchy kernel. Install at least one of pykeops or the CUDA extension for efficiency.
+BALANCED PLAN {
+  "architecture": "WAVENET_4GB 8x64 (same as v1)",
+  "single_change": "class-balanced WeightedRandomSampler (weight 1/class_count, with replacement)",
+  "iters": 4000,
+  "label_dropout_p": 0.0,
+  "guidance_w": null,
+  "fresh_run": true,
+  "expected_draws_v1": {
+    "SR": 3400,
+    "AFIB": 306,
+    "STACH": 165,
+    "SBRAD": 129
+  },
+  "expected_draws_balanced": {
+    "SR": 1000,
+    "AFIB": 1000,
+    "STACH": 1000,
+    "SBRAD": 1000
+  }
+}
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+using wavenet {'num_res_layers': 8, 'res_channels': 64, 'in_channels': 8, 'label_embed_classes': 4}
+balanced_8x64 iter     1  loss 1.0201  peak 0.96 GB
+balanced_8x64 iter    50  loss 0.9188  peak 0.97 GB
+balanced_8x64 iter   100  loss 0.7515  peak 0.97 GB
+balanced_8x64 iter   150  loss 0.6670  peak 0.97 GB
+balanced_8x64 iter   200  loss 0.5888  peak 0.97 GB
+balanced_8x64 iter   250  loss 0.5594  peak 0.97 GB
+balanced_8x64 iter   300  loss 0.4762  peak 0.97 GB
+balanced_8x64 iter   350  loss 0.4970  peak 0.97 GB
+balanced_8x64 iter   400  loss 0.3993  peak 0.97 GB
+balanced_8x64 iter   450  loss 0.3879  peak 0.97 GB
+balanced_8x64 iter   500  loss 0.3632  peak 0.97 GB
+balanced_8x64 iter   550  loss 0.3004  peak 0.97 GB
+balanced_8x64 iter   600  loss 0.4319  peak 0.97 GB
+balanced_8x64 iter   650  loss 0.4151  peak 0.97 GB
+balanced_8x64 iter   700  loss 0.3194  peak 0.97 GB
+balanced_8x64 iter   750  loss 0.2290  peak 0.97 GB
+balanced_8x64 iter   800  loss 0.2107  peak 0.97 GB
+balanced_8x64 iter   850  loss 0.2615  peak 0.97 GB
+balanced_8x64 iter   900  loss 0.2113  peak 0.97 GB
+balanced_8x64 iter   950  loss 0.4127  peak 0.97 GB
+balanced_8x64 iter  1000  loss 0.1429  peak 0.97 GB
+saved generator_comparison\sssd_balanced\checkpoints\balanced_8x64_1000.pt
+balanced_8x64 iter  1050  loss 0.1414  peak 0.97 GB
+balanced_8x64 iter  1100  loss 0.0943  peak 0.97 GB
+balanced_8x64 iter  1150  loss 0.1383  peak 0.97 GB
+balanced_8x64 iter  1200  loss 0.0873  peak 0.97 GB
+balanced_8x64 iter  1250  loss 0.2606  peak 0.97 GB
+balanced_8x64 iter  1300  loss 0.2629  peak 0.97 GB
+balanced_8x64 iter  1350  loss 0.1505  peak 0.97 GB
+balanced_8x64 iter  1400  loss 0.2356  peak 0.97 GB
+balanced_8x64 iter  1450  loss 0.1645  peak 0.97 GB
+balanced_8x64 iter  1500  loss 0.0658  peak 0.97 GB
+balanced_8x64 iter  1550  loss 0.0765  peak 0.97 GB
+balanced_8x64 iter  1600  loss 0.1143  peak 0.97 GB
+balanced_8x64 iter  1650  loss 0.2351  peak 0.97 GB
+balanced_8x64 iter  1700  loss 0.2830  peak 0.97 GB
+balanced_8x64 iter  1750  loss 1.0261  peak 0.97 GB
+balanced_8x64 iter  1800  loss 0.0690  peak 0.97 GB
+balanced_8x64 iter  1850  loss 0.0739  peak 0.97 GB
+balanced_8x64 iter  1900  loss 0.0862  peak 0.97 GB
+balanced_8x64 iter  1950  loss 0.1072  peak 0.97 GB
+balanced_8x64 iter  2000  loss 0.0564  peak 0.97 GB
+saved generator_comparison\sssd_balanced\checkpoints\balanced_8x64_2000.pt
+balanced_8x64 iter  2050  loss 0.2657  peak 0.97 GB
+balanced_8x64 iter  2100  loss 0.0645  peak 0.97 GB
+balanced_8x64 iter  2150  loss 0.0884  peak 0.97 GB
+balanced_8x64 iter  2200  loss 0.1931  peak 0.97 GB
+balanced_8x64 iter  2250  loss 0.3738  peak 0.97 GB
+balanced_8x64 iter  2300  loss 0.0740  peak 0.97 GB
+balanced_8x64 iter  2350  loss 0.0752  peak 0.97 GB
+balanced_8x64 iter  2400  loss 0.1093  peak 0.97 GB
+balanced_8x64 iter  2450  loss 0.0710  peak 0.97 GB
+balanced_8x64 iter  2500  loss 0.0600  peak 0.97 GB
+balanced_8x64 iter  2550  loss 0.1301  peak 0.97 GB
+balanced_8x64 iter  2600  loss 0.0563  peak 0.97 GB
+balanced_8x64 iter  2650  loss 0.1144  peak 0.97 GB
+balanced_8x64 iter  2700  loss 0.2102  peak 0.97 GB
+balanced_8x64 iter  2750  loss 0.1148  peak 0.97 GB
+balanced_8x64 iter  2800  loss 0.0603  peak 0.97 GB
+balanced_8x64 iter  2850  loss 0.4055  peak 0.97 GB
+balanced_8x64 iter  2900  loss 0.0553  peak 0.97 GB
+balanced_8x64 iter  2950  loss 0.4995  peak 0.97 GB
+balanced_8x64 iter  3000  loss 0.0538  peak 0.97 GB
+saved generator_comparison\sssd_balanced\checkpoints\balanced_8x64_3000.pt
+balanced_8x64 iter  3050  loss 0.0618  peak 0.97 GB
+balanced_8x64 iter  3100  loss 0.0950  peak 0.97 GB
+balanced_8x64 iter  3150  loss 0.0619  peak 0.97 GB
+balanced_8x64 iter  3200  loss 0.4309  peak 0.97 GB
+balanced_8x64 iter  3250  loss 0.1556  peak 0.97 GB
+balanced_8x64 iter  3300  loss 0.0647  peak 0.97 GB
+balanced_8x64 iter  3350  loss 0.0695  peak 0.97 GB
+balanced_8x64 iter  3400  loss 0.4369  peak 0.97 GB
+balanced_8x64 iter  3450  loss 0.1278  peak 0.97 GB
+balanced_8x64 iter  3500  loss 0.1296  peak 0.97 GB
+balanced_8x64 iter  3550  loss 0.1076  peak 0.97 GB
+balanced_8x64 iter  3600  loss 0.0946  peak 0.97 GB
+balanced_8x64 iter  3650  loss 0.0780  peak 0.97 GB
+balanced_8x64 iter  3700  loss 0.0968  peak 0.97 GB
+balanced_8x64 iter  3750  loss 0.0995  peak 0.97 GB
+balanced_8x64 iter  3800  loss 0.1559  peak 0.97 GB
+balanced_8x64 iter  3850  loss 0.0777  peak 0.97 GB
+balanced_8x64 iter  3900  loss 0.1060  peak 0.97 GB
+balanced_8x64 iter  3950  loss 0.1553  peak 0.97 GB
+balanced_8x64 iter  4000  loss 0.1492  peak 0.97 GB
+saved generator_comparison\sssd_balanced\checkpoints\balanced_8x64_4000.pt
+train last 0.14922121167182922 min 0.053788620978593826
+SR std=0.3882
+AFIB std=0.4810
+STACH std=0.5069
+SBRAD std=0.4008
+std 0.44979506731033325 HR_pt {'SR': 37.5, 'AFIB': 47.4, 'STACH': 42.4, 'SBRAD': 47.2} periodicity {'SR': 0.13, 'AFIB': 0.13, 'STACH': 0.15, 'SBRAD': 0.15}
+done

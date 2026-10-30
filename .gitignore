@@ -34,3 +34,15 @@ OBSIDIAN/
 Thumbs.db
 .DS_Store
 .cursor/
+
+# Large regenerable beat-assembly intermediates (rebuild with _beat_oracle.py / _beat_ablation.py).
+# Small result files (roundtrip.json, figures) stay tracked.
+generator_comparison/beat_templates/ablation/
+generator_comparison/beat_templates/*.npz
+generator_comparison/beat_templates/*.pkl
+# Large TSTR pools (rebuild with _gen_tstr_pools.py)
+generator_comparison/tstr/pool_*.npz
+# Final synthetic pool (rebuild with _beat_gen_pool.py, see generator_comparison/final_pool/README.md)
+generator_comparison/final_pool/*.npz
+# Study 2 pools (rebuild with _beat_gen_pool.py, see report/WORKFLOW_2.md); score files stay tracked
+generator_comparison/pools2/pool_*.npz
