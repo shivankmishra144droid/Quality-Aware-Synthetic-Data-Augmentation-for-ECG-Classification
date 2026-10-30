@@ -1,0 +1,24 @@
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\numpy\_core\fromnumeric.py:3862: RuntimeWarning: Mean of empty slice
+  return _methods._mean(a, axis=axis, dtype=dtype,
+C:\Users\Shivank\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\numpy\_core\_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+C:\Users\Shivank\Videos\ECG-GenAi-nifty\generator_comparison\eval_metrics.py:104: RuntimeWarning: Mean of empty slice
+  "detectable_frac": float(np.isfinite(hp).mean()),
+Traceback (most recent call last):
+  File "C:\Users\Shivank\Videos\ECG-GenAi-nifty\_noise_bank_eval.py", line 157, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\Shivank\Videos\ECG-GenAi-nifty\_noise_bank_eval.py", line 84, in main
+    ref, real_std_lead, real_ref = reference(X, y, all_src)
+                                   ~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Shivank\Videos\ECG-GenAi-nifty\_noise_bank_eval.py", line 52, in reference
+    real_ref = SC.score_pool(np.asarray(X[pool_idx]), y[pool_idx], ref, real_std_lead, X, y, exclude=pool_idx)
+  File "C:\Users\Shivank\Videos\ECG-GenAi-nifty\generator_comparison\scorecard.py", line 127, in score_pool
+    "memorized": memorized_frac(x12, y, X_all, y_all, exclude),
+                 ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shivank\Videos\ECG-GenAi-nifty\generator_comparison\scorecard.py", line 94, in memorized_frac
+    s = _zrows(x12[y == i])
+  File "C:\Users\Shivank\Videos\ECG-GenAi-nifty\generator_comparison\scorecard.py", line 86, in _zrows
+    a = a.reshape(len(a), -1).astype(np.float32)
+        ~~~~~~~~~^^^^^^^^^^^^
+ValueError: cannot reshape array of size 0 into shape (0,newaxis)

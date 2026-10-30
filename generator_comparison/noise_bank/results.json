@@ -1,0 +1,739 @@
+{
+  "gate": {
+    "detector_max": 0.7,
+    "donor_corr_median_max": 0.95,
+    "donor_corr_hi": 0.98,
+    "donor_corr_hi_share_max": 0.01,
+    "tstr_fallback": 0.68
+  },
+  "tstr_bar": 0.6863019068130897,
+  "n_tstr": 200,
+  "tstr_references": {
+    "TRTR": {
+      "n_per_class": 200,
+      "balanced_acc_mean": 0.7964797780775662,
+      "macro_f1_mean": 0.5054513782293745
+    },
+    "beat_gen": {
+      "n_per_class": 200,
+      "balanced_acc_mean": 0.6863019068130897,
+      "macro_f1_mean": 0.43379208447331213
+    }
+  },
+  "real_ref_checks": {
+    "valid": true,
+    "amplitude": true,
+    "per_lead_amp": true,
+    "heartbeat": true,
+    "hr_order": true,
+    "hr_mae": true,
+    "spectrum": true,
+    "diversity": true,
+    "not_memorized": true
+  },
+  "variants": {
+    "N0": {
+      "n": 1496,
+      "detector": {
+        "seed0": {
+          "auc": 0.965660165692927,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.9601468506723284,
+            "AFIB": 0.9693380088949709,
+            "STACH": 0.9773720349563046,
+            "SBRAD": 0.9554607912816868
+          }
+        },
+        "seed1": {
+          "auc": 0.9529277093442826,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.9715136054421769,
+            "AFIB": 0.9466666666666667,
+            "STACH": 0.9515845070422535,
+            "SBRAD": 0.9360341151385927
+          }
+        },
+        "auc_mean": 0.9592939375186048
+      },
+      "scorecard": {
+        "invalid": 0,
+        "extreme_frac": 0.014037433155080214,
+        "std": 1.1179381608963013,
+        "lead_std_logratio": 0.04519602656364441,
+        "periodicity": 0.6409530899197626,
+        "agree": 0.6798572542533196,
+        "hr": {
+          "SR": 65.4,
+          "AFIB": 73.6,
+          "STACH": 102.6,
+          "SBRAD": 48.2
+        },
+        "hr_order_ok": true,
+        "hr_mae": 5.769674287103918,
+        "psd_db": 0.5912063121795654,
+        "diversity": {
+          "SR": -0.00021006728638894856,
+          "AFIB": -0.0008548286859877408,
+          "STACH": 0.002295625861734152,
+          "SBRAD": 0.0007351057720370591
+        },
+        "memorized": 0.0,
+        "checks": {
+          "valid": true,
+          "amplitude": true,
+          "per_lead_amp": true,
+          "heartbeat": true,
+          "hr_order": true,
+          "hr_mae": true,
+          "spectrum": true,
+          "diversity": true,
+          "not_memorized": true
+        }
+      },
+      "novelty": {
+        "median": 0.4849545955657959,
+        "p90": 0.7858577370643616,
+        "share_gt_0.98": 0.0006684491978609625
+      },
+      "tstr": {
+        "n_per_class": 200,
+        "balanced_acc_mean": 0.7773901117106882,
+        "macro_f1_mean": 0.5248504104146828
+      },
+      "gate": {
+        "detector": false,
+        "scorecard": true,
+        "novelty": true,
+        "tstr": true
+      },
+      "pass": false
+    },
+    "N1": {
+      "n": 1496,
+      "detector": {
+        "seed0": {
+          "auc": 0.9544964930481443,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.9647027600849257,
+            "AFIB": 0.9462452959288403,
+            "STACH": 0.9790886392009989,
+            "SBRAD": 0.929637526652452
+          }
+        },
+        "seed1": {
+          "auc": 0.9557148189622994,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.9671052631578947,
+            "AFIB": 0.9493719806763286,
+            "STACH": 0.9713908450704226,
+            "SBRAD": 0.9222717580926536
+          }
+        },
+        "auc_mean": 0.9551056560052218
+      },
+      "scorecard": {
+        "invalid": 0,
+        "extreme_frac": 0.0106951871657754,
+        "std": 1.0886932611465454,
+        "lead_std_logratio": 0.02413485385477543,
+        "periodicity": 0.6975100151758769,
+        "agree": 0.738501899328773,
+        "hr": {
+          "SR": 66.6,
+          "AFIB": 76.6,
+          "STACH": 103.5,
+          "SBRAD": 48.5
+        },
+        "hr_order_ok": true,
+        "hr_mae": 4.439408319293447,
+        "psd_db": 0.45478570461273193,
+        "diversity": {
+          "SR": -0.0022909578401595354,
+          "AFIB": -0.0014099320396780968,
+          "STACH": 0.003065122291445732,
+          "SBRAD": 0.003409505356103182
+        },
+        "memorized": 0.0,
+        "checks": {
+          "valid": true,
+          "amplitude": true,
+          "per_lead_amp": true,
+          "heartbeat": true,
+          "hr_order": true,
+          "hr_mae": true,
+          "spectrum": true,
+          "diversity": true,
+          "not_memorized": true
+        }
+      },
+      "novelty": {
+        "median": 0.6217147707939148,
+        "p90": 0.8211275935173035,
+        "share_gt_0.98": 0.0006684491978609625
+      },
+      "tstr": {
+        "n_per_class": 200,
+        "balanced_acc_mean": 0.7677834481207989,
+        "macro_f1_mean": 0.5487193136665256
+      },
+      "gate": {
+        "detector": false,
+        "scorecard": true,
+        "novelty": true,
+        "tstr": true
+      },
+      "pass": false
+    },
+    "N1a0.25": {
+      "n": 1496,
+      "detector": {
+        "seed0": {
+          "auc": 0.7144452662354746,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.7078025477707007,
+            "AFIB": 0.7398221005815944,
+            "STACH": 0.7145755305867666,
+            "SBRAD": 0.6683250414593698
+          }
+        },
+        "seed1": {
+          "auc": 0.7393007341047654,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.7679466523451486,
+            "AFIB": 0.7296618357487923,
+            "STACH": 0.7661384976525821,
+            "SBRAD": 0.6821089358402791
+          }
+        },
+        "auc_mean": 0.72687300017012
+      },
+      "scorecard": {
+        "invalid": 0,
+        "extreme_frac": 0.004679144385026738,
+        "std": 0.9622116684913635,
+        "lead_std_logratio": 0.11254265159368515,
+        "periodicity": 0.8220407355102122,
+        "agree": 0.9012976731975719,
+        "hr": {
+          "SR": 69.7,
+          "AFIB": 83.3,
+          "STACH": 106.3,
+          "SBRAD": 49.1
+        },
+        "hr_order_ok": true,
+        "hr_mae": 1.2938886887788161,
+        "psd_db": 0.3290405571460724,
+        "diversity": {
+          "SR": -0.0027023968286812305,
+          "AFIB": 0.000341692881193012,
+          "STACH": -0.0009473806130699813,
+          "SBRAD": 4.123812323086895e-05
+        },
+        "memorized": 0.002,
+        "checks": {
+          "valid": true,
+          "amplitude": true,
+          "per_lead_amp": true,
+          "heartbeat": true,
+          "hr_order": true,
+          "hr_mae": true,
+          "spectrum": true,
+          "diversity": true,
+          "not_memorized": false
+        }
+      },
+      "novelty": {
+        "median": 0.9783258438110352,
+        "p90": 0.9911736249923706,
+        "share_gt_0.98": 0.45989304812834225
+      },
+      "tstr": {
+        "n_per_class": 200,
+        "balanced_acc_mean": 0.7908758145571019,
+        "macro_f1_mean": 0.5677231900272639
+      },
+      "gate": {
+        "detector": false,
+        "scorecard": false,
+        "novelty": false,
+        "tstr": true
+      },
+      "pass": false
+    },
+    "N1a0.50": {
+      "n": 1496,
+      "detector": {
+        "seed0": {
+          "auc": 0.9120556744119092,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.8982218683651805,
+            "AFIB": 0.924863154293534,
+            "STACH": 0.9260299625468166,
+            "SBRAD": 0.8919687277896233
+          }
+        },
+        "seed1": {
+          "auc": 0.925524449421426,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.9457124955245256,
+            "AFIB": 0.896231884057971,
+            "STACH": 0.9421948356807512,
+            "SBRAD": 0.9387478193448343
+          }
+        },
+        "auc_mean": 0.9187900619166676
+      },
+      "scorecard": {
+        "invalid": 0,
+        "extreme_frac": 0.006016042780748663,
+        "std": 0.9405650496482849,
+        "lead_std_logratio": 0.13541187345981598,
+        "periodicity": 0.761060482905252,
+        "agree": 0.8235739310027334,
+        "hr": {
+          "SR": 68.3,
+          "AFIB": 77.3,
+          "STACH": 104.6,
+          "SBRAD": 48.9
+        },
+        "hr_order_ok": true,
+        "hr_mae": 3.532984426006699,
+        "psd_db": 0.4032425582408905,
+        "diversity": {
+          "SR": -0.002860042732208967,
+          "AFIB": -1.0978700629493687e-05,
+          "STACH": 0.00035735772689804435,
+          "SBRAD": 0.0004557950305752456
+        },
+        "memorized": 0.001,
+        "checks": {
+          "valid": true,
+          "amplitude": true,
+          "per_lead_amp": true,
+          "heartbeat": true,
+          "hr_order": true,
+          "hr_mae": true,
+          "spectrum": true,
+          "diversity": true,
+          "not_memorized": false
+        }
+      },
+      "novelty": {
+        "median": 0.9050554633140564,
+        "p90": 0.9591562747955322,
+        "share_gt_0.98": 0.0106951871657754
+      },
+      "tstr": {
+        "n_per_class": 200,
+        "balanced_acc_mean": 0.780197801287513,
+        "macro_f1_mean": 0.5426218681573486
+      },
+      "gate": {
+        "detector": false,
+        "scorecard": false,
+        "novelty": false,
+        "tstr": true
+      },
+      "pass": false
+    },
+    "N1a0.75": {
+      "n": 1496,
+      "detector": {
+        "seed0": {
+          "auc": 0.9273740798284498,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.9340498938428875,
+            "AFIB": 0.9049349982894286,
+            "STACH": 0.9694132334581773,
+            "SBRAD": 0.9144752428334518
+          }
+        },
+        "seed1": {
+          "auc": 0.954729376633072,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.9616004296455424,
+            "AFIB": 0.9505797101449275,
+            "STACH": 0.9731514084507042,
+            "SBRAD": 0.937584803256445
+          }
+        },
+        "auc_mean": 0.9410517282307609
+      },
+      "scorecard": {
+        "invalid": 0,
+        "extreme_frac": 0.008021390374331552,
+        "std": 0.9854592084884644,
+        "lead_std_logratio": 0.08876853436231613,
+        "periodicity": 0.7230426476858646,
+        "agree": 0.7690444403065365,
+        "hr": {
+          "SR": 67.3,
+          "AFIB": 75.4,
+          "STACH": 103.7,
+          "SBRAD": 48.7
+        },
+        "hr_order_ok": true,
+        "hr_mae": 4.442479649028989,
+        "psd_db": 0.4031107723712921,
+        "diversity": {
+          "SR": -0.002641833620145917,
+          "AFIB": -0.0006387375178746879,
+          "STACH": 0.0019321502186357975,
+          "SBRAD": 0.0016954821767285466
+        },
+        "memorized": 0.0,
+        "checks": {
+          "valid": true,
+          "amplitude": true,
+          "per_lead_amp": true,
+          "heartbeat": true,
+          "hr_order": true,
+          "hr_mae": true,
+          "spectrum": true,
+          "diversity": true,
+          "not_memorized": true
+        }
+      },
+      "novelty": {
+        "median": 0.7789705991744995,
+        "p90": 0.9001133441925049,
+        "share_gt_0.98": 0.0033422459893048127
+      },
+      "tstr": {
+        "n_per_class": 200,
+        "balanced_acc_mean": 0.78406740509325,
+        "macro_f1_mean": 0.571135603635035
+      },
+      "gate": {
+        "detector": false,
+        "scorecard": true,
+        "novelty": true,
+        "tstr": true
+      },
+      "pass": false
+    },
+    "N2": {
+      "n": 1496,
+      "detector": {
+        "seed0": {
+          "auc": 0.8717195232729564,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.8974699221514508,
+            "AFIB": 0.8455781731098188,
+            "STACH": 0.9205680399500623,
+            "SBRAD": 0.8069177919924188
+          }
+        },
+        "seed1": {
+          "auc": 0.8472016921736967,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.8912012173290369,
+            "AFIB": 0.8486473429951691,
+            "STACH": 0.8296654929577466,
+            "SBRAD": 0.801511920914906
+          }
+        },
+        "auc_mean": 0.8594606077233266
+      },
+      "scorecard": {
+        "invalid": 0,
+        "extreme_frac": 0.0066844919786096255,
+        "std": 1.0748040676116943,
+        "lead_std_logratio": 0.0273706316947937,
+        "periodicity": 0.7730433714858533,
+        "agree": 0.8213479274153367,
+        "hr": {
+          "SR": 67.6,
+          "AFIB": 80.6,
+          "STACH": 105.3,
+          "SBRAD": 48.8
+        },
+        "hr_order_ok": true,
+        "hr_mae": 2.7250884766303862,
+        "psd_db": 0.34603697061538696,
+        "diversity": {
+          "SR": -0.001990729011595249,
+          "AFIB": -0.0002750283747445792,
+          "STACH": 0.001353811239823699,
+          "SBRAD": 0.0003018732531927526
+        },
+        "memorized": 0.0005,
+        "checks": {
+          "valid": true,
+          "amplitude": true,
+          "per_lead_amp": true,
+          "heartbeat": true,
+          "hr_order": true,
+          "hr_mae": true,
+          "spectrum": true,
+          "diversity": true,
+          "not_memorized": false
+        }
+      },
+      "novelty": {
+        "median": 0.8821404576301575,
+        "p90": 0.9371240735054016,
+        "share_gt_0.98": 0.006016042780748663
+      },
+      "tstr": {
+        "n_per_class": 200,
+        "balanced_acc_mean": 0.7711289327526902,
+        "macro_f1_mean": 0.550539330332069
+      },
+      "gate": {
+        "detector": false,
+        "scorecard": false,
+        "novelty": true,
+        "tstr": true
+      },
+      "pass": false
+    },
+    "N2a0.25": {
+      "n": 1496,
+      "detector": {
+        "seed0": {
+          "auc": 0.546344877566925,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.5469302901627742,
+            "AFIB": 0.5440044474854602,
+            "STACH": 0.524812734082397,
+            "SBRAD": 0.5574508410329305
+          }
+        },
+        "seed1": {
+          "auc": 0.5580092074157024,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.5268080916577157,
+            "AFIB": 0.5824637681159421,
+            "STACH": 0.617224178403756,
+            "SBRAD": 0.535568908703237
+          }
+        },
+        "auc_mean": 0.5521770424913137
+      },
+      "scorecard": {
+        "invalid": 0,
+        "extreme_frac": 0.0053475935828877,
+        "std": 1.0194355249404907,
+        "lead_std_logratio": 0.05528366565704346,
+        "periodicity": 0.8389124127026983,
+        "agree": 0.9341154561186386,
+        "hr": {
+          "SR": 70.2,
+          "AFIB": 84.6,
+          "STACH": 106.5,
+          "SBRAD": 49.2
+        },
+        "hr_order_ok": true,
+        "hr_mae": 1.0371678303413852,
+        "psd_db": 0.2967173457145691,
+        "diversity": {
+          "SR": -0.002139515243470669,
+          "AFIB": 0.0006346874288283288,
+          "STACH": -0.00026123743737116456,
+          "SBRAD": 8.64189860294573e-05
+        },
+        "memorized": 0.0015,
+        "checks": {
+          "valid": true,
+          "amplitude": true,
+          "per_lead_amp": true,
+          "heartbeat": true,
+          "hr_order": true,
+          "hr_mae": true,
+          "spectrum": true,
+          "diversity": true,
+          "not_memorized": false
+        }
+      },
+      "novelty": {
+        "median": 0.9928356409072876,
+        "p90": 0.9964002370834351,
+        "share_gt_0.98": 0.9131016042780749
+      },
+      "tstr": {
+        "n_per_class": 200,
+        "balanced_acc_mean": 0.8070454357190192,
+        "macro_f1_mean": 0.6221128997478577
+      },
+      "gate": {
+        "detector": true,
+        "scorecard": false,
+        "novelty": false,
+        "tstr": true
+      },
+      "pass": false
+    },
+    "N2a0.50": {
+      "n": 1496,
+      "detector": {
+        "seed0": {
+          "auc": 0.6505755570667686,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.6383581033262562,
+            "AFIB": 0.6664385904892234,
+            "STACH": 0.6899188514357053,
+            "SBRAD": 0.6048329779673064
+          }
+        },
+        "seed1": {
+          "auc": 0.7067960681846459,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.7476279985678481,
+            "AFIB": 0.6804830917874397,
+            "STACH": 0.7304870892018779,
+            "SBRAD": 0.681721263810816
+          }
+        },
+        "auc_mean": 0.6786858126257073
+      },
+      "scorecard": {
+        "invalid": 0,
+        "extreme_frac": 0.004679144385026738,
+        "std": 1.0153082609176636,
+        "lead_std_logratio": 0.05981795862317085,
+        "periodicity": 0.8209124546576392,
+        "agree": 0.8951322170962781,
+        "hr": {
+          "SR": 69.7,
+          "AFIB": 83.3,
+          "STACH": 106.5,
+          "SBRAD": 49.0
+        },
+        "hr_order_ok": true,
+        "hr_mae": 1.2578644288756795,
+        "psd_db": 0.33380696177482605,
+        "diversity": {
+          "SR": -0.002002568216994405,
+          "AFIB": 0.00045609360677190125,
+          "STACH": 0.00022078666370362043,
+          "SBRAD": 0.0002234074636362493
+        },
+        "memorized": 0.0015,
+        "checks": {
+          "valid": true,
+          "amplitude": true,
+          "per_lead_amp": true,
+          "heartbeat": true,
+          "hr_order": true,
+          "hr_mae": true,
+          "spectrum": true,
+          "diversity": true,
+          "not_memorized": false
+        }
+      },
+      "novelty": {
+        "median": 0.9703887104988098,
+        "p90": 0.9847010970115662,
+        "share_gt_0.98": 0.2232620320855615
+      },
+      "tstr": {
+        "n_per_class": 200,
+        "balanced_acc_mean": 0.806054427403831,
+        "macro_f1_mean": 0.5943883801347875
+      },
+      "gate": {
+        "detector": true,
+        "scorecard": false,
+        "novelty": false,
+        "tstr": true
+      },
+      "pass": false
+    },
+    "N2a0.75": {
+      "n": 1496,
+      "detector": {
+        "seed0": {
+          "auc": 0.7881930138937838,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.8060421089879688,
+            "AFIB": 0.7853660622647964,
+            "STACH": 0.7994694132334582,
+            "SBRAD": 0.7521914238332148
+          }
+        },
+        "seed1": {
+          "auc": 0.7980639542117705,
+          "n_test": 898,
+          "per_class": {
+            "SR": 0.8431793770139635,
+            "AFIB": 0.7534782608695653,
+            "STACH": 0.8205692488262911,
+            "SBRAD": 0.7997673967823221
+          }
+        },
+        "auc_mean": 0.7931284840527771
+      },
+      "scorecard": {
+        "invalid": 0,
+        "extreme_frac": 0.004679144385026738,
+        "std": 1.0341676473617554,
+        "lead_std_logratio": 0.04236229136586189,
+        "periodicity": 0.7973050211476461,
+        "agree": 0.861579814734451,
+        "hr": {
+          "SR": 68.9,
+          "AFIB": 81.3,
+          "STACH": 105.7,
+          "SBRAD": 49.0
+        },
+        "hr_order_ok": true,
+        "hr_mae": 2.139443310669426,
+        "psd_db": 0.3181155323982239,
+        "diversity": {
+          "SR": -0.0019490127451717854,
+          "AFIB": 0.00013600535748992115,
+          "STACH": 0.0007786135538481176,
+          "SBRAD": 0.0002981125726364553
+        },
+        "memorized": 0.0005,
+        "checks": {
+          "valid": true,
+          "amplitude": true,
+          "per_lead_amp": true,
+          "heartbeat": true,
+          "hr_order": true,
+          "hr_mae": true,
+          "spectrum": true,
+          "diversity": true,
+          "not_memorized": false
+        }
+      },
+      "novelty": {
+        "median": 0.9330432415008545,
+        "p90": 0.9642642140388489,
+        "share_gt_0.98": 0.01804812834224599
+      },
+      "tstr": {
+        "n_per_class": 200,
+        "balanced_acc_mean": 0.7669635717441383,
+        "macro_f1_mean": 0.5209649904825233
+      },
+      "gate": {
+        "detector": false,
+        "scorecard": false,
+        "novelty": false,
+        "tstr": true
+      },
+      "pass": false
+    }
+  },
+  "passing": []
+}
